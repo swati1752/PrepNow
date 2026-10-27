@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spring Enterprise Architecture Revision Guide | Master.dev</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts Inter & JetBrains Mono -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            200: '#c7d2fe',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                        },
+                        emeraldCustom: {
+                            50: '#ecfdf5',
+                            500: '#10b981',
+                            600: '#059669',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        .code-light {
+            background: #0f172a;
+            color: #f8fafc;
+        }
+        .glass-header {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col selection:bg-brand-100 selection:text-brand-700">
+
+    <!-- Header Navigation -->
+    <header class="sticky top-0 z-50 glass-header border-b border-slate-200/80 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 gap-4">
+                
+                <!-- Logo & Title -->
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-400 flex items-center justify-center text-white shadow-md shadow-brand-500/20">
+                        <i class="fa-solid fa-graduation-cap text-lg"></i>
+                    </div>
+                    <div>
+                        <span class="text-lg font-bold text-slate-900 tracking-tight">Master.dev</span>
+                        <span class="text-xs block text-slate-500 font-medium">Spring Enterprise Architecture Revision</span>
+                    </div>
+                </div>
+
+                <!-- Dynamic Search Bar -->
+                <div class="relative flex-1 max-w-md hidden md:block">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                    <input type="text" id="globalSearch" placeholder="Search topics, code snippets, or Q&A cards..." 
+                        class="w-full pl-10 pr-4 py-2 bg-slate-100/80 border border-slate-200 rounded-xl text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 focus:bg-white transition-all">
+                </div>
+
+                <!-- Quick Action Button -->
+                <div class="flex items-center gap-3">
+                    <a href="#qna-section" class="px-4 py-2 rounded-xl bg-brand-50 text-brand-700 border border-brand-200/80 text-xs font-semibold hover:bg-brand-100 hover:border-brand-300 transition-all flex items-center gap-2 shadow-sm">
+                        <i class="fa-solid fa-circle-question text-brand-600"></i>
+                        <span>Q&A Hub (20)</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Progress & Overview Stats Bar -->
+    <section class="bg-white border-b border-slate-200/70 py-3.5 shadow-2xs">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs font-medium text-slate-600">
+            
+            <div class="flex items-center gap-6 flex-wrap">
+                <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-brand-600"></span>
+                    <span>Modules: <strong class="text-slate-900 font-semibold">6 Key Topics</strong></span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emeraldCustom-500"></span>
+                    <span>Code Snippets: <strong class="text-slate-900 font-semibold">12 Runnable Examples</strong></span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+                    <span>Flashcards: <strong class="text-slate-900 font-semibold">20 Revision Cards</strong></span>
+                </div>
+            </div>
+
+            <!-- Revision Progress Indicator -->
+            <div class="flex items-center gap-3 w-full md:w-64">
+                <span class="text-slate-500 font-medium whitespace-nowrap">Revision Progress:</span>
+                <div class="flex-1 bg-slate-100 rounded-full h-2.5 overflow-hidden border border-slate-200">
+                    <div id="progressBar" class="bg-gradient-to-r from-brand-500 to-emeraldCustom-500 h-full w-0 transition-all duration-300"></div>
+                </div>
+                <span id="progressText" class="font-bold text-slate-800 font-mono">0%</span>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Main Content Container -->
+    <div class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col lg:flex-row gap-8">
+
+        <!-- Sidebar Navigation -->
+        <aside class="w-full lg:w-64 shrink-0">
+            <div class="sticky top-24 bg-white rounded-2xl p-4 border border-slate-200/80 shadow-sm space-y-1 text-xs">
+                <div class="px-3 py-2 font-bold text-slate-400 uppercase tracking-wider font-mono">Course Modules</div>
+                
+                <a href="#module-1" class="nav-item flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-700 hover:text-brand-600 hover:bg-slate-50 transition-all font-medium">
+                    <span class="flex items-center gap-2.5"><i class="fa-solid fa-cube text-brand-600 w-4"></i>1. Spring Core & GraalVM</span>
+                    <input type="checkbox" onchange="updateProgress()" class="topic-check rounded border-slate-300 text-brand-600 focus:ring-brand-500 cursor-pointer">
+                </a>
+                <a href="#module-2" class="nav-item flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-700 hover:text-brand-600 hover:bg-slate-50 transition-all font-medium">
+                    <span class="flex items-center gap-2.5"><i class="fa-solid fa-brain text-purple-600 w-4"></i>2. Spring AI & RAG</span>
+                    <input type="checkbox" onchange="updateProgress()" class="topic-check rounded border-slate-300 text-brand-600 focus:ring-brand-500 cursor-pointer">
+                </a>
+                <a href="#module-3" class="nav-item flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-700 hover:text-brand-600 hover:bg-slate-50 transition-all font-medium">
+                    <span class="flex items-center gap-2.5"><i class="fa-solid fa-layer-group text-blue-600 w-4"></i>3. Spring Batch & ETL</span>
+                    <input type="checkbox" onchange="updateProgress()" class="topic-check rounded border-slate-300 text-brand-600 focus:ring-brand-500 cursor-pointer">
+                </a>
+                <a href="#module-4" class="nav-item flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-700 hover:text-brand-600 hover:bg-slate-50 transition-all font-medium">
+                    <span class="flex items-center gap-2.5"><i class="fa-solid fa-globe text-rose-600 w-4"></i>4. APIs, GraphQL & gRPC</span>
+                    <input type="checkbox" onchange="updateProgress()" class="topic-check rounded border-slate-300 text-brand-600 focus:ring-brand-500 cursor-pointer">
+                </a>
+                <a href="#module-5" class="nav-item flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-700 hover:text-brand-600 hover:bg-slate-50 transition-all font-medium">
+                    <span class="flex items-center gap-2.5"><i class="fa-solid fa-comments text-indigo-600 w-4"></i>5. Messaging (Kafka)</span>
+                    <input type="checkbox" onchange="updateProgress()" class="topic-check rounded border-slate-300 text-brand-600 focus:ring-brand-500 cursor-pointer">
+                </a>
+                <a href="#module-6" class="nav-item flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-700 hover:text-brand-600 hover:bg-slate-50 transition-all font-medium">
+                    <span class="flex items-center gap-2.5"><i class="fa-solid fa-diagram-project text-teal-600 w-4"></i>6. Enterprise Integration</span>
+                    <input type="checkbox" onchange="updateProgress()" class="topic-check rounded border-slate-300 text-brand-600 focus:ring-brand-500 cursor-pointer">
+                </a>
+
+                <div class="pt-3 border-t border-slate-100 mt-2">
+                    <a href="#qna-section" class="flex items-center justify-between px-3 py-2 rounded-xl text-brand-700 bg-brand-50 font-semibold hover:bg-brand-100 transition-all">
+                        <span class="flex items-center gap-2"><i class="fa-solid fa-lightbulb text-brand-600"></i>Q&A Flashcard Hub</span>
+                        <span class="px-2 py-0.5 bg-brand-200/60 rounded-full text-[10px]">20 Qs</span>
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 min-w-0 space-y-12">
+
+            <!-- MODULE 1 -->
+            <section id="module-1" class="scroll-mt-24 space-y-6">
+                <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
+                    <div class="flex items-center gap-3 border-b border-slate-100 pb-4">
+                        <div class="p-3 rounded-xl bg-brand-50 text-brand-600 border border-brand-100">
+                            <i class="fa-solid fa-cube text-xl"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-slate-900">Module 1: Core Spring Architecture & GraalVM Native</h2>
+                            <p class="text-xs text-slate-500">Spring Triangle, Lifecycles, Configuration, DevTools, and Ahead-Of-Time compilation</p>
+                        </div>
+                    </div>
+
+                    <!-- Spring Triangle Grid -->
+                    <div class="grid md:grid-cols-3 gap-4 text-xs">
+                        <div class="p-4 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1.5">
+                            <h3 class="font-bold text-brand-700 flex items-center gap-1.5">
+                                <i class="fa-solid fa-syringe"></i> Dependency Injection (DI)
+                            </h3>
+                            <p class="text-slate-600">Inverts object creation control. Spring Container injects dependencies, reducing coupling and increasing testability.</p>
+                        </div>
+                        <div class="p-4 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1.5">
+                            <h3 class="font-bold text-emeraldCustom-600 flex items-center gap-1.5">
+                                <i class="fa-solid fa-layer-group"></i> Portable Service Abstraction
+                            </h3>
+                            <p class="text-slate-600">Abstracts low-level vendor code (JPA, Transactions, JMS) behind uniform, portable API abstractions.</p>
+                        </div>
+                        <div class="p-4 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1.5">
+                            <h3 class="font-bold text-purple-600 flex items-center gap-1.5">
+                                <i class="fa-solid fa-scissors"></i> Aspect-Oriented Programming
+                            </h3>
+                            <p class="text-slate-600">Decouples cross-cutting concerns (logging, security, transaction management) from core business logic.</p>
+                        </div>
+                    </div>
+
+                    <!-- Code Example: Lifecycles -->
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between text-xs font-semibold text-slate-700">
+                            <span class="font-mono text-slate-500"><i class="fa-solid fa-code text-brand-600 mr-1.5"></i>Bean Lifecycle Hooks Example</span>
+                            <button onclick="copyCode('code-m1')" class="text-brand-600 hover:text-brand-700 flex items-center gap-1 transition-colors">
+                                <i class="fa-regular fa-copy"></i> Copy Code
+                            </button>
+                        </div>
+                        <pre class="code-light p-4 rounded-xl text-xs font-mono overflow-x-auto"><code id="code-m1">@Component
+public class DatabaseManager implements InitializingBean, DisposableBean {
+
+    // 1. Lifecycle via Annotations (Recommended)
+    @PostConstruct
+    public void postConstruct() {
+        System.out.println("Step 1: @PostConstruct executed after properties set.");
+    }
+
+    // 2. Lifecycle via Interface
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        System.out.println("Step 2: InitializingBean interface validation executed.");
+    }
+
+    @PreDestroy
+    public void preDestroy() {
+        System.out.println("Step 3: @PreDestroy executed before shutdown.");
+    }
+
+    @Override
+    public void destroy() throws Exception {
+        System.out.println("Step 4: DisposableBean destroy cleanup executed.");
+    }
+}
+
+// BeanFactoryPostProcessor: Modifies metadata before beans are instantiated
+@Component
+public class AuditBeanFactoryPostProcessor implements BeanFactoryPostProcessor {
+    @Override
+    public void postProcessBeanFactory(ConfigurableListableBeanFactory factory) {
+        // Intercept and alter bean definition metadata upfront
+    }
+}</code></pre>
+                    </div>
+
+                    <!-- GraalVM Native Compilation Breakdown -->
+                    <div class="p-4 rounded-xl bg-amber-50/60 border border-amber-200/80 space-y-2 text-xs">
+                        <h3 class="font-bold text-amber-900 flex items-center gap-2">
+                            <i class="fa-solid fa-bolt text-amber-600"></i> GraalVM Native Image vs JIT Compilation
+                        </h3>
+                        <p class="text-slate-700 leading-relaxed">
+                            <strong>Native Compilation:</strong> Uses Ahead-Of-Time (AOT) compilation to produce a standalone executable binary (~90 MB) that requires <strong>no host JRE</strong>. Bundles the app code, Netty/Tomcat runtime, and ORM components natively.
+                        </p>
+                        <div class="grid md:grid-cols-2 gap-3 pt-1">
+                            <div class="p-2.5 bg-white rounded-lg border border-amber-200 text-slate-700 font-mono">
+                                <span class="font-bold text-slate-900 block mb-1">Standard Executable JAR (JIT):</span>
+                                `./mvnw clean package`
+                            </div>
+                            <div class="p-2.5 bg-white rounded-lg border border-amber-200 text-slate-700 font-mono">
+                                <span class="font-bold text-slate-900 block mb-1">GraalVM Native Binary (AOT):</span>
+                                `./mvnw -DskipTests -Pnative native:compile`
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- MODULE 2 -->
+            <section id="module-2" class="scroll-mt-24 space-y-6">
+                <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
+                    <div class="flex items-center gap-3 border-b border-slate-100 pb-4">
+                        <div class="p-3 rounded-xl bg-purple-50 text-purple-600 border border-purple-100">
+                            <i class="fa-solid fa-brain text-xl"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-slate-900">Module 2: Spring AI & Vector Search</h2>
+                            <p class="text-xs text-slate-500">LLM Integration, Vector Databases, Tool Calling, and RAG Architecture</p>
+                        </div>
+                    </div>
+
+                    <!-- Terminology Grid -->
+                    <div class="grid md:grid-cols-2 gap-4 text-xs">
+                        <div class="p-4 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
+                            <h3 class="font-bold text-purple-700 font-mono">Core Terminology</h3>
+                            <ul class="space-y-1.5 text-slate-600">
+                                <li><strong class="text-slate-900">Context Window:</strong> The token capacity budget for input prompts and model responses.</li>
+                                <li><strong class="text-slate-900">Embeddings:</strong> High-dimensional floating-point vectors representing semantic meaning.</li>
+                                <li><strong class="text-slate-900">Cosine Similarity:</strong> Mathematical metric evaluating directional vector alignment to quantify semantic relevance.</li>
+                            </ul>
+                        </div>
+                        <div class="p-4 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
+                            <h3 class="font-bold text-purple-700 font-mono">RAG & Tool Calling Architecture</h3>
+                            <ul class="space-y-1.5 text-slate-600">
+                                <li><strong class="text-slate-900">RAG (Retrieval-Augmented Generation):</strong> Retrieves domain data from a Vector DB to enrich the LLM context prompt before response generation.</li>
+                                <li><strong class="text-slate-900">Tool Calling:</strong> Empowers LLMs to invoke external Java services, APIs, and business databases dynamically.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- MODULE 3 -->
+            <section id="module-3" class="scroll-mt-24 space-y-6">
+                <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
+                    <div class="flex items-center gap-3 border-b border-slate-100 pb-4">
+                        <div class="p-3 rounded-xl bg-blue-50 text-blue-600 border border-blue-100">
+                            <i class="fa-solid fa-layer-group text-xl"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-slate-900">Module 3: Spring Batch & High-Volume ETL</h2>
+                            <p class="text-xs text-slate-500">Extraction, Transformation, Loading, Chunking, and Distributed Scalability</p>
+                        </div>
+                    </div>
+
+                    <!-- Chunking and Job Parameters -->
+                    <div class="grid md:grid-cols-2 gap-4 text-xs">
+                        <div class="p-4 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
+                            <h3 class="font-bold text-blue-700"><i class="fa-solid fa-database mr-1.5"></i>Chunk-Based Processing</h3>
+                            <p class="text-slate-600 leading-relaxed">
+                                Processes items in chunks (`ItemReader` &rarr; `ItemProcessor` &rarr; `ItemWriter`). Each chunk runs in an independent transaction. If an item fails, the entire chunk transaction rolls back to ensure strict data integrity.
+                            </p>
+                        </div>
+                        <div class="p-4 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
+                            <h3 class="font-bold text-blue-700"><i class="fa-solid fa-key mr-1.5"></i>Job Parameters & RunIdIncrementer</h3>
+                            <p class="text-slate-600 leading-relaxed">
+                                Spring Batch uses Job Parameters to create unique execution keys to prevent accidental duplicate runs. In development, <code class="bg-slate-200 px-1 py-0.5 rounded text-slate-800 font-mono">RunIdIncrementer</code> generates monotonic parameter keys to allow re-runs.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Scalability Comparison Table -->
+                    <div class="p-4 rounded-xl border border-slate-200 space-y-3">
+                        <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider font-mono">Spring Batch Distributed Processing Strategies</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-xs text-left border-collapse">
+                                <thead>
+                                    <tr class="bg-slate-100 text-slate-700 font-mono border-b border-slate-200">
+                                        <th class="p-2.5">Pattern</th>
+                                        <th class="p-2.5">Data Reading Strategy</th>
+                                        <th class="p-2.5">Worker Execution</th>
+                                        <th class="p-2.5">Transport Middleware</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100 text-slate-600">
+                                    <tr class="hover:bg-slate-50">
+                                        <td class="p-2.5 font-bold text-slate-900">Remote Chunking</td>
+                                        <td class="p-2.5">Leader node reads all records into memory</td>
+                                        <td class="p-2.5">Workers process and write raw data chunks</td>
+                                        <td class="p-2.5 font-mono">Kafka / RabbitMQ</td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50">
+                                        <td class="p-2.5 font-bold text-slate-900">Partitioned Steps</td>
+                                        <td class="p-2.5">Workers independently query assigned DB row ranges</td>
+                                        <td class="p-2.5">Workers read, process, and write concurrently</td>
+                                        <td class="p-2.5 font-mono">Execution Context Metadata</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- MODULE 4 -->
+            <section id="module-4" class="scroll-mt-24 space-y-6">
+                <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
+                    <div class="flex items-center gap-3 border-b border-slate-100 pb-4">
+                        <div class="p-3 rounded-xl bg-rose-50 text-rose-600 border border-rose-100">
+                            <i class="fa-solid fa-globe text-xl"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-slate-900">Module 4: Web APIs, GraphQL, gRPC & Virtual Threads</h2>
+                            <p class="text-xs text-slate-500">Functional Endpoints, Type Erasure, GraphQL Resolvers, gRPC Protobufs, and Project Loom</p>
+                        </div>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <!-- Router Function Code -->
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between text-xs font-semibold text-slate-700">
+                                <span><i class="fa-solid fa-route text-rose-600 mr-1.5"></i>Router Function Functional Endpoint</span>
+                                <button onclick="copyCode('code-m4-1')" class="text-brand-600 hover:text-brand-700 flex items-center gap-1 transition-colors">
+                                    <i class="fa-regular fa-copy"></i> Copy
+                                </button>
+                            </div>
+                            <pre class="code-light p-3.5 rounded-xl text-xs font-mono overflow-x-auto"><code id="code-m4-1">@Bean
+public RouterFunction&lt;ServerResponse&gt; customerRoutes(CustomerHandler handler) {
+    return route()
+        .GET("/customers", handler::getAllCustomers)
+        .GET("/customers/{id}", handler::getCustomerById)
+        .build();
+}</code></pre>
+                        </div>
+
+                        <!-- ParameterizedTypeReference Code -->
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between text-xs font-semibold text-slate-700">
+                                <span><i class="fa-solid fa-code text-rose-600 mr-1.5"></i>ParameterizedTypeReference (Type Erasure)</span>
+                                <button onclick="copyCode('code-m4-2')" class="text-brand-600 hover:text-brand-700 flex items-center gap-1 transition-colors">
+                                    <i class="fa-regular fa-copy"></i> Copy
+                                </button>
+                            </div>
+                            <pre class="code-light p-3.5 rounded-xl text-xs font-mono overflow-x-auto"><code id="code-m4-2">// Captures generic collection types at runtime despite Java Type Erasure
+ParameterizedTypeReference&lt;List&lt;Customer&gt;&gt; typeRef = 
+    new ParameterizedTypeReference&lt;List&lt;Customer&gt;&gt;() {};
+
+ResponseEntity&lt;List&lt;Customer&gt;&gt; response = restTemplate
+    .exchange("/customers", HttpMethod.GET, null, typeRef);</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Protocol Comparison Cards -->
+                    <div class="grid md:grid-cols-3 gap-4 text-xs">
+                        <div class="p-4 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
+                            <h3 class="font-bold text-pink-700 font-mono">GraphQL Architecture</h3>
+                            <ul class="space-y-1 text-slate-600">
+                                <li><strong class="text-slate-900">3 Verbs:</strong> Queries, Mutations, Subscriptions.</li>
+                                <li><strong class="text-slate-900">Schema First:</strong> Upfront type definitions.</li>
+                                <li><strong class="text-slate-900">Batch Mapping:</strong> Bypasses N+1 queries by fetching child relationships in bulk via `@BatchMapping`.</li>
+                            </ul>
+                        </div>
+                        <div class="p-4 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
+                            <h3 class="font-bold text-blue-700 font-mono">gRPC & Protobuf</h3>
+                            <ul class="space-y-1 text-slate-600">
+                                <li><strong class="text-slate-900">Transport:</strong> HTTP/2 multiplexing.</li>
+                                <li><strong class="text-slate-900">Protocol Buffers:</strong> Efficient binary wire format.</li>
+                                <li><strong class="text-slate-900">Numeric Tags:</strong> Fields assigned IDs (e.g. `int32 id = 1`) for safe evolution.</li>
+                            </ul>
+                        </div>
+                        <div class="p-4 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
+                            <h3 class="font-bold text-emeraldCustom-600 font-mono">REST & Virtual Threads</h3>
+                            <ul class="space-y-1 text-slate-600">
+                                <li><strong class="text-slate-900">HATEOAS:</strong> Richardson Maturity Model Level 3 (Hypermedia state links).</li>
+                                <li><strong class="text-slate-900">Virtual Threads:</strong> Java Project Loom lightweight threads optimal for I/O blocking calls.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- MODULE 5 -->
+            <section id="module-5" class="scroll-mt-24 space-y-6">
+                <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
+                    <div class="flex items-center gap-3 border-b border-slate-100 pb-4">
+                        <div class="p-3 rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-100">
+                            <i class="fa-solid fa-comments text-xl"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-slate-900">Module 5: Messaging Systems (Kafka & AMQP)</h2>
+                            <p class="text-xs text-slate-500">Apache Kafka Components, Wire Security, Consumer Groups, and Messaging Projects</p>
+                        </div>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-4 text-xs">
+                        <div class="p-4 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
+                            <h3 class="font-bold text-indigo-700 font-mono">Apache Kafka Architecture</h3>
+                            <ul class="space-y-1.5 text-slate-600">
+                                <li><strong class="text-slate-900">Broker & Topic:</strong> Server nodes storing named data streams divided into physical partitions.</li>
+                                <li><strong class="text-slate-900">Consumer Group:</strong> Collection of consumers sharing a `group.id` to balance partition reads without duplicates.</li>
+                                <li><strong class="text-slate-900">Offset & Wire Protocol:</strong> Sequential IDs tracking progress over Kafka's custom binary TCP protocol.</li>
+                            </ul>
+                        </div>
+
+                        <div class="p-4 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
+                            <h3 class="font-bold text-indigo-700 font-mono">Serialization & Trusted Packages</h3>
+                            <p class="text-slate-600 leading-relaxed">
+                                Kafka blocks arbitrary JSON object deserialization by default for security. Configure explicit trusted packages in application properties:
+                            </p>
+                            <pre class="code-light p-2.5 rounded-lg text-xs font-mono text-slate-200 overflow-x-auto"><code>spring.kafka.consumer.properties.spring.json.trusted.packages=com.example.dto,com.example.events</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Low Level Messaging Projects -->
+                    <div class="p-4 rounded-xl border border-slate-200 bg-indigo-50/30 space-y-2 text-xs">
+                        <h3 class="font-bold text-slate-900">Spring Messaging Framework Ecosystem</h3>
+                        <div class="grid md:grid-cols-3 gap-3">
+                            <div class="bg-white p-3 rounded-xl border border-slate-200">
+                                <strong class="text-indigo-700 block mb-1">Spring for Apache Kafka</strong>
+                                <p class="text-slate-600">Provides `KafkaTemplate` and `@KafkaListener` annotations.</p>
+                            </div>
+                            <div class="bg-white p-3 rounded-xl border border-slate-200">
+                                <strong class="text-indigo-700 block mb-1">Spring AMQP</strong>
+                                <p class="text-slate-600">RabbitMQ abstraction implementing Advanced Message Queuing Protocol.</p>
+                            </div>
+                            <div class="bg-white p-3 rounded-xl border border-slate-200">
+                                <strong class="text-indigo-700 block mb-1">Spring for Apache Pulsar</strong>
+                                <p class="text-slate-600">Unified messaging support for Pulsar streaming topics.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- MODULE 6 -->
+            <section id="module-6" class="scroll-mt-24 space-y-6">
+                <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
+                    <div class="flex items-center gap-3 border-b border-slate-100 pb-4">
+                        <div class="p-3 rounded-xl bg-teal-50 text-teal-600 border border-teal-100">
+                            <i class="fa-solid fa-diagram-project text-xl"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-slate-900">Module 6: Enterprise Integration Patterns</h2>
+                            <p class="text-xs text-slate-500">Pipes & Filters Architecture, Inbound Adapters, Transformers, and Email Protocols</p>
+                        </div>
+                    </div>
+
+                    <!-- Pipes & Filters Pattern -->
+                    <div class="p-4 rounded-xl bg-slate-50 border border-slate-200/80 space-y-3 text-xs">
+                        <h3 class="font-bold text-teal-700 font-mono">Pipes & Filters Integration Architecture</h3>
+                        <div class="flex flex-col md:flex-row items-center justify-between gap-2 text-center">
+                            <div class="w-full md:w-1/4 p-3 bg-white rounded-xl border border-slate-200 font-semibold text-slate-800">
+                                Inbound Adapter<br><span class="text-[10px] font-normal text-slate-500">(File, Kafka, Mail Poller)</span>
+                            </div>
+                            <i class="fa-solid fa-arrow-right text-slate-400 hidden md:block"></i>
+                            <div class="w-full md:w-2/4 p-3 bg-white rounded-xl border border-slate-200 font-semibold text-slate-800">
+                                Processing Pipeline<br><span class="text-[10px] font-normal text-slate-500">(Transformers, Splitters, Aggregators)</span>
+                            </div>
+                            <i class="fa-solid fa-arrow-right text-slate-400 hidden md:block"></i>
+                            <div class="w-full md:w-1/4 p-3 bg-white rounded-xl border border-slate-200 font-semibold text-slate-800">
+                                Outbound Adapter<br><span class="text-[10px] font-normal text-slate-500">(DB, Queue, Console)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Email Protocol Comparison -->
+                    <div class="grid md:grid-cols-3 gap-3 text-xs">
+                        <div class="p-3.5 rounded-xl border border-slate-200 bg-white space-y-1">
+                            <span class="font-bold text-teal-700 block">IMAP (with IDLE)</span>
+                            <p class="text-slate-600">Maintains an open TCP connection to push new message notifications instantly without waiting for polling intervals.</p>
+                        </div>
+                        <div class="p-3.5 rounded-xl border border-slate-200 bg-white space-y-1">
+                            <span class="font-bold text-slate-700 block">POP3</span>
+                            <p class="text-slate-600">Downloads mailbox messages on demand; relies on periodic polling triggers.</p>
+                        </div>
+                        <div class="p-3.5 rounded-xl border border-slate-200 bg-white space-y-1">
+                            <span class="font-bold text-slate-700 block">SMTP</span>
+                            <p class="text-slate-600">Strictly used for sending/relaying email, not for reading or receiving mailboxes.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- MODULE 7: Q&A FLASHCARD HUB -->
+            <section id="qna-section" class="scroll-mt-24 space-y-6 pt-6 border-t border-slate-200">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-900 flex items-center gap-2">
+                            <i class="fa-solid fa-lightbulb text-brand-600"></i>
+                            Interactive Revision Q&A Flashcards
+                        </h2>
+                        <p class="text-xs text-slate-500">Flip or reveal answers for all 20 course revision questions.</p>
+                    </div>
+
+                    <!-- Flashcard Category Filters -->
+                    <div class="flex flex-wrap items-center gap-1.5">
+                        <button onclick="filterFlashcards('all')" class="qna-btn active-qna-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-brand-600 text-white shadow-sm transition-all" data-category="all">All (20)</button>
+                        <button onclick="filterFlashcards('core')" class="qna-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition-all" data-category="core">Core</button>
+                        <button onclick="filterFlashcards('batch')" class="qna-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition-all" data-category="batch">Batch</button>
+                        <button onclick="filterFlashcards('web')" class="qna-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition-all" data-category="web">APIs/Web</button>
+                        <button onclick="filterFlashcards('messaging')" class="qna-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition-all" data-category="messaging">Messaging</button>
+                        <button onclick="filterFlashcards('integration')" class="qna-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition-all" data-category="integration">Integration</button>
+                    </div>
+                </div>
+
+                <!-- Q&A Cards List -->
+                <div id="flashcardContainer" class="space-y-3">
+                    <!-- Cards dynamically populated -->
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-6 right-6 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl flex items-center gap-2.5 text-xs font-medium opacity-0 pointer-events-none transition-all duration-300 z-50">
+        <i class="fa-solid fa-circle-check text-emeraldCustom-500 text-base"></i>
+        <span id="toastMsg">Action executed successfully!</span>
+    </div>
+
+    <!-- Interactive Application Logic -->
+    <script>
+        // 20 Complete Source Questions Data
+        const flashcards = [
+            {
+                id: 1,
+                category: "core",
+                question: "How do you create an executable image of your project without installing a JRE on the host machine?",
+                answer: "Using GraalVM dependency with the command:\n`./mvnw -DskipTests -Pnative native:compile`\nThis produces a compact binary (~90 MB) containing application code, runtime, netty server, and ORM dependencies."
+            },
+            {
+                id: 2,
+                category: "web",
+                question: "How is the HTTP endpoint for retrieving customers implemented in WebFlux functional style?",
+                answer: "Using a Spring RouterFunction bean that routes incoming requests and returns a ServerResponse."
+            },
+            {
+                id: 3,
+                category: "core",
+                question: "What is the purpose of Spring Boot DevTools?",
+                answer: "Spring Boot DevTools provides fast reload capabilities during development, allowing application updates to reflect quickly without requiring full server restarts."
+            },
+            {
+                id: 4,
+                category: "core",
+                question: "What is SDKman used for in the Java ecosystem?",
+                answer: "SDKman is a package manager for managing JVM infrastructure, enabling developers to install, manage, and switch between different versions of Java, Kotlin, GraalVM, and JDK distributions."
+            },
+            {
+                id: 5,
+                category: "core",
+                question: "What are the three legs of the Spring triangle?",
+                answer: "1) Dependency Injection (DI)\n2) Portable Service Abstractions (PSA)\n3) Aspect-Oriented Programming (AOP)"
+            },
+            {
+                id: 6,
+                category: "batch",
+                question: "What is Spring Batch and what is its primary purpose?",
+                answer: "Spring Batch is a framework designed for ETL (Extraction, Transformation, Loading) and sequential batch processing of large datasets with robust transaction management and error handling."
+            },
+            {
+                id: 7,
+                category: "batch",
+                question: "How does Spring Batch manage duplicate executions and what solves this in dev?",
+                answer: "Spring Batch uses Job Parameters to create a unique execution key. Re-running with identical parameters prevents execution. `RunIdIncrementer` solves duplicate execution blocking during development by appending a monotonic ID parameter."
+            },
+            {
+                id: 8,
+                category: "batch",
+                question: "What are the two distributed scalability approaches in Spring Batch?",
+                answer: "1) Remote Chunking: Leader node reads data into memory and sends raw data chunks over message queues (Kafka/RabbitMQ) to workers.\n2) Partitioned Steps: Workers independently query and process assigned row ranges from the database."
+            },
+            {
+                id: 9,
+                category: "web",
+                question: "What is ParameterizedTypeReference used for?",
+                answer: "It smuggles generic collection type information from design time to runtime, overcoming Java's Type Erasure limitation during reflection."
+            },
+            {
+                id: 10,
+                category: "web",
+                question: "What is the highest maturity level of REST in the Richardson Maturity Model?",
+                answer: "Level 3: HATEOAS (Hypermedia As The Engine Of Application State), where API responses include hypermedia controls and resource links dynamically."
+            },
+            {
+                id: 11,
+                category: "web",
+                question: "What are the three primary verbs in GraphQL?",
+                answer: "1) Queries (read operations)\n2) Mutations (write operations)\n3) Subscriptions (real-time streaming reads)"
+            },
+            {
+                id: 12,
+                category: "web",
+                question: "What problem does @BatchMapping solve in GraphQL?",
+                answer: "It prevents the N+1 database query problem by retrieving related child data entities in a single bulk batch invocation."
+            },
+            {
+                id: 13,
+                category: "web",
+                question: "What schema approach and protocol are used by gRPC?",
+                answer: "gRPC uses a Schema-First approach with Protocol Buffers (.proto) defined upfront, operating over the HTTP/2 transport protocol."
+            },
+            {
+                id: 14,
+                category: "web",
+                question: "What are Virtual Threads (Project Loom) best suited for?",
+                answer: "Virtual threads excel at handling I/O blocking operations (such as database calls and network requests) by yielding execution without pinning expensive platform threads."
+            },
+            {
+                id: 15,
+                category: "messaging",
+                question: "What wire protocol does Apache Kafka use?",
+                answer: "Apache Kafka uses a custom binary TCP wire protocol for client-broker communication."
+            },
+            {
+                id: 16,
+                category: "messaging",
+                question: "What annotation is used to listen for Kafka events in Spring?",
+                answer: "The `@KafkaListener` annotation."
+            },
+            {
+                id: 17,
+                category: "messaging",
+                question: "Why must spring.json.trusted.packages be explicitly configured in Kafka?",
+                answer: "For security reasons, Kafka blocks unscrutinized payload deserialization into Java objects unless packages are explicitly trusted."
+            },
+            {
+                id: 18,
+                category: "integration",
+                question: "What are the key drawbacks of RPC as an integration style?",
+                answer: "RPC causes high system coupling, relies on synchronous method invocations, and requires both systems to be operational simultaneously."
+            },
+            {
+                id: 19,
+                category: "integration",
+                question: "What architecture pattern underpins Spring Integration flows?",
+                answer: "Pipes and Filters architecture, where adapters and processing pipeline components (transformers, splitters) are decoupled."
+            },
+            {
+                id: 20,
+                category: "integration",
+                question: "Which email protocol provides immediate push notifications for incoming messages?",
+                answer: "IMAP (using the IMAP IDLE command), which holds an active TCP connection open to push message events immediately."
+            }
+        ];
+
+        // Track mastered Q&A IDs
+        let masteredCards = new Set();
+
+        // Render Q&A Flashcards
+        function renderFlashcards(items) {
+            const container = document.getElementById('flashcardContainer');
+            container.innerHTML = '';
+
+            items.forEach(card => {
+                const cardElem = document.createElement('div');
+                cardElem.className = "bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs hover:border-slate-300 transition-all space-y-3";
+                
+                const isMastered = masteredCards.has(card.id);
+
+                cardElem.innerHTML = `
+                    <div class="flex items-start justify-between gap-4 cursor-pointer" onclick="toggleCard(${card.id})">
+                        <div class="space-y-1.5 flex-1">
+                            <div class="flex items-center gap-2">
+                                <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase bg-slate-100 text-slate-600">${card.category}</span>
+                                ${isMastered ? '<span class="text-[10px] font-bold text-emeraldCustom-600 bg-emeraldCustom-50 px-2 py-0.5 rounded-full"><i class="fa-solid fa-check mr-1"></i>Mastered</span>' : ''}
+                            </div>
+                            <h3 class="text-sm font-semibold text-slate-900">${card.question}</h3>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="event.stopPropagation(); toggleMastered(${card.id})" title="Mark as Mastered" class="p-1.5 rounded-lg text-slate-400 hover:text-emeraldCustom-600 hover:bg-emeraldCustom-50 transition-colors">
+                                <i class="fa-${isMastered ? 'solid text-emeraldCustom-600' : 'regular'} fa-circle-check text-base"></i>
+                            </button>
+                            <button id="card-btn-${card.id}" class="p-1.5 rounded-lg text-slate-400 hover:text-brand-600 transition-transform duration-200">
+                                <i class="fa-solid fa-chevron-down text-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="card-ans-${card.id}" class="hidden pt-3 border-t border-slate-100 text-xs text-slate-700 leading-relaxed font-sans whitespace-pre-line bg-slate-50/50 p-3 rounded-xl border border-slate-100">
+                        ${card.answer}
+                    </div>
+                `;
+                container.appendChild(cardElem);
+            });
+        }
+
+        // Toggle Flashcard Answer
+        function toggleCard(id) {
+            const ansElem = document.getElementById(`card-ans-${id}`);
+            const btnElem = document.getElementById(`card-btn-${id}`);
+            
+            if (ansElem.classList.contains('hidden')) {
+                ansElem.classList.remove('hidden');
+                btnElem.style.transform = 'rotate(180deg)';
+                btnElem.classList.add('text-brand-600');
+            } else {
+                ansElem.classList.add('hidden');
+                btnElem.style.transform = 'rotate(0deg)';
+                btnElem.classList.remove('text-brand-600');
+            }
+        }
+
+        // Toggle Mastered State
+        function toggleMastered(id) {
+            if (masteredCards.has(id)) {
+                masteredCards.delete(id);
+                showToast("Removed from Mastered list.");
+            } else {
+                masteredCards.add(id);
+                showToast("Marked as Mastered!");
+            }
+            // Re-render active filter view
+            const activeCat = document.querySelector('.active-qna-btn').getAttribute('data-category');
+            filterFlashcards(activeCat);
+        }
+
+        // Filter Q&A Flashcards by Category
+        function filterFlashcards(cat) {
+            document.querySelectorAll('.qna-btn').forEach(btn => {
+                if (btn.getAttribute('data-category') === cat) {
+                    btn.className = "qna-btn active-qna-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-brand-600 text-white shadow-sm transition-all";
+                } else {
+                    btn.className = "qna-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition-all";
+                }
+            });
+
+            if (cat === 'all') {
+                renderFlashcards(flashcards);
+            } else {
+                renderFlashcards(flashcards.filter(item => item.category === cat));
+            }
+        }
+
+        // Global Dynamic Search
+        document.getElementById('globalSearch').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            const filtered = flashcards.filter(item => 
+                item.question.toLowerCase().includes(query) || 
+                item.answer.toLowerCase().includes(query) ||
+                item.category.toLowerCase().includes(query)
+            );
+            renderFlashcards(filtered);
+        });
+
+        // Revision Checklist Progress Update
+        function updateProgress() {
+            const checkboxes = document.querySelectorAll('.topic-check');
+            let checked = 0;
+            checkboxes.forEach(cb => { if (cb.checked) checked++; });
+            const total = checkboxes.length;
+            const percentage = Math.round((checked / total) * 100);
+
+            document.getElementById('progressBar').style.width = `${percentage}%`;
+            document.getElementById('progressText').innerText = `${percentage}%`;
+        }
+
+        // Copy Code Snippet Helper
+        function copyCode(elementId) {
+            const code = document.getElementById(elementId).innerText;
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(code).then(() => {
+                    showToast("Code copied to clipboard!");
+                });
+            } else {
+                const textArea = document.createElement('textarea');
+                textArea.value = code;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showToast("Code copied to clipboard!");
+            }
+        }
+
+        // Toast Helper
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').innerText = msg;
+            toast.classList.remove('opacity-0', 'pointer-events-none');
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'pointer-events-none');
+            }, 2500);
+        }
+
+        // Initial Load
+        window.onload = function() {
+            renderFlashcards(flashcards);
+        };
+    </script>
+</body>
+</html>

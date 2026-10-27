@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Microservices Architecture — Quiz App Explained</title>
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --accent: #38bdf8;
+            --accent2: #a78bfa;
+            --accent3: #34d399;
+            --accent4: #fb923c;
+            --text: #e2e8f0;
+            --muted: #94a3b8;
+            --border: #334155;
+            --code-bg: #0d1117;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            padding: 0;
+        }
+
+        /* -------- Header -------- */
+        header {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border-bottom: 1px solid var(--border);
+            text-align: center;
+            padding: 50px 20px 40px;
+        }
+        header h1 {
+            font-size: 2.6rem;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        header p { color: var(--muted); font-size: 1.15rem; }
+
+        /* -------- Container -------- */
+        .container { max-width: 1120px; margin: 0 auto; padding: 40px 20px; }
+
+        /* -------- Section -------- */
+        section { margin-bottom: 50px; }
+        section h2 {
+            font-size: 1.7rem;
+            margin-bottom: 18px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--accent);
+            display: inline-block;
+        }
+        section h3 {
+            font-size: 1.25rem;
+            color: var(--accent2);
+            margin: 22px 0 10px;
+        }
+        p, li { color: var(--text); margin-bottom: 10px; }
+        ul { padding-left: 24px; }
+
+        /* -------- Cards -------- */
+        .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; margin-top: 16px; }
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            transition: transform .2s, box-shadow .2s;
+        }
+        .card:hover { transform: translateY(-4px); box-shadow: 0 8px 30px rgba(0,0,0,.4); }
+        .card .icon { font-size: 2rem; margin-bottom: 10px; }
+        .card h4 { font-size: 1.15rem; margin-bottom: 6px; color: var(--accent); }
+        .card .port { font-size: .85rem; color: var(--accent3); margin-bottom: 8px; }
+        .card p { font-size: .95rem; color: var(--muted); margin: 0; }
+
+        /* -------- Code blocks -------- */
+        pre {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 20px;
+            overflow-x: auto;
+            font-size: .88rem;
+            line-height: 1.6;
+            margin: 14px 0;
+        }
+        code { font-family: 'Cascadia Code', 'Fira Code', Consolas, monospace; }
+        .kw  { color: #c678dd; }
+        .ann { color: #e5c07b; }
+        .str { color: #98c379; }
+        .cmt { color: #5c6370; font-style: italic; }
+        .typ { color: #61afef; }
+        .fn  { color: #61afef; }
+
+        /* -------- Architecture SVG -------- */
+        .arch-diagram {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 30px;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+        .arch-diagram svg text { font-family: 'Segoe UI', system-ui, sans-serif; }
+
+        /* -------- Flow table -------- */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 14px 0;
+        }
+        th, td {
+            text-align: left;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+        }
+        th { background: var(--card); color: var(--accent); font-weight: 600; }
+        td { color: var(--text); font-size: .93rem; }
+        tr:nth-child(even) td { background: rgba(30,41,59,.5); }
+
+        /* -------- Feign highlight -------- */
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(167,139,250,.12), rgba(56,189,248,.12));
+            border-left: 4px solid var(--accent2);
+            border-radius: 8px;
+            padding: 20px 24px;
+            margin: 18px 0;
+        }
+        .highlight-box h4 { color: var(--accent2); margin-bottom: 8px; font-size: 1.1rem; }
+
+        /* -------- Step badges -------- */
+        .step { display: flex; gap: 16px; align-items: flex-start; margin-bottom: 22px; }
+        .step-num {
+            flex-shrink: 0;
+            width: 38px; height: 38px;
+            background: var(--accent);
+            color: var(--bg);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 1rem;
+        }
+        .step-content { flex: 1; }
+        .step-content strong { color: var(--accent); }
+
+        /* -------- Footer -------- */
+        footer { text-align: center; padding: 30px; color: var(--muted); font-size: .85rem; border-top: 1px solid var(--border); }
+
+        /* -------- Responsive -------- */
+        @media (max-width: 640px) {
+            header h1 { font-size: 1.8rem; }
+            .cards { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ==================== HEADER ==================== -->
+<header>
+    <h1>🧩 Microservices Architecture — Quiz Application</h1>
+    <p>A complete walkthrough of how <strong>Quiz-Service</strong> &amp; <strong>Question-Service</strong> communicate via <strong>OpenFeign</strong></p>
+</header>
+
+<div class="container">
+
+<!-- ==================== 1. OVERVIEW ==================== -->
+<section id="overview">
+    <h2>1 &nbsp; High-Level Overview</h2>
+    <p>
+        This project is a <strong>Spring Boot microservices</strong> quiz application composed of
+        <strong>four</strong> independently deployable services, each with its own responsibility:
+    </p>
+    <div class="cards">
+        <div class="card">
+            <div class="icon">📋</div>
+            <h4>Service Registry</h4>
+            <div class="port">Port 8761 · Eureka Server</div>
+            <p>Central registry where all services register themselves. Others discover each other through it.</p>
+        </div>
+        <div class="card">
+            <div class="icon">🌐</div>
+            <h4>API Gateway</h4>
+            <div class="port">Port 8765 · Spring Cloud Gateway</div>
+            <p>Single entry point for all client requests. Routes traffic to the correct microservice via service discovery.</p>
+        </div>
+        <div class="card">
+            <div class="icon">❓</div>
+            <h4>Question Service</h4>
+            <div class="port">Default Port 8080 · DB: questiondb</div>
+            <p>Manages questions — CRUD, random selection by category, fetching by IDs, and scoring.</p>
+        </div>
+        <div class="card">
+            <div class="icon">🏆</div>
+            <h4>Quiz Service</h4>
+            <div class="port">Port 8090 · DB: quizdb</div>
+            <p>Creates quizzes, stores question IDs, and delegates question-related work to the Question Service via <strong>Feign Client</strong>.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== 2. ARCHITECTURE DIAGRAM ==================== -->
+<section id="architecture">
+    <h2>2 &nbsp; Architecture Diagram</h2>
+    <div class="arch-diagram">
+        <svg viewBox="0 0 900 480" xmlns="http://www.w3.org/2000/svg" width="100%" height="auto">
+            <!-- Background grid (subtle) -->
+            <defs>
+                <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-auto">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#38bdf8"/>
+                </marker>
+                <marker id="arrow-purple" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-auto">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#a78bfa"/>
+                </marker>
+                <marker id="arrow-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-auto">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#34d399"/>
+                </marker>
+            </defs>
+
+            <!-- Client -->
+            <rect x="20" y="190" width="120" height="60" rx="10" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
+            <text x="80" y="225" text-anchor="middle" fill="#e2e8f0" font-size="15" font-weight="600">🖥️ Client</text>
+
+            <!-- Arrow Client → Gateway -->
+            <line x1="140" y1="220" x2="215" y2="220" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow)"/>
+
+            <!-- API Gateway -->
+            <rect x="220" y="180" width="150" height="80" rx="12" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+            <text x="295" y="213" text-anchor="middle" fill="#38bdf8" font-size="14" font-weight="700">API Gateway</text>
+            <text x="295" y="235" text-anchor="middle" fill="#94a3b8" font-size="12">:8765</text>
+
+            <!-- Eureka -->
+            <rect x="350" y="20" width="180" height="70" rx="12" fill="#1e293b" stroke="#34d399" stroke-width="2"/>
+            <text x="440" y="50" text-anchor="middle" fill="#34d399" font-size="14" font-weight="700">Service Registry</text>
+            <text x="440" y="70" text-anchor="middle" fill="#94a3b8" font-size="12">Eureka :8761</text>
+
+            <!-- Lines to Eureka -->
+            <line x1="295" y1="180" x2="400" y2="90" stroke="#34d399" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#arrow-green)"/>
+            <line x1="560" y1="180" x2="490" y2="90" stroke="#34d399" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#arrow-green)"/>
+            <line x1="720" y1="300" x2="530" y2="90" stroke="#34d399" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#arrow-green)"/>
+
+            <!-- Arrow Gateway → Quiz Service -->
+            <line x1="370" y1="210" x2="460" y2="210" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow)"/>
+
+            <!-- Quiz Service -->
+            <rect x="465" y="170" width="190" height="90" rx="12" fill="#1e293b" stroke="#a78bfa" stroke-width="2"/>
+            <text x="560" y="200" text-anchor="middle" fill="#a78bfa" font-size="14" font-weight="700">Quiz Service</text>
+            <text x="560" y="220" text-anchor="middle" fill="#94a3b8" font-size="12">:8090</text>
+            <text x="560" y="244" text-anchor="middle" fill="#fb923c" font-size="11">@EnableFeignClients</text>
+
+            <!-- Arrow Gateway → Question Service -->
+            <line x1="345" y1="260" x2="630" y2="340" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow)"/>
+
+            <!-- Feign Arrow Quiz → Question -->
+            <line x1="600" y1="260" x2="700" y2="310" stroke="#a78bfa" stroke-width="2.5" marker-end="url(#arrow-purple)"/>
+            <text x="620" y="280" fill="#a78bfa" font-size="11" font-weight="600">Feign Client</text>
+
+            <!-- Question Service -->
+            <rect x="635" y="300" width="200" height="90" rx="12" fill="#1e293b" stroke="#fb923c" stroke-width="2"/>
+            <text x="735" y="332" text-anchor="middle" fill="#fb923c" font-size="14" font-weight="700">Question Service</text>
+            <text x="735" y="352" text-anchor="middle" fill="#94a3b8" font-size="12">:8080</text>
+            <text x="735" y="374" text-anchor="middle" fill="#94a3b8" font-size="11">DB: questiondb</text>
+
+            <!-- Quiz DB -->
+            <rect x="465" y="400" width="150" height="50" rx="10" fill="#1e293b" stroke="#a78bfa" stroke-width="1.5"/>
+            <text x="540" y="430" text-anchor="middle" fill="#a78bfa" font-size="12">🗄️ quizdb (PG)</text>
+            <line x1="560" y1="260" x2="540" y2="400" stroke="#a78bfa" stroke-width="1.5" stroke-dasharray="5,4"/>
+
+            <!-- Question DB -->
+            <rect x="680" y="420" width="160" height="50" rx="10" fill="#1e293b" stroke="#fb923c" stroke-width="1.5"/>
+            <text x="760" y="450" text-anchor="middle" fill="#fb923c" font-size="12">🗄️ questiondb (PG)</text>
+            <line x1="735" y1="390" x2="755" y2="420" stroke="#fb923c" stroke-width="1.5" stroke-dasharray="5,4"/>
+        </svg>
+    </div>
+</section>
+
+<!-- ==================== 3. SERVICE REGISTRY ==================== -->
+<section id="service-registry">
+    <h2>3 &nbsp; Service Registry (Eureka Server)</h2>
+    <p>
+        The <strong>Service Registry</strong> runs a Netflix Eureka server. Every other service registers itself here on startup.
+        This enables <em>service discovery</em> — services locate each other by <strong>name</strong> rather than hard-coded URLs.
+    </p>
+    <pre><code><span class="cmt">// ServiceRegistryApplication.java</span>
+<span class="ann">@SpringBootApplication</span>
+<span class="ann">@EnableEurekaServer</span>               <span class="cmt">// ← Starts Eureka Server</span>
+<span class="kw">public class</span> <span class="typ">ServiceRegistryApplication</span> { ... }
+</code></pre>
+    <pre><code><span class="cmt"># application.properties</span>
+server.port=<span class="str">8761</span>
+eureka.client.register-with-eureka=<span class="str">false</span>   <span class="cmt">// it IS the registry, so don't self-register</span>
+eureka.client.fetch-registry=<span class="str">false</span>
+</code></pre>
+</section>
+
+<!-- ==================== 4. API GATEWAY ==================== -->
+<section id="api-gateway">
+    <h2>4 &nbsp; API Gateway</h2>
+    <p>
+        The gateway is the <strong>single entry point</strong> for external clients.
+        It uses Spring Cloud Gateway with <strong>Discovery Locator</strong> enabled, so routes are
+        automatically created from the Eureka registry.
+    </p>
+    <pre><code><span class="cmt"># application.properties</span>
+server.port=<span class="str">8765</span>
+spring.cloud.gateway.discovery.locator.enabled=<span class="str">true</span>
+spring.cloud.gateway.discovery.locator.lower-case-service-id=<span class="str">true</span>
+</code></pre>
+    <p>
+        Example: A request to <code>http://localhost:8765/quiz-service/quiz/create</code> is automatically
+        routed to the <strong>quiz-service</strong> instance discovered via Eureka.
+    </p>
+</section>
+
+<!-- ==================== 5. QUESTION SERVICE ==================== -->
+<section id="question-service">
+    <h2>5 &nbsp; Question Service (the data owner)</h2>
+    <p>This service <strong>owns</strong> all question data. It exposes REST endpoints that both external clients and the Quiz Service consume.</p>
+
+    <h3>5.1 &nbsp; Data Model — <code>Question</code></h3>
+    <pre><code><span class="ann">@Entity</span>
+<span class="kw">public class</span> <span class="typ">Question</span> {
+    <span class="ann">@Id</span> <span class="ann">@GeneratedValue</span>
+    <span class="kw">private</span> Integer <span class="fn">id</span>;
+    <span class="kw">private</span> String <span class="fn">questionTitle</span>;
+    <span class="kw">private</span> String <span class="fn">option1</span>, <span class="fn">option2</span>, <span class="fn">option3</span>, <span class="fn">option4</span>;
+    <span class="kw">private</span> String <span class="fn">rightAnswer</span>;
+    <span class="kw">private</span> String <span class="fn">difficultylevel</span>;
+    <span class="kw">private</span> String <span class="fn">category</span>;
+}
+</code></pre>
+
+    <h3>5.2 &nbsp; DAO — Custom Query</h3>
+    <pre><code><span class="ann">@Repository</span>
+<span class="kw">public interface</span> <span class="typ">QuestionDao</span> <span class="kw">extends</span> JpaRepository&lt;Question, Integer&gt; {
+
+    List&lt;Question&gt; <span class="fn">findByCategory</span>(String category);
+
+    <span class="ann">@Query</span>(value = <span class="str">"SELECT q.id FROM question q WHERE q.category=:category ORDER BY RANDOM() LIMIT :numQ"</span>,
+           nativeQuery = <span class="str">true</span>)
+    List&lt;Integer&gt; <span class="fn">findRandomQuestionsByCategory</span>(String category, <span class="kw">int</span> numQ);
+}
+</code></pre>
+
+    <h3>5.3 &nbsp; REST Endpoints</h3>
+    <table>
+        <thead>
+            <tr><th>HTTP</th><th>Path</th><th>Purpose</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>GET</td><td><code>/question/allQuestions</code></td><td>List all questions</td></tr>
+            <tr><td>GET</td><td><code>/question/category/{cat}</code></td><td>Questions by category</td></tr>
+            <tr><td>POST</td><td><code>/question/add</code></td><td>Add a new question</td></tr>
+            <tr><td style="color:#34d399;font-weight:700">GET</td><td><code>/question/generate</code></td><td>🔗 Random question IDs by category &amp; count (called by Quiz via Feign)</td></tr>
+            <tr><td style="color:#34d399;font-weight:700">POST</td><td><code>/question/getQuestions</code></td><td>🔗 Full question wrappers for given IDs (called by Quiz via Feign)</td></tr>
+            <tr><td style="color:#34d399;font-weight:700">POST</td><td><code>/question/getScore</code></td><td>🔗 Calculate score from responses (called by Quiz via Feign)</td></tr>
+        </tbody>
+    </table>
+    <p style="color:var(--accent3);">🔗 = endpoints consumed by Quiz Service through Feign Client</p>
+
+    <h3>5.4 &nbsp; Key Service Methods</h3>
+    <pre><code><span class="cmt">// QuestionService.java — returns random IDs</span>
+<span class="kw">public</span> ResponseEntity&lt;List&lt;Integer&gt;&gt; <span class="fn">getQuestionsForQuiz</span>(String categoryName, Integer numQuestions) {
+    List&lt;Integer&gt; questions = questionDao.<span class="fn">findRandomQuestionsByCategory</span>(categoryName, numQuestions);
+    <span class="kw">return new</span> ResponseEntity&lt;&gt;(questions, HttpStatus.OK);
+}
+
+<span class="cmt">// Converts Question → QuestionWrapper (hides rightAnswer)</span>
+<span class="kw">public</span> ResponseEntity&lt;List&lt;QuestionWrapper&gt;&gt; <span class="fn">getQuestionsFromId</span>(List&lt;Integer&gt; questionIds) {
+    <span class="cmt">// fetches each Question, maps to QuestionWrapper (no rightAnswer exposed)</span>
+    ...
+}
+
+<span class="cmt">// Compares user responses with rightAnswer</span>
+<span class="kw">public</span> ResponseEntity&lt;Integer&gt; <span class="fn">getScore</span>(List&lt;Response&gt; responses) {
+    <span class="kw">int</span> right = 0;
+    <span class="kw">for</span> (Response r : responses) {
+        Question q = questionDao.findById(r.getId()).get();
+        <span class="kw">if</span> (r.getResponse().equals(q.getRightAnswer())) right++;
+    }
+    <span class="kw">return new</span> ResponseEntity&lt;&gt;(right, HttpStatus.OK);
+}
+</code></pre>
+</section>
+
+<!-- ==================== 6. QUIZ SERVICE ==================== -->
+<section id="quiz-service">
+    <h2>6 &nbsp; Quiz Service (the orchestrator)</h2>
+    <p>
+        The Quiz Service <strong>does not own any questions</strong>. It stores only a quiz title and a
+        <strong>list of question IDs</strong>. For everything question-related it delegates to the
+        Question Service <strong>via the Feign Client</strong>.
+    </p>
+
+    <h3>6.1 &nbsp; Data Model — <code>Quiz</code></h3>
+    <pre><code><span class="ann">@Entity</span>
+<span class="kw">public class</span> <span class="typ">Quiz</span> {
+    <span class="ann">@Id</span> <span class="ann">@GeneratedValue</span>
+    <span class="kw">private</span> Integer <span class="fn">id</span>;
+    <span class="kw">private</span> String <span class="fn">title</span>;
+
+    <span class="ann">@ElementCollection</span>              <span class="cmt">// stored in a separate join table</span>
+    <span class="kw">private</span> List&lt;Integer&gt; <span class="fn">questionIds</span>;
+}
+</code></pre>
+
+    <h3>6.2 &nbsp; DTO for creation</h3>
+    <pre><code><span class="kw">public class</span> <span class="typ">QuizDto</span> {
+    String <span class="fn">categoryName</span>;
+    Integer <span class="fn">numQuestions</span>;
+    String <span class="fn">title</span>;
+}
+</code></pre>
+
+    <h3>6.3 &nbsp; REST Endpoints</h3>
+    <table>
+        <thead>
+            <tr><th>HTTP</th><th>Path</th><th>Purpose</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>POST</td><td><code>/quiz/create</code></td><td>Create a new quiz (body = QuizDto)</td></tr>
+            <tr><td>POST</td><td><code>/quiz/get/{id}</code></td><td>Fetch quiz questions by quiz id</td></tr>
+            <tr><td>POST</td><td><code>/quiz/submit/{id}</code></td><td>Submit answers &amp; get score</td></tr>
+        </tbody>
+    </table>
+</section>
+
+<!-- ==================== 7. THE FEIGN CLIENT ==================== -->
+<section id="feign-client">
+    <h2>7 &nbsp; The Feign Client — Connecting the Two Services</h2>
+
+    <div class="highlight-box">
+        <h4>💡 What is OpenFeign?</h4>
+        <p>
+            <strong>OpenFeign</strong> is a declarative HTTP client from Spring Cloud. Instead of writing
+            <code>RestTemplate</code> or <code>WebClient</code> boilerplate, you simply declare a
+            <strong>Java interface</strong> that mirrors the target service's REST endpoints. Spring
+            auto-generates the HTTP implementation at runtime.
+        </p>
+    </div>
+
+    <h3>7.1 &nbsp; Enable Feign in Quiz Service</h3>
+    <pre><code><span class="cmt">// QuizServiceApplication.java</span>
+<span class="ann">@SpringBootApplication</span>
+<span class="ann">@EnableFeignClients</span>       <span class="cmt">// ← Scans for @FeignClient interfaces</span>
+<span class="kw">public class</span> <span class="typ">QuizServiceApplication</span> { ... }
+</code></pre>
+
+    <h3>7.2 &nbsp; The Feign Interface — <code>QuizInterface.java</code></h3>
+    <pre><code><span class="ann">@FeignClient(<span class="str">"QUESTION-SERVICE"</span>)</span>   <span class="cmt">// ← Eureka service name of the target</span>
+<span class="kw">public interface</span> <span class="typ">QuizInterface</span> {
+
+    <span class="cmt">// Maps to GET /question/generate on Question-Service</span>
+    <span class="ann">@GetMapping(<span class="str">"question/generate"</span>)</span>
+    ResponseEntity&lt;List&lt;Integer&gt;&gt; <span class="fn">getQuestionsForQuiz</span>(
+            <span class="ann">@RequestParam</span> String categoryName,
+            <span class="ann">@RequestParam</span> Integer numQuestions);
+
+    <span class="cmt">// Maps to POST /question/getQuestions on Question-Service</span>
+    <span class="ann">@PostMapping(<span class="str">"question/getQuestions"</span>)</span>
+    ResponseEntity&lt;List&lt;QuestionWrapper&gt;&gt; <span class="fn">getQuestionsFromId</span>(
+            <span class="ann">@RequestBody</span> List&lt;Integer&gt; questionIds);
+
+    <span class="cmt">// Maps to POST /question/getScore on Question-Service</span>
+    <span class="ann">@PostMapping(<span class="str">"question/getScore"</span>)</span>
+    ResponseEntity&lt;Integer&gt; <span class="fn">getScore</span>(
+            <span class="ann">@RequestBody</span> List&lt;Response&gt; responses);
+}
+</code></pre>
+
+    <div class="highlight-box">
+        <h4>🔑 How the magic works</h4>
+        <ul>
+            <li><code>@FeignClient("QUESTION-SERVICE")</code> tells Feign to look up <strong>QUESTION-SERVICE</strong> in the Eureka registry to discover its host &amp; port.</li>
+            <li>Each method's <code>@GetMapping</code> / <code>@PostMapping</code> mirrors the <strong>exact endpoint</strong> exposed by the Question Service controller.</li>
+            <li>Spring creates a <strong>proxy</strong> at runtime — when QuizService calls <code>quizInterface.getQuestionsForQuiz(...)</code>, Feign makes an actual HTTP GET to <code>http://QUESTION-SERVICE/question/generate?categoryName=...&amp;numQuestions=...</code>.</li>
+            <li>Eureka resolves <code>QUESTION-SERVICE</code> to the real IP:port (e.g. <code>localhost:8080</code>) and supports <strong>client-side load balancing</strong> if multiple instances are running.</li>
+        </ul>
+    </div>
+
+    <h3>7.3 &nbsp; Endpoint Mapping (Feign ↔ Question Controller)</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Feign Method (Quiz Service)</th>
+                <th>→</th>
+                <th>Controller Method (Question Service)</th>
+                <th>HTTP</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>getQuestionsForQuiz(category, num)</code></td>
+                <td style="text-align:center;color:var(--accent2);font-size:1.2rem">→</td>
+                <td><code>QuestionController.getQuestionsForQuiz()</code></td>
+                <td>GET <code>/question/generate</code></td>
+            </tr>
+            <tr>
+                <td><code>getQuestionsFromId(ids)</code></td>
+                <td style="text-align:center;color:var(--accent2);font-size:1.2rem">→</td>
+                <td><code>QuestionController.getQuestionsFromId()</code></td>
+                <td>POST <code>/question/getQuestions</code></td>
+            </tr>
+            <tr>
+                <td><code>getScore(responses)</code></td>
+                <td style="text-align:center;color:var(--accent2);font-size:1.2rem">→</td>
+                <td><code>QuestionController.getScore()</code></td>
+                <td>POST <code>/question/getScore</code></td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+<!-- ==================== 8. END-TO-END FLOWS ==================== -->
+<section id="flows">
+    <h2>8 &nbsp; End-to-End Request Flows</h2>
+
+    <!-- Flow 1: Create Quiz -->
+    <h3>Flow A — Create a Quiz (<code>POST /quiz/create</code>)</h3>
+    <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+            <strong>Client → API Gateway</strong> sends <code>POST /quiz-service/quiz/create</code> with body:
+            <pre><code>{ "categoryName": "Java", "numQuestions": 5, "title": "Java Basics" }</code></pre>
+        </div>
+    </div>
+    <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+            <strong>Gateway → Quiz Service</strong> routes to <code>/quiz/create</code>. <code>QuizController.createQuiz()</code> calls <code>QuizService.createQuiz()</code>.
+        </div>
+    </div>
+    <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+            <strong>Quiz Service → Question Service (Feign)</strong><br>
+            <code>quizInterface.<span style="color:var(--accent)">getQuestionsForQuiz</span>("Java", 5)</code><br>
+            Feign sends <code>GET http://QUESTION-SERVICE/question/generate?categoryName=Java&amp;numQuestions=5</code>
+        </div>
+    </div>
+    <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+            <strong>Question Service</strong> runs <code>findRandomQuestionsByCategory("Java", 5)</code> → returns 5 random question IDs, e.g. <code>[3, 7, 12, 18, 21]</code>.
+        </div>
+    </div>
+    <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-content">
+            <strong>Quiz Service</strong> receives the IDs, creates a <code>Quiz</code> entity (title + IDs), saves it to <strong>quizdb</strong>, and returns <code>201 Created "Success"</code>.
+        </div>
+    </div>
+
+    <!-- Flow 2: Get Quiz -->
+    <h3 style="margin-top:36px;">Flow B — Get Quiz Questions (<code>POST /quiz/get/{id}</code>)</h3>
+    <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+            <strong>Client → Quiz Service</strong> sends <code>POST /quiz/get/1</code>.
+        </div>
+    </div>
+    <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+            <strong>Quiz Service</strong> loads the <code>Quiz</code> from DB → gets <code>questionIds = [3, 7, 12, 18, 21]</code>.
+        </div>
+    </div>
+    <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+            <strong>Quiz Service → Question Service (Feign)</strong><br>
+            <code>quizInterface.<span style="color:var(--accent)">getQuestionsFromId</span>([3, 7, 12, 18, 21])</code><br>
+            Feign sends <code>POST http://QUESTION-SERVICE/question/getQuestions</code> with the ID list as body.
+        </div>
+    </div>
+    <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+            <strong>Question Service</strong> fetches each question, maps it to <code>QuestionWrapper</code>
+            (which <strong>excludes <code>rightAnswer</code></strong>), and returns the list.
+        </div>
+    </div>
+    <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-content">
+            <strong>Quiz Service</strong> forwards the list of <code>QuestionWrapper</code> objects back to the client.
+        </div>
+    </div>
+
+    <!-- Flow 3: Submit Quiz -->
+    <h3 style="margin-top:36px;">Flow C — Submit Quiz &amp; Get Score (<code>POST /quiz/submit/{id}</code>)</h3>
+    <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+            <strong>Client → Quiz Service</strong> sends <code>POST /quiz/submit/1</code> with body:
+            <pre><code>[
+  { "id": 3,  "response": "Option A" },
+  { "id": 7,  "response": "Option C" },
+  { "id": 12, "response": "Option B" },
+  ...
+]</code></pre>
+        </div>
+    </div>
+    <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+            <strong>Quiz Service → Question Service (Feign)</strong><br>
+            <code>quizInterface.<span style="color:var(--accent)">getScore</span>(responses)</code><br>
+            Feign sends <code>POST http://QUESTION-SERVICE/question/getScore</code> with the responses.
+        </div>
+    </div>
+    <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+            <strong>Question Service</strong> compares each <code>response</code> with the <code>rightAnswer</code>
+            stored in DB and returns the count of correct answers (e.g. <code>3</code>).
+        </div>
+    </div>
+    <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+            <strong>Quiz Service</strong> returns the score to the client.
+        </div>
+    </div>
+</section>
+
+<!-- ==================== 9. DATABASE SEPARATION ==================== -->
+<section id="databases">
+    <h2>9 &nbsp; Database Separation</h2>
+    <p>Each service has its <strong>own PostgreSQL database</strong>, following the microservice pattern of <em>database-per-service</em>:</p>
+    <div class="cards">
+        <div class="card">
+            <h4>questiondb</h4>
+            <p>Stores <code>question</code> table — id, title, options, rightAnswer, difficulty, category.</p>
+        </div>
+        <div class="card">
+            <h4>quizdb</h4>
+            <p>Stores <code>quiz</code> table (id, title) + <code>quiz_question_ids</code> join table (quiz_id → question_id).</p>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== 10. STARTUP ORDER ==================== -->
+<section id="startup">
+    <h2>10 &nbsp; Startup Order</h2>
+    <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content"><strong>Service Registry</strong> (port 8761) — must be up first so others can register.</div>
+    </div>
+    <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content"><strong>Question Service</strong> (port 8080) — registers as <code>QUESTION-SERVICE</code> in Eureka.</div>
+    </div>
+    <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content"><strong>Quiz Service</strong> (port 8090) — registers as <code>QUIZ-SERVICE</code>, discovers Question Service via Eureka.</div>
+    </div>
+    <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content"><strong>API Gateway</strong> (port 8765) — discovers all services, starts routing.</div>
+    </div>
+</section>
+
+<!-- ==================== 11. KEY TAKEAWAYS ==================== -->
+<section id="summary">
+    <h2>11 &nbsp; Key Takeaways</h2>
+    <div class="cards">
+        <div class="card">
+            <div class="icon">🔗</div>
+            <h4>Feign = Declarative HTTP</h4>
+            <p>No manual <code>RestTemplate</code> code. Just define an interface with Spring MVC annotations and Feign does the rest.</p>
+        </div>
+        <div class="card">
+            <div class="icon">🔍</div>
+            <h4>Eureka = Discovery</h4>
+            <p><code>@FeignClient("QUESTION-SERVICE")</code> resolves the target host:port dynamically from the registry.</p>
+        </div>
+        <div class="card">
+            <div class="icon">⚖️</div>
+            <h4>Load Balancing</h4>
+            <p>If multiple Question Service instances are registered, Feign + Spring Cloud LoadBalancer distribute calls automatically.</p>
+        </div>
+        <div class="card">
+            <div class="icon">🚪</div>
+            <h4>Gateway = Single Entry</h4>
+            <p>Clients only need to know the gateway URL. Internal routing is handled by service discovery.</p>
+        </div>
+        <div class="card">
+            <div class="icon">🗄️</div>
+            <h4>Database per Service</h4>
+            <p>Each service owns its data. The Quiz Service stores only question IDs, not the questions themselves.</p>
+        </div>
+        <div class="card">
+            <div class="icon">🛡️</div>
+            <h4>QuestionWrapper = Security</h4>
+            <p>The wrapper DTO strips <code>rightAnswer</code> so clients never see correct answers when fetching questions.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== 12. Q&A ==================== -->
+<section id="qna">
+    <h2>12 &nbsp; Q &amp; A — Concepts Deep Dive</h2>
+    <p>Common questions that came up while studying this codebase, with detailed answers.</p>
+
+    <!-- Q1: Orchestrator -->
+    <div class="highlight-box" style="border-left-color: var(--accent); margin-top: 28px;">
+        <h4 style="color: var(--accent);">Q1: What does "orchestrator" mean in this context?</h4>
+    </div>
+    <p>
+        In this microservices project, <strong>"orchestrator"</strong> refers to the <strong>Quiz Service's role</strong>
+        in coordinating work across multiple services <em>without doing the actual data processing itself</em>.
+    </p>
+    <p>The Quiz Service:</p>
+    <ul>
+        <li><strong>Receives</strong> the client's request (e.g., "create a quiz with 5 Java questions")</li>
+        <li><strong>Delegates</strong> the actual work to the Question Service via Feign (e.g., "give me 5 random Java question IDs")</li>
+        <li><strong>Combines / stores</strong> the results (saves the quiz with those IDs in its own DB)</li>
+        <li><strong>Returns</strong> the final response to the client</li>
+    </ul>
+    <p>
+        It doesn't own or process question data — it <strong>coordinates</strong> (orchestrates) the flow between the
+        client and the Question Service, like a conductor directing an orchestra. The Quiz Service knows <em>what</em>
+        needs to happen and <em>who</em> should do it, but the heavy lifting (querying questions, checking answers) is
+        done by the Question Service.
+    </p>
+    <pre><code><span class="cmt">// Example — "Create Quiz" flow:</span>
+
+Client  →  Quiz Service <span class="ann">(orchestrator)</span>  →  Question Service <span class="ann">(data owner)</span>
+                │                                      │
+                │  <span class="str">"I need 5 Java question IDs"</span>        │
+                │ ──────── Feign call ────────────────► │
+                │                                      │  <span class="cmt">(queries DB, picks random IDs)</span>
+                │  ◄───────── <span class="fn">[3,7,12,18,21]</span> ────────── │
+                │
+                │  saves Quiz(title, [3,7,12,18,21]) to quizdb
+                │  returns <span class="str">"Success"</span> to client
+</code></pre>
+    <p>
+        The opposite pattern would be <strong>choreography</strong>, where each service reacts to events independently
+        with no central coordinator.
+    </p>
+
+    <!-- Q2: Environment -->
+    <div class="highlight-box" style="border-left-color: var(--accent4); margin-top: 40px;">
+        <h4 style="color: var(--accent4);">Q2: What is <code>Environment</code> and how can I use it?</h4>
+    </div>
+    <p>
+        <code>org.springframework.core.env.Environment</code> is a Spring interface that gives you
+        <strong>runtime access to application properties, system properties, and environment variables</strong>.
+    </p>
+
+    <h3>How it's used in the code</h3>
+    <pre><code><span class="ann">@Autowired</span>
+Environment environment;
+</code></pre>
+    <p>It's injected into <code>QuestionController</code>, and used here:</p>
+    <pre><code><span class="ann">@PostMapping(<span class="str">"getQuestions"</span>)</span>
+<span class="kw">public</span> ResponseEntity&lt;List&lt;QuestionWrapper&gt;&gt; <span class="fn">getQuestionsFromId</span>(<span class="ann">@RequestBody</span> List&lt;Integer&gt; questionIds){
+    System.out.println(environment.<span class="fn">getProperty</span>(<span class="str">"local.server.port"</span>));  <span class="cmt">// ← HERE</span>
+    <span class="kw">return</span> questionService.getQuestionsFromId(questionIds);
+}
+</code></pre>
+    <p>
+        It prints the <strong>port number</strong> the service is currently running on. This is useful when you run
+        <strong>multiple instances</strong> of Question Service (for load balancing) — you can see in the console
+        <strong>which instance</strong> handled the Feign request.
+    </p>
+
+    <h3>What else you can do with it</h3>
+    <pre><code><span class="cmt">// Read any property from application.properties</span>
+environment.<span class="fn">getProperty</span>(<span class="str">"spring.datasource.url"</span>);       <span class="cmt">// → "jdbc:postgresql://localhost:5432/questiondb"</span>
+environment.<span class="fn">getProperty</span>(<span class="str">"spring.application.name"</span>);      <span class="cmt">// → "question-service"</span>
+
+<span class="cmt">// Read with a default fallback</span>
+environment.<span class="fn">getProperty</span>(<span class="str">"some.missing.key"</span>, <span class="str">"default"</span>);  <span class="cmt">// → "default"</span>
+
+<span class="cmt">// System / OS environment variables</span>
+environment.<span class="fn">getProperty</span>(<span class="str">"JAVA_HOME"</span>);                    <span class="cmt">// → "C:\Program Files\Java\jdk-17"</span>
+environment.<span class="fn">getProperty</span>(<span class="str">"PATH"</span>);
+
+<span class="cmt">// Check active profiles (dev, prod, etc.)</span>
+environment.<span class="fn">getActiveProfiles</span>();                         <span class="cmt">// → String[] e.g. ["dev"]</span>
+
+<span class="cmt">// Check if a property exists</span>
+environment.<span class="fn">containsProperty</span>(<span class="str">"server.port"</span>);             <span class="cmt">// → true</span>
+</code></pre>
+    <p>
+        <strong>Why it matters here specifically:</strong> When Quiz Service calls <code>getQuestionsFromId</code> via Feign,
+        and you have <strong>2+ instances</strong> of Question Service registered in Eureka (e.g., on ports 8080 and 8081),
+        the <code>environment.getProperty("local.server.port")</code> log tells you which instance Eureka's load balancer
+        routed the request to — useful for <strong>verifying load balancing is working</strong>.
+    </p>
+
+    <!-- Q3: Load Balancing -->
+    <div class="highlight-box" style="border-left-color: var(--accent3); margin-top: 40px;">
+        <h4 style="color: var(--accent3);">Q3: How does load balancing work? What code in the project enables it?</h4>
+    </div>
+    <p>
+        There is <strong>no explicit load balancing code</strong> you wrote — it's all <strong>automatic</strong>.
+        Three pieces of the project combine to make it work:
+    </p>
+
+    <h3>Piece 1 — The dependency (<code>quiz-service/pom.xml</code>)</h3>
+    <pre><code>&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+    &lt;artifactId&gt;<span class="fn">spring-cloud-starter-openfeign</span>&lt;/artifactId&gt;
+&lt;/dependency&gt;
+</code></pre>
+    <p>
+        This dependency <strong>automatically includes <code>spring-cloud-loadbalancer</code></strong> inside it.
+        You don't see a separate load balancer dependency because Feign bundles it. This provides
+        <strong>client-side load balancing</strong> (Round Robin by default).
+    </p>
+
+    <h3>Piece 2 — The Feign interface (<code>QuizInterface.java</code>)</h3>
+    <pre><code><span class="ann">@FeignClient(<span class="str">"QUESTION-SERVICE"</span>)</span>   <span class="cmt">// ← service NAME, not a URL</span>
+</code></pre>
+    <p>
+        The key is <code>"QUESTION-SERVICE"</code> — this is <strong>not</strong> a hardcoded URL like
+        <code>http://localhost:8080</code>. It's the <strong>Eureka service name</strong>. When Feign sees a name
+        instead of a URL, it:
+    </p>
+    <ul>
+        <li>Asks Eureka: <em>"Who are all the instances of QUESTION-SERVICE?"</em></li>
+        <li>Eureka returns a <strong>list</strong> (e.g., <code>localhost:8080</code>, <code>localhost:8081</code>)</li>
+        <li>The built-in <strong>Spring Cloud LoadBalancer picks one</strong> using Round Robin</li>
+    </ul>
+
+    <h3>Piece 3 — The debug/proof line (<code>QuestionController.java</code>)</h3>
+    <pre><code>System.out.println(environment.<span class="fn">getProperty</span>(<span class="str">"local.server.port"</span>));  <span class="cmt">// ← verification</span>
+</code></pre>
+    <p>
+        If you run 2 instances of Question Service and make multiple Feign calls, the console logs alternate
+        between the two ports — proving Round Robin is active.
+    </p>
+
+    <h3>The complete chain visualised</h3>
+    <pre><code>Quiz Service calls quizInterface.getQuestionsFromId(ids)
+        │
+        ▼
+  Feign sees <span class="ann">@FeignClient("QUESTION-SERVICE")</span>
+        │
+        ▼
+  Asks Eureka: <span class="str">"Give me all QUESTION-SERVICE instances"</span>
+        │
+        ▼
+  Eureka returns: [ <span class="fn">localhost:8080</span>, <span class="fn">localhost:8081</span> ]
+        │
+        ▼
+  Spring Cloud LoadBalancer picks one <span class="ann">(Round Robin)</span>
+        │
+        ▼
+  Feign sends HTTP to the chosen instance
+        │
+        ▼
+  That instance prints its port via <span class="fn">environment.getProperty("local.server.port")</span>
+</code></pre>
+
+    <!-- Q4: Round Robin -->
+    <div class="highlight-box" style="border-left-color: #f472b6; margin-top: 40px;">
+        <h4 style="color: #f472b6;">Q4: What is Round Robin?</h4>
+    </div>
+    <p>
+        <strong>Round Robin</strong> is the simplest load balancing strategy — it distributes requests
+        <strong>equally, one by one, in order</strong> across all available instances, then loops back.
+    </p>
+
+    <h3>How it works with 3 instances</h3>
+    <p>Say you run <strong>3 instances</strong> of Question Service registered in Eureka:</p>
+    <pre><code>Instance A → localhost:<span class="fn">8080</span>
+Instance B → localhost:<span class="fn">8081</span>
+Instance C → localhost:<span class="fn">8082</span>
+</code></pre>
+    <p>When Quiz Service makes Feign calls, the load balancer picks them <strong>in a rotating cycle</strong>:</p>
+    <pre><code>Request 1  →  Instance A (<span class="fn">8080</span>)
+Request 2  →  Instance B (<span class="fn">8081</span>)
+Request 3  →  Instance C (<span class="fn">8082</span>)
+Request 4  →  Instance A (<span class="fn">8080</span>)   <span class="cmt">← back to start</span>
+Request 5  →  Instance B (<span class="fn">8081</span>)
+Request 6  →  Instance C (<span class="fn">8082</span>)
+<span class="cmt">...repeats forever</span>
+</code></pre>
+    <p>It's like dealing cards — each instance gets a turn, then it goes around again.</p>
+
+    <h3>What you'd see in the console</h3>
+    <p>That <code>environment.getProperty("local.server.port")</code> line would print:</p>
+    <pre><code>Instance A console:  <span class="fn">8080</span>       <span class="cmt">← Request 1</span>
+Instance B console:  <span class="fn">8081</span>       <span class="cmt">← Request 2</span>
+Instance C console:  <span class="fn">8082</span>       <span class="cmt">← Request 3</span>
+Instance A console:  <span class="fn">8080</span>       <span class="cmt">← Request 4 (round robin looped)</span>
+</code></pre>
+
+    <h3>Comparison with other strategies</h3>
+    <table>
+        <thead>
+            <tr><th>Feature</th><th>Round Robin</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>Logic</td><td><code>next = (current + 1) % totalInstances</code></td></tr>
+            <tr><td>Fair?</td><td>Yes — every instance gets equal traffic</td></tr>
+            <tr><td>Smart?</td><td>No — doesn't consider if one instance is slow or overloaded</td></tr>
+            <tr><td>Default?</td><td>Yes — Spring Cloud LoadBalancer uses this by default, which is what this project gets automatically via the Feign dependency</td></tr>
+        </tbody>
+    </table>
+
+    <h3>Other strategies (not used here, but exist)</h3>
+    <ul>
+        <li><strong>Random</strong> — picks a random instance each time</li>
+        <li><strong>Weighted</strong> — some instances get more traffic than others</li>
+        <li><strong>Least Connections</strong> — picks the instance with fewest active requests (smarter but more complex)</li>
+    </ul>
+    <p>
+        This project uses <strong>Round Robin because nothing else was configured</strong> — it's the default that comes
+        bundled with <code>spring-cloud-starter-openfeign</code>, and for most use cases it works well enough.
+    </p>
+</section>
+
+</div>
+
+<footer>
+    Microservices Quiz App — Architecture Documentation &nbsp;|&nbsp; Generated for study purposes
+</footer>
+
+</body>
+</html>
+
+

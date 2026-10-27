@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java Spring Boot Interview Preparation Guide</title>
+    <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --chat-bg: #ffffff;
+            --text-color: #212529;
+            --user-msg-bg: #e9ecef;
+            --bot-msg-bg: #f1f3f5;
+            --border-color: #dee2e6;
+            --primary-color: #0d6efd;
+            --code-bg: #272822;
+            --code-color: #f8f8f2;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background: var(--chat-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            padding: 30px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+        .message {
+            margin-bottom: 25px;
+            padding: 15px 20px;
+            border-radius: 8px;
+        }
+        .user {
+            background-color: var(--user-msg-bg);
+            border-left: 5px solid #6c757d;
+        }
+        .assistant {
+            background-color: var(--bot-msg-bg);
+            border-left: 5px solid var(--primary-color);
+        }
+        .role {
+            font-weight: bold;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            font-size: 0.85em;
+            letter-spacing: 0.5px;
+        }
+        .user .role { color: #495057; }
+        .assistant .role { color: var(--primary-color); }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: #fff;
+        }
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #e9ecef;
+        }
+        pre {
+            background-color: var(--code-bg);
+            color: var(--code-color);
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-family: "Courier New", Courier, monospace;
+        }
+        code {
+            background-color: #e9ecef;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: "Courier New", Courier, monospace;
+        }
+        pre code {
+            background-color: transparent;
+            padding: 0;
+        }
+        blockquote {
+            border-left: 4px solid var(--primary-color);
+            margin: 15px 0;
+            padding-left: 15px;
+            color: #495057;
+            font-style: italic;
+        }
+        hr {
+            border: 0;
+            height: 1px;
+            background: var(--border-color);
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Java & Spring Boot 2+ YOE Interview Guide</h1>
+
+    <!-- Q1 & A1 -->
+    <div class="message user">
+        <div class="role">User</div>
+        suppose you are giving a interview as a 2+ experience sde in java springboot, now answer the question according to get selected
+    </div>
+    <div class="message assistant">
+        <div class="role">Assistant</div>
+        To land the role, you need to show strong core Java fundamentals, production-grade Spring Boot knowledge, and real-world awareness of microservices, database interactions, and debugging.<br><br>
+        Here is how to answer the most critical 2+ YOE interview questions to get selected.<br><hr>
+
+        <strong>Core Java & JVM Internals</strong>
+        <ul>
+            <li><strong>How does the <code>HashMap</code> work internally in Java 8+?</strong>
+                <ul><li><em>Answer:</em> It uses an array of Nodes (buckets). Key <code>hashCode()</code> determines the index via <code>(n - 1) & hash</code>. Collisions are handled using a Singly Linked List. In Java 8+, if a bucket's node count reaches <strong>8</strong> (TREEIFY_THRESHOLD) and total map capacity is &ge; 64, the bucket converts from a Linked List to a <strong>Red-Black Tree</strong> ($O(n) \rightarrow O(\log n)$ lookup). If nodes drop below <strong>6</strong> (UNTREEIFY_THRESHOLD), it converts back.</li></ul>
+            </li>
+            <li><strong>Difference between <code>CompletableFuture</code> and traditional <code>Future</code>?</strong>
+                <ul><li><em>Answer:</em> <code>Future</code> requires blocking (<code>get()</code>) or polling to check completion. <code>CompletableFuture</code> supports non-blocking reactive chains (<code>thenApply</code>, <code>thenCompose</code>, <code>exceptionally</code>), manual completion, and combining multiple async operations (<code>allOf</code>, <code>anyOf</code>).</li></ul>
+            </li>
+        </ul>
+
+        <hr>
+        <strong>Spring Boot & Architecture</strong>
+        <ul>
+            <li><strong>How does Spring Boot Auto-Configuration work?</strong>
+                <ul><li><em>Answer:</em> Enabled via <code>@EnableAutoConfiguration</code> (part of <code>@SpringBootApplication</code>). It checks <code>META-INF/spring.factories</code> (or <code>AutoConfiguration.imports</code> in Spring Boot 3) to load configuration classes based on classpath dependencies using conditional annotations like <code>@ConditionalOnClass</code> and <code>@ConditionalOnProperty</code>.</li></ul>
+            </li>
+            <li><strong>Bean Scopes in Spring Boot:</strong>
+                <ul>
+                    <li><strong>Singleton</strong> <em>(Default)</em>: Single instance per Spring IoC container.</li>
+                    <li><strong>Prototype</strong>: New instance every time a bean is requested.</li>
+                    <li><strong>Request</strong>: One instance per HTTP request (Web context).</li>
+                    <li><strong>Session</strong>: One instance per HTTP session (Web context).</li>
+                </ul>
+            </li>
+            <li><strong>How to fix a circular dependency in Spring?</strong>
+                <ul><li><em>Answer:</em> Avoid component coupling by refactoring code (e.g., using a third helper service). If refactoring isn't immediate, use <code>@Lazy</code> on one of the injected constructor dependencies.</li></ul>
+            </li>
+        </ul>
+
+        <hr>
+        <strong>Microservices, Transactions & Database</strong>
+        <ul>
+            <li><strong>How do <code>@Transactional</code> annotations work, and when do they fail?</strong>
+                <ul>
+                    <li><em>Answer:</em> Uses Spring AOP proxies around the method to manage transaction lifecycle (<code>begin</code>, <code>commit</code>, <code>rollback</code>).</li>
+                    <li><em>Failure cases:</em>
+                        <ol>
+                            <li><strong>Self-invocation:</strong> Calling a <code>@Transactional</code> method within the same class bypasses the Spring proxy.</li>
+                            <li><strong>Uncaught Checked Exceptions:</strong> By default, it rolls back only on <code>RuntimeException</code> and <code>Error</code>. Fix using <code>@Transactional(rollbackFor = Exception.class)</code>.</li>
+                            <li><strong>Non-public methods:</strong> Spring AOP ignores private/protected methods.</li>
+                        </ol>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+
+        <table>
+            <thead>
+                <tr><th>Pattern / Concept</th><th>How to explain it at 2+ YOE</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><strong>Resilience & Fault Tolerance</strong></td><td>Use <strong>Resilience4j</strong> for Circuit Breaker (opens circuit to drop traffic on high failure rate) and Rate Limiting.</td></tr>
+                <tr><td><strong>Microservice Communication</strong></td><td>Synchronous via <strong>REST / Feign Client</strong>, Asynchronous via <strong>Kafka / RabbitMQ</strong> to decouple services.</td></tr>
+                <tr><td><strong>Distributed Transactions</strong></td><td>Avoid 2-Phase Commit (2PC). Use the <strong>Saga Pattern</strong> (Choreography or Orchestration) with compensating transactions.</td></tr>
+            </tbody>
+        </table>
+
+        <hr>
+        <strong>High-Frequency Code Question to Ace</strong>
+<pre><code>// How to create a Thread-Safe Singleton in Java 8+ (Double-Checked Locking)
+public class DatabaseConnection {
+    private static volatile DatabaseConnection instance;
+
+    private DatabaseConnection() {}
+
+    public static DatabaseConnection getInstance() {
+        if (instance == null) {
+            synchronized (DatabaseConnection.class) {
+                if (instance == null) {
+                    instance = new DatabaseConnection();
+                }
+            }
+        }
+        return instance;
+    }
+}</code></pre>
+    </div>
+
+    <!-- Q2 & A2 -->
+    <div class="message user">
+        <div class="role">User</div>
+        Difference between Abstraction and Encapsulation.
+    </div>
+    <div class="message assistant">
+        <div class="role">Assistant</div>
+        <strong>Abstraction</strong> hides internal complexity and exposes only essential functionality (focuses on <em>what</em> an object does), while <strong>Encapsulation</strong> binds data and methods into a single unit and restricts direct access (focuses on <em>how</em> data is hidden and protected).
+
+        <hr>
+        <strong>Key Differences</strong>
+        <table>
+            <thead>
+                <tr><th>Feature</th><th>Abstraction</th><th>Encapsulation</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><strong>Core Goal</strong></td><td>Hide implementation details / reduce complexity</td><td>Hide data / protect object state from unauthorized access</td></tr>
+                <tr><td><strong>Focus</strong></td><td><strong>What</strong> the system does</td><td><strong>How</strong> the data is bundled and secured</td></tr>
+                <tr><td><strong>Implementation</strong></td><td>Achieved via <strong>Interfaces</strong> and <strong>Abstract Classes</strong></td><td>Achieved via <strong>Access Modifiers</strong> (<code>private</code>, <code>protected</code>, <code>public</code>) and <strong>Getters/Setters</strong></td></tr>
+                <tr><td><strong>Design Level</strong></td><td>Outer design level (Interface level)</td><td>Inner implementation level (Data level)</td></tr>
+                <tr><td><strong>Real-World Analogy</strong></td><td>Driving a car: You press the accelerator, but don't need to know engine combustion details.</td><td>Car dashboard: Engine components are sealed under the hood; you interact safely through pedals and knobs.</td></tr>
+            </tbody>
+        </table>
+
+        <hr>
+        <strong>Java Code Example</strong>
+<pre><code>// ABSTRACTION: Interface defines WHAT to do without revealing HOW
+interface BankAccount {
+    void deposit(double amount);
+    void withdraw(double amount);
+}
+
+// ENCAPSULATION: Class bundles data + methods and hides inner state
+public class SavingsAccount implements BankAccount {
+    // Hidden data (private variable)
+    private double balance;
+
+    public SavingsAccount(double initialBalance) {
+        this.balance = initialBalance;
+    }
+
+    // Encapsulated access via validated method
+    @Override
+    public void deposit(double amount) {
+        if (amount > 0) {
+            this.balance += amount;
+        }
+    }
+
+    @Override
+    public void withdraw(double amount) {
+        if (amount > 0 && amount <= balance) {
+            this.balance -= amount;
+        }
+    }
+
+    // Controlled getter
+    public double getBalance() {
+        return balance;
+    }
+}</code></pre>
+
+        <hr>
+        <strong>How to Answer in an Interview (2+ YOE Level)</strong>
+        <blockquote>"Abstraction is a design-level concept used to reduce system complexity by exposing high-level contracts via interfaces or abstract classes. Encapsulation is an implementation-level technique that hides sensitive class fields using private access modifiers and exposes controlled access via public methods, preventing unauthorized mutations."</blockquote>
+    </div>
+
+    <!-- Q3 & A3 -->
+    <div class="message user">
+        <div class="role">User</div>
+        Explain SOLID principles with examples.
+    </div>
+    <div class="message assistant">
+        <div class="role">Assistant</div>
+        <strong>SOLID</strong> is an acronym for five object-oriented design principles that help engineers build maintainable, scalable, and loosely coupled applications.
+
+        <hr>
+        <h3>1. Single Responsibility Principle (SRP)</h3>
+        <blockquote><strong>Definition:</strong> A class should have one, and only one, reason to change.</blockquote>
+        <ul>
+            <li><strong>Violation:</strong> A single class managing user profile logic, database persistence, and sending emails.</li>
+            <li><strong>Solution:</strong> Separate concerns into dedicated classes.</li>
+        </ul>
+<pre><code>// Good: Each class has a single responsibility
+public class Invoice {
+    public double calculateTotal() { return 100.0; }
+}
+
+public class InvoiceRepository {
+    public void saveToDatabase(Invoice invoice) { /* DB operations */ }
+}
+
+public class EmailService {
+    public void sendReceipt(Invoice invoice) { /* Mail logic */ }
+}</code></pre>
+
+        <hr>
+        <h3>2. Open/Closed Principle (OCP)</h3>
+        <blockquote><strong>Definition:</strong> Software entities should be open for extension, but closed for modification.</blockquote>
+        <ul>
+            <li><strong>Violation:</strong> Using <code>if-else</code> or <code>switch</code> blocks inside a payment processor to check payment types. Adding a new payment method requires modifying the existing class.</li>
+            <li><strong>Solution:</strong> Use polymorphism via interfaces or abstract classes.</li>
+        </ul>
+<pre><code>public interface PaymentMethod {
+    void process(double amount);
+}
+
+public class CreditCardPayment implements PaymentMethod {
+    public void process(double amount) { /* Process CC */ }
+}
+
+public class UPIPayment implements PaymentMethod {
+    public void process(double amount) { /* Process UPI */ }
+}
+
+public class PaymentProcessor {
+    public void executePayment(PaymentMethod method, double amount) {
+        method.process(amount); // Extensible without changing this class
+    }
+}</code></pre>
+
+        <hr>
+        <h3>3. Liskov Substitution Principle (LSP)</h3>
+        <blockquote><strong>Definition:</strong> Derived classes must be substitutable for their base classes without breaking the correctness of the program.</blockquote>
+        <ul>
+            <li><strong>Violation:</strong> A <code>Square</code> subclass inheriting from a <code>Rectangle</code> base class altering width unexpectedly. Or a <code>Bird</code> class with a <code>fly()</code> method, where subclass <code>Ostrich</code> throws <code>UnsupportedOperationException</code>.</li>
+            <li><strong>Solution:</strong> Restructure hierarchy using interfaces that reflect actual capabilities.</li>
+        </ul>
+<pre><code>public interface Bird {}
+
+public interface FlyingBird extends Bird {
+    void fly();
+}
+
+public class Sparrow implements FlyingBird {
+    public void fly() { System.out.println("Flying"); }
+}
+
+public class Ostrich implements Bird {
+    // Doesn't implement FlyingBird, avoiding invalid overrides
+}</code></pre>
+
+        <hr>
+        <h3>4. Interface Segregation Principle (ISP)</h3>
+        <blockquote><strong>Definition:</strong> Clients should not be forced to depend on interfaces they do not use.</blockquote>
+        <ul>
+            <li><strong>Violation:</strong> A single "fat" <code>Worker</code> interface containing <code>work()</code>, <code>eat()</code>, and <code>sleep()</code> forcing a <code>RobotWorker</code> to implement unused methods.</li>
+            <li><strong>Solution:</strong> Break large interfaces into smaller, specialized ones.</li>
+        </ul>
+<pre><code>public interface Workable {
+    void work();
+}
+
+public interface Feedable {
+    void eat();
+}
+
+public class RobotWorker implements Workable {
+    public void work() { System.out.println("Robot working"); }
+}
+
+public class HumanWorker implements Workable, Feedable {
+    public void work() { System.out.println("Human working"); }
+    public void eat() { System.out.println("Human eating"); }
+}</code></pre>
+
+        <hr>
+        <h3>5. Dependency Inversion Principle (DIP)</h3>
+        <blockquote><strong>Definition:</strong> High-level modules should not depend on low-level modules. Both should depend on abstractions.</blockquote>
+        <ul>
+            <li><strong>Violation:</strong> Instantiating concrete dependencies directly using <code>new</code> inside a high-level component.</li>
+            <li><strong>Solution:</strong> Depend on an interface abstraction and inject the dependency.</li>
+        </ul>
+<pre><code>public interface NotificationService {
+    void sendNotification(String message);
+}
+
+public class EmailNotification implements NotificationService {
+    public void sendNotification(String message) { /* Send Email */ }
+}
+
+public class OrderProcessor {
+    private final NotificationService notificationService;
+
+    public OrderProcessor(NotificationService notificationService) {
+        this.notificationService = notificationService;
+    }
+
+    public void completeOrder() {
+        notificationService.sendNotification("Order completed!");
+    }
+}</code></pre>
+    </div>
+
+    <!-- Q4 & A4 -->
+    <div class="message user">
+        <div class="role">User</div>
+        can you explain Dependency Inversion Principle (DIP) in detail
+    </div>
+    <div class="message assistant">
+        <div class="role">Assistant</div>
+        The <strong>Dependency Inversion Principle (DIP)</strong> changes how high-level application logic interacts with low-level implementation details to build flexible, loosely coupled software.
+
+        <hr>
+        <strong>Core Definition</strong>
+        <ol>
+            <li><strong>High-level modules should not depend on low-level modules.</strong> Both should depend on <strong>abstractions</strong>.</li>
+            <li><strong>Abstractions should not depend on details.</strong> Details depend on abstractions.</li>
+        </ol>
+
+        <hr>
+        <strong>Key Concepts</strong>
+        <ul>
+            <li><strong>High-Level Modules:</strong> Core business logic (e.g., <code>OrderService</code>, <code>PaymentProcessor</code>).</li>
+            <li><strong>Low-Level Modules:</strong> Utility components/DB tools (e.g., <code>MySQLDatabase</code>, <code>SendGridEmailClient</code>).</li>
+            <li><strong>Abstractions:</strong> Interfaces or abstract classes defining *what* needs to be done.</li>
+        </ul>
+
+        <hr>
+        <strong>Practical Java Example</strong>
+        <h4>1. The Violation</h4>
+<pre><code>public class MySQLDatabase {
+    public void saveOrder(String orderId) {
+        System.out.println("Saving order " + orderId + " to MySQL DB");
+    }
+}
+
+public class OrderService {
+    private MySQLDatabase database;
+
+    public OrderService() {
+        this.database = new MySQLDatabase(); // Tightly coupled
+    }
+
+    public void processOrder(String orderId) {
+        database.saveOrder(orderId);
+    }
+}</code></pre>
+
+        <h4>2. The Solution (Applying DIP)</h4>
+<pre><code>public interface OrderRepository {
+    void save(String orderId);
+}
+
+public class MySQLRepository implements OrderRepository {
+    public void save(String orderId) { System.out.println("Saving to MySQL"); }
+}
+
+public class MongoRepository implements OrderRepository {
+    public void save(String orderId) { System.out.println("Saving to MongoDB"); }
+}
+
+public class OrderService {
+    private final OrderRepository repository;
+
+    // Constructor Injection
+    public OrderService(OrderRepository repository) {
+        this.repository = repository;
+    }
+
+    public void processOrder(String orderId) {
+        repository.save(orderId);
+    }
+}</code></pre>
+
+        <hr>
+        <strong>DIP vs. IoC vs. DI</strong>
+        <table>
+            <thead>
+                <tr><th>Term</th><th>What it is</th><th>Role</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><strong>DIP</strong></td><td><strong>Architectural Principle</strong></td><td>Design goal: depend on abstractions, not concrete implementations.</td></tr>
+                <tr><td><strong>IoC</strong></td><td><strong>Design Pattern / Concept</strong></td><td>Delegating lifecycle control to a framework (Spring Container).</td></tr>
+                <tr><td><strong>DI</strong></td><td><strong>Implementation Technique</strong></td><td>Supplying dependencies (Constructor, Setter, or Field Injection).</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Q5 & A5 -->
+    <div class="message user">
+        <div class="role">User</div>
+        How to create an Immutable Class and why it’s thread-safe.
+    </div>
+    <div class="message assistant">
+        <div class="role">Assistant</div>
+        An <strong>Immutable Class</strong> is a class whose instances cannot be modified after creation.
+
+        <hr>
+        <strong>5 Rules to Create an Immutable Class</strong>
+        <ol>
+            <li>Declare class as <code>final</code>.</li>
+            <li>Make all fields <code>private</code> and <code>final</code>.</li>
+            <li>Do not provide setter methods.</li>
+            <li>Initialize all fields via constructor performing <strong>deep copies</strong> for mutable objects.</li>
+            <li>Return deep copies of mutable objects in getters (defensive copying).</li>
+        </ol>
+
+<pre><code>import java.util.Date;
+
+public final class Employee {
+    private final int id;
+    private final String name;
+    private final Date joiningDate; // Mutable object
+
+    public Employee(int id, String name, Date joiningDate) {
+        this.id = id;
+        this.name = name;
+        this.joiningDate = new Date(joiningDate.getTime()); // Defensive copy
+    }
+
+    public int getId() { return id; }
+    public String getName() { return name; }
+    
+    public Date getJoiningDate() {
+        return new Date(joiningDate.getTime()); // Defensive copy
+    }
+}</code></pre>
+
+        <hr>
+        <strong>Why Immutable Classes Are Thread-Safe</strong>
+        <ul>
+            <li><strong>Read-Only Access:</strong> Concurrent threads can safely read simultaneously without locking.</li>
+            <li><strong>No Race Conditions:</strong> Internal state cannot be corrupted post-construction.</li>
+            <li><strong>Guaranteed Safe Publication:</strong> <code>final</code> field semantics in JMM guarantee full visibility once constructed.</li>
+        </ul>
+    </div>
+
+    <!-- Q6 & A6 -->
+    <div class="message user">
+        <div class="role">User</div>
+        HashMap internal working — hashing, collision, resizing.
+    </div>
+    <div class="message assistant">
+        <div class="role">Assistant</div>
+        <code>HashMap</code> is a key-value data structure using a hybrid Node Array + Singly Linked List + Red-Black Tree (Java 8+).
+
+        <hr>
+        <strong>1. Hashing & Bucket Index Calculation</strong>
+        $$\text{hash} = h \oplus (h \gg 16)$$
+        $$\text{index} = (n - 1) \ \& \ \text{hash}$$
+
+        <hr>
+        <strong>2. Collision & Treeification</strong>
+        <ul>
+            <li><strong>Chaining:</strong> Uses Linked Lists for colliding keys.</li>
+            <li><strong>Treeification:</strong> Bucket converts to a Red-Black Tree when nodes &ge; 8 and capacity &ge; 64. Reduces lookup time from $O(n)$ to $O(\log n)$.</li>
+            <li><strong>Untreeification:</strong> Reverts to list when bucket nodes drop &le; 6.</li>
+        </ul>
+
+        <hr>
+        <strong>3. Resizing Algorithm</strong>
+        <ul>
+            <li>Triggers when entries exceed $\text{Capacity} \times \text{Load Factor}$ (Default $16 \times 0.75 = 12$).</li>
+            <li>Capacity doubles ($16 \rightarrow 32$). Re-indexing checks <code>(hash & oldCap) == 0</code> to split nodes cleanly without full hash re-computation.</li>
+        </ul>
+    </div>
+
+    <!-- Q7 & A7 -->
+    <div class="message user">
+        <div class="role">User</div>
+        HashMap internal working — hashing, collision, resizing. provide a detailed explaination with diagram
+    </div>
+    <div class="message assistant">
+        <div class="role">Assistant</div>
+        Below is the detailed architectural layout of `HashMap` bucket allocations, collision conversions, and resizing checks.
+
+        <hr>
+        <strong>Internal Bucket Layout</strong>
+        <p><em>[Visual Concept: Array of indexes 0 to n-1 pointing to Linked Nodes. Bucket 3 contains Node A -> Node B -> Node C]</em></p>
+
+        <hr>
+        <strong>Treeification Conversion</strong>
+        <p><em>[Visual Concept: When bucket length hits 8, Singly Linked List converts into a Balanced Red-Black Binary Search Tree]</em></p>
+
+        <hr>
+        <strong>Summary Reference Table</strong>
+        <table>
+            <thead>
+                <tr><th>Mechanism</th><th>Value / Threshold</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>Default Initial Capacity / Load Factor</td><td>16 / 0.75</td></tr>
+                <tr><td>Index Calculation</td><td><code>(n - 1) & hash</code></td></tr>
+                <tr><td>Treeify Threshold</td><td>Bucket &ge; 8 nodes & Total Capacity &ge; 64</td></tr>
+                <tr><td>Untreeify Threshold</td><td>Bucket &le; 6 nodes</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Q8 & A8 -->
+    <div class="message user">
+        <div class="role">User</div>
+        can you provide an example of calc hash and index
+    </div>
+    <div class="message assistant">
+        <div class="role">Assistant</div>
+        <strong>Example Calculation:</strong> Key = `"John"`, Capacity $n = 16$.
+
+        <hr>
+        <ul>
+            <li><strong>Step 1: hashCode():</strong> <code>"John".hashCode() = 2314539</code><br>
+                Binary: <code>00000000 00100011 01010001 00101011</code>
+            </li>
+            <li><strong>Step 2: Spread Hash:</strong> <code>h ^ (h >>> 16)</code><br>
+                Calculated Hash: <code>2314504</code><br>
+                Binary: <code>00000000 00100011 01010001 00001000</code>
+            </li>
+            <li><strong>Step 3: Index Masking:</strong> <code>(16 - 1) & hash</code><br>
+                Index Binary: <code>00000000 00000000 00000000 00001000</code> = <strong>Decimal 8</strong>
+            </li>
+        </ul>
+<pre><code>public class HashCalc {
+    public static void main(String[] args) {
+        String key = "John";
+        int n = 16;
+        int h = key.hashCode();
+        int hash = h ^ (h >>> 16);
+        int index = (n - 1) & hash;
+        System.out.println("Index: " + index); // Prints 8
+    }
+}</code></pre>
+    </div>
+
+    <!-- Q9 & A9 -->
+    <div class="message user">
+        <div class="role">User</div>
+        Explain Java Memory Model (JMM) and volatile.
+    </div>
+    <div class="message assistant">
+        <div class="role">Assistant</div>
+        The <strong>Java Memory Model (JMM)</strong> defines how threads interact through memory, handling variable visibility, instruction reordering, and memory barriers.
+
+        <hr>
+        <strong>Core Concepts</strong>
+        <ul>
+            <li><strong>Working Memory vs Main Memory:</strong> Threads copy variables into local CPU caches (Working Memory). Updates might not immediately write back to RAM (Main Memory), causing visibility issues.</li>
+            <li><strong>Happens-Before Relationship:</strong> Guarantees that memory writes by one thread are visible to reads by another.</li>
+        </ul>
+
+        <hr>
+        <strong>The <code>volatile</code> Keyword</strong>
+        <ol>
+            <li><strong>Guarantees Visibility:</strong> All reads/writes go straight to Main Memory.</li>
+            <li><strong>Prevents Instruction Reordering:</strong> Inserts memory barriers to stop CPU compiler optimizations from shifting instructions across volatile boundaries.</li>
+        </ol>
+
+        <table>
+            <thead>
+                <tr><th>Feature</th><th>volatile</th><th>synchronized</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>Guarantees</td><td>Visibility & Ordering</td><td>Visibility, Ordering, AND Atomicity</td></tr>
+                <tr><td>Locking</td><td>Non-blocking</td><td>Blocking</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Q10 & A10 -->
+    <div class="message user">
+        <div class="role">User</div>
+        How to perform multi-level sorting using Comparator.
+    </div>
+    <div class="message assistant">
+        <div class="role">Assistant</div>
+        Multi-level sorting is performed by chaining <code>Comparator.comparing()</code> with <code>.thenComparing()</code>.
+
+<pre><code>import java.util.*;
+
+public class MultiSort {
+    public static void main(String[] args) {
+        List&lt;Employee&gt; list = Arrays.asList(
+            new Employee("IT", "Alice", 90000),
+            new Employee("HR", "Bob", 60000),
+            new Employee("IT", "Charlie", 95000),
+            new Employee("IT", "David", 90000)
+        );
+
+        Comparator&lt;Employee&gt; comp = Comparator
+                .comparing(Employee::getDepartment)                         // 1st Level: Dept ASC
+                .thenComparing(Employee::getSalary, Comparator.reverseOrder()) // 2nd Level: Salary DESC
+                .thenComparing(Employee::getName);                           // 3rd Level: Name ASC
+
+        list.sort(comp);
+        list.forEach(System.out::println);
+    }
+}</code></pre>
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LRU Cache in Java</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            line-height: 1.6;
+        }
+        h1, h2 {
+            color: #2c3e50;
+        }
+        pre {
+            background: #f4f4f4;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+        .box {
+            background: #eef6ff;
+            padding: 15px;
+            border-left: 5px solid #3498db;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+
+<h1>LRU Cache in Java</h1>
+
+<div class="box">
+    <b>LRU = Least Recently Used</b><br>
+    When cache is full, remove the least recently accessed element.
+</div>
+
+<h2>Why LRU Cache?</h2>
+<ul>
+    <li>Improves performance by caching frequently used data</li>
+    <li>Used in browsers, databases, APIs</li>
+</ul>
+
+<h2>Approach</h2>
+<ul>
+    <li>HashMap for O(1) lookup</li>
+    <li>Doubly Linked List for O(1) insertion and deletion</li>
+</ul>
+
+<h2>Java Implementation</h2>
+
+<pre>
+import java.util.HashMap;
+
+class LRUCache {
+
+    class Node {
+        int key, value;
+        Node prev, next;
+
+        Node(int k, int v) {
+            key = k;
+            value = v;
+        }
+    }
+
+    private int capacity;
+    private HashMap<Integer, Node> map;
+    private Node head, tail;
+
+    public LRUCache(int capacity) {
+        this.capacity = capacity;
+        map = new HashMap<>();
+        head = new Node(0, 0);
+        tail = new Node(0, 0);
+        head.next = tail;
+        tail.prev = head;
+    }
+
+    public int get(int key) {
+        if (!map.containsKey(key)) return -1;
+
+        Node node = map.get(key);
+        remove(node);
+        insert(node);
+        return node.value;
+    }
+
+    public void put(int key, int value) {
+        if (map.containsKey(key)) {
+            remove(map.get(key));
+        }
+
+        if (map.size() == capacity) {
+            remove(tail.prev);
+        }
+
+        Node newNode = new Node(key, value);
+        insert(newNode);
+    }
+
+    private void remove(Node node) {
+        map.remove(node.key);
+        node.prev.next = node.next;
+        node.next.prev = node.prev;
+    }
+
+    private void insert(Node node) {
+        map.put(node.key, node);
+        node.next = head.next;
+        head.next.prev = node;
+        head.next = node;
+        node.prev = head;
+    }
+}
+</pre>
+
+<h2>Time Complexity</h2>
+<ul>
+    <li>get() → O(1)</li>
+    <li>put() → O(1)</li>
+</ul>
+
+<h2>Alternative (Using LinkedHashMap)</h2>
+
+<pre>
+import java.util.*;
+
+class LRUCache extends LinkedHashMap<Integer, Integer> {
+    private int capacity;
+
+    public LRUCache(int capacity) {
+        super(capacity, 0.75f, true);
+        this.capacity = capacity;
+    }
+
+    protected boolean removeEldestEntry(Map.Entry<Integer, Integer> eldest) {
+        return size() > capacity;
+    }
+}
+</pre>
+
+</body>
+</html>

@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java Collections — Complete Visual Guide</title>
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --accent: #38bdf8;
+            --accent2: #a78bfa;
+            --accent3: #34d399;
+            --accent4: #fb923c;
+            --accent5: #f472b6;
+            --accent6: #facc15;
+            --text: #e2e8f0;
+            --muted: #94a3b8;
+            --border: #334155;
+            --code-bg: #0d1117;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
+
+        header { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border-bottom: 1px solid var(--border); text-align: center; padding: 50px 20px 40px; }
+        header h1 { font-size: 2.6rem; background: linear-gradient(90deg, var(--accent), var(--accent3)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 10px; }
+        header p { color: var(--muted); font-size: 1.15rem; }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+        section { margin-bottom: 55px; }
+        section h2 { font-size: 1.7rem; margin-bottom: 18px; padding-bottom: 8px; border-bottom: 2px solid var(--accent); display: inline-block; }
+        section h3 { font-size: 1.25rem; color: var(--accent2); margin: 22px 0 10px; }
+        p, li { color: var(--text); margin-bottom: 10px; }
+        ul { padding-left: 24px; }
+        a { color: var(--accent); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 16px; }
+        .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; transition: transform .2s, box-shadow .2s; }
+        .card:hover { transform: translateY(-4px); box-shadow: 0 8px 30px rgba(0,0,0,.4); }
+        .card .icon { font-size: 2rem; margin-bottom: 10px; }
+        .card h4 { font-size: 1.15rem; margin-bottom: 6px; color: var(--accent); }
+        .card .subtitle { font-size: .85rem; color: var(--accent3); margin-bottom: 8px; font-weight: 600; }
+        .card p { font-size: .93rem; color: var(--muted); margin: 0 0 6px; }
+        .card ul { padding-left: 18px; margin-top: 6px; }
+        .card li { font-size: .9rem; color: var(--muted); margin-bottom: 4px; }
+
+        table { width: 100%; border-collapse: collapse; margin: 14px 0; }
+        th, td { text-align: left; padding: 12px 16px; border: 1px solid var(--border); font-size: .93rem; }
+        th { background: var(--card); color: var(--accent); font-weight: 600; }
+        td { color: var(--text); }
+        tr:nth-child(even) td { background: rgba(30,41,59,.5); }
+
+        .highlight-box { background: linear-gradient(135deg, rgba(167,139,250,.1), rgba(56,189,248,.1)); border-left: 4px solid var(--accent2); border-radius: 8px; padding: 20px 24px; margin: 18px 0; }
+        .highlight-box h4 { color: var(--accent2); margin-bottom: 8px; font-size: 1.1rem; }
+
+        .diagram-box { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 10px; margin: 20px 0; overflow-x: auto; }
+        .diagram-box svg text { font-family: 'Segoe UI', system-ui, sans-serif; }
+
+        pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: 10px; padding: 18px; overflow-x: auto; font-size: .86rem; line-height: 1.55; margin: 14px 0; }
+        code { font-family: 'Cascadia Code', 'Fira Code', Consolas, monospace; }
+        .kw { color: #c678dd; } .ann { color: #e5c07b; } .str { color: #98c379; } .cmt { color: #5c6370; font-style: italic; } .typ { color: #61afef; } .fn { color: #61afef; } .num { color: #d19a66; }
+
+        .tag { display: inline-block; padding: 2px 10px; border-radius: 6px; font-size: .78rem; font-weight: 600; margin: 2px 3px; }
+        .tag-green { background: rgba(52,211,153,.15); color: #34d399; }
+        .tag-red { background: rgba(248,113,113,.15); color: #f87171; }
+        .tag-blue { background: rgba(56,189,248,.15); color: #38bdf8; }
+        .tag-yellow { background: rgba(250,204,21,.15); color: #facc15; }
+        .tag-purple { background: rgba(167,139,250,.15); color: #a78bfa; }
+        .tag-orange { background: rgba(251,146,60,.15); color: #fb923c; }
+
+        .vs-table td:first-child { font-weight: 600; color: var(--accent); white-space: nowrap; }
+
+        footer { text-align: center; padding: 30px; color: var(--muted); font-size: .85rem; border-top: 1px solid var(--border); }
+
+        @media (max-width: 640px) { header h1 { font-size: 1.8rem; } .cards { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>☕ Java Collections Framework — Complete Visual Guide</h1>
+    <p>Hierarchy diagrams, when to use what, and performance characteristics at a glance</p>
+    <p style="margin-top: 10px;"><a href="java-collections-implementation.html" style="color: var(--accent3);">📄 See Implementation Examples →</a></p>
+</header>
+
+<div class="container">
+
+<!-- ==================== 1. THE BIG PICTURE ==================== -->
+<section id="overview">
+    <h2>1 &nbsp; The Big Picture</h2>
+    <p>The Java Collections Framework lives in <code>java.util</code>. Everything stems from two root interfaces:</p>
+    <div class="cards" style="grid-template-columns: 1fr 1fr;">
+        <div class="card" style="border-color: var(--accent);">
+            <div class="icon">📦</div>
+            <h4>Collection&lt;E&gt;</h4>
+            <p>A group of individual elements — List, Set, Queue</p>
+        </div>
+        <div class="card" style="border-color: var(--accent4);">
+            <div class="icon">🗂️</div>
+            <h4>Map&lt;K, V&gt;</h4>
+            <p>Key-value pairs — does NOT extend Collection</p>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== 2. FULL HIERARCHY DIAGRAM ==================== -->
+<section id="hierarchy">
+    <h2>2 &nbsp; Complete Hierarchy Diagram</h2>
+
+    <div class="diagram-box">
+        <svg viewBox="0 0 1100 820" xmlns="http://www.w3.org/2000/svg" width="100%" height="auto">
+            <defs>
+                <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#94a3b8"/></marker>
+                <marker id="arr-b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#38bdf8"/></marker>
+                <marker id="arr-g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#34d399"/></marker>
+                <marker id="arr-p" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#a78bfa"/></marker>
+                <marker id="arr-o" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#fb923c"/></marker>
+            </defs>
+
+            <!-- ====== Iterable ====== -->
+            <rect x="240" y="10" width="160" height="40" rx="8" fill="#1e293b" stroke="#94a3b8" stroke-width="1.5"/>
+            <text x="320" y="35" text-anchor="middle" fill="#94a3b8" font-size="14" font-weight="600">Iterable&lt;E&gt;</text>
+
+            <!-- Iterable → Collection -->
+            <line x1="320" y1="50" x2="320" y2="75" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr)"/>
+
+            <!-- ====== Collection ====== -->
+            <rect x="230" y="78" width="180" height="44" rx="10" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+            <text x="320" y="105" text-anchor="middle" fill="#38bdf8" font-size="15" font-weight="700">Collection&lt;E&gt;</text>
+
+            <!-- Collection branches -->
+            <line x1="230" y1="122" x2="100" y2="180" stroke="#38bdf8" stroke-width="1.5" marker-end="url(#arr-b)"/>
+            <line x1="320" y1="122" x2="320" y2="180" stroke="#34d399" stroke-width="1.5" marker-end="url(#arr-g)"/>
+            <line x1="410" y1="122" x2="560" y2="180" stroke="#a78bfa" stroke-width="1.5" marker-end="url(#arr-p)"/>
+
+            <!-- ====== LIST ====== -->
+            <rect x="30" y="183" width="140" height="40" rx="8" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+            <text x="100" y="208" text-anchor="middle" fill="#38bdf8" font-size="14" font-weight="700">List&lt;E&gt;</text>
+            <text x="100" y="240" text-anchor="middle" fill="#94a3b8" font-size="10">Ordered, allows duplicates</text>
+
+            <!-- List implementations -->
+            <line x1="40" y1="223" x2="40" y2="270" stroke="#38bdf8" stroke-width="1.2" marker-end="url(#arr-b)"/>
+            <line x1="100" y1="223" x2="100" y2="270" stroke="#38bdf8" stroke-width="1.2" marker-end="url(#arr-b)"/>
+            <line x1="155" y1="223" x2="170" y2="270" stroke="#38bdf8" stroke-width="1.2" marker-end="url(#arr-b)"/>
+
+            <rect x="2" y="275" width="100" height="36" rx="7" fill="#0d1117" stroke="#38bdf8" stroke-width="1.2"/>
+            <text x="52" y="298" text-anchor="middle" fill="#38bdf8" font-size="12" font-weight="600">ArrayList</text>
+
+            <rect x="55" y="325" width="100" height="36" rx="7" fill="#0d1117" stroke="#38bdf8" stroke-width="1.2"/>
+            <text x="105" y="348" text-anchor="middle" fill="#38bdf8" font-size="12" font-weight="600">LinkedList</text>
+
+            <rect x="120" y="275" width="100" height="36" rx="7" fill="#0d1117" stroke="#38bdf8" stroke-width="1.2"/>
+            <text x="170" y="298" text-anchor="middle" fill="#38bdf8" font-size="12" font-weight="600">Vector</text>
+
+            <line x1="170" y1="311" x2="170" y2="370" stroke="#38bdf8" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#arr-b)"/>
+            <rect x="125" y="374" width="95" height="32" rx="7" fill="#0d1117" stroke="#38bdf8" stroke-width="1"/>
+            <text x="172" y="395" text-anchor="middle" fill="#38bdf8" font-size="11">Stack</text>
+
+            <!-- ====== SET ====== -->
+            <rect x="260" y="183" width="130" height="40" rx="8" fill="#1e293b" stroke="#34d399" stroke-width="2"/>
+            <text x="325" y="208" text-anchor="middle" fill="#34d399" font-size="14" font-weight="700">Set&lt;E&gt;</text>
+            <text x="325" y="240" text-anchor="middle" fill="#94a3b8" font-size="10">No duplicates</text>
+
+            <!-- Set implementations -->
+            <line x1="275" y1="223" x2="265" y2="270" stroke="#34d399" stroke-width="1.2" marker-end="url(#arr-g)"/>
+            <line x1="325" y1="223" x2="325" y2="270" stroke="#34d399" stroke-width="1.2" marker-end="url(#arr-g)"/>
+            <line x1="375" y1="223" x2="395" y2="270" stroke="#34d399" stroke-width="1.2" marker-end="url(#arr-g)"/>
+
+            <rect x="222" y="275" width="110" height="36" rx="7" fill="#0d1117" stroke="#34d399" stroke-width="1.2"/>
+            <text x="277" y="298" text-anchor="middle" fill="#34d399" font-size="12" font-weight="600">HashSet</text>
+
+            <line x1="277" y1="311" x2="277" y2="345" stroke="#34d399" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#arr-g)"/>
+            <rect x="215" y="350" width="125" height="34" rx="7" fill="#0d1117" stroke="#34d399" stroke-width="1"/>
+            <text x="277" y="372" text-anchor="middle" fill="#34d399" font-size="11">LinkedHashSet</text>
+
+            <!-- SortedSet → TreeSet -->
+            <rect x="345" y="275" width="110" height="36" rx="7" fill="#1e293b" stroke="#34d399" stroke-width="1.5"/>
+            <text x="400" y="298" text-anchor="middle" fill="#34d399" font-size="12" font-weight="600">SortedSet</text>
+            <line x1="400" y1="311" x2="400" y2="345" stroke="#34d399" stroke-width="1.2" marker-end="url(#arr-g)"/>
+            <rect x="350" y="350" width="100" height="34" rx="7" fill="#0d1117" stroke="#34d399" stroke-width="1.2"/>
+            <text x="400" y="372" text-anchor="middle" fill="#34d399" font-size="12" font-weight="600">TreeSet</text>
+
+            <!-- EnumSet -->
+            <rect x="248" y="400" width="100" height="32" rx="7" fill="#0d1117" stroke="#34d399" stroke-width="1"/>
+            <text x="298" y="420" text-anchor="middle" fill="#34d399" font-size="11">EnumSet</text>
+
+            <!-- ====== QUEUE ====== -->
+            <rect x="500" y="183" width="140" height="40" rx="8" fill="#1e293b" stroke="#a78bfa" stroke-width="2"/>
+            <text x="570" y="208" text-anchor="middle" fill="#a78bfa" font-size="14" font-weight="700">Queue&lt;E&gt;</text>
+            <text x="570" y="240" text-anchor="middle" fill="#94a3b8" font-size="10">FIFO ordering</text>
+
+            <!-- Queue implementations -->
+            <line x1="520" y1="223" x2="500" y2="270" stroke="#a78bfa" stroke-width="1.2" marker-end="url(#arr-p)"/>
+            <line x1="570" y1="223" x2="570" y2="270" stroke="#a78bfa" stroke-width="1.2" marker-end="url(#arr-p)"/>
+            <line x1="620" y1="223" x2="660" y2="270" stroke="#a78bfa" stroke-width="1.2" marker-end="url(#arr-p)"/>
+
+            <rect x="462" y="275" width="120" height="36" rx="7" fill="#0d1117" stroke="#a78bfa" stroke-width="1.2"/>
+            <text x="522" y="298" text-anchor="middle" fill="#a78bfa" font-size="12" font-weight="600">PriorityQueue</text>
+
+            <rect x="525" y="325" width="110" height="36" rx="7" fill="#0d1117" stroke="#a78bfa" stroke-width="1.2"/>
+            <text x="580" y="348" text-anchor="middle" fill="#a78bfa" font-size="11" font-weight="600">ArrayDeque</text>
+
+            <!-- Deque interface -->
+            <rect x="620" y="275" width="120" height="36" rx="7" fill="#1e293b" stroke="#a78bfa" stroke-width="1.5"/>
+            <text x="680" y="298" text-anchor="middle" fill="#a78bfa" font-size="12" font-weight="600">Deque&lt;E&gt;</text>
+            <text x="680" y="318" text-anchor="middle" fill="#94a3b8" font-size="9">Double-ended</text>
+
+            <!-- LinkedList also implements Deque -->
+            <line x1="620" y1="304" x2="155" y2="340" stroke="#94a3b8" stroke-width="1" stroke-dasharray="4,3"/>
+            <text x="380" y="315" fill="#94a3b8" font-size="9" font-style="italic">LinkedList also implements Deque</text>
+
+            <!-- ================================================ -->
+            <!-- ====== MAP (separate hierarchy) ====== -->
+            <!-- ================================================ -->
+            <rect x="30" y="490" width="1040" height="310" rx="14" fill="none" stroke="var(--border)" stroke-width="1" stroke-dasharray="8,6"/>
+            <text x="550" y="480" text-anchor="middle" fill="var(--muted)" font-size="12" font-style="italic">Map hierarchy (does NOT extend Collection)</text>
+
+            <rect x="420" y="510" width="170" height="44" rx="10" fill="#1e293b" stroke="#fb923c" stroke-width="2"/>
+            <text x="505" y="537" text-anchor="middle" fill="#fb923c" font-size="15" font-weight="700">Map&lt;K, V&gt;</text>
+
+            <!-- Map branches -->
+            <line x1="420" y1="554" x2="150" y2="610" stroke="#fb923c" stroke-width="1.5" marker-end="url(#arr-o)"/>
+            <line x1="470" y1="554" x2="400" y2="610" stroke="#fb923c" stroke-width="1.5" marker-end="url(#arr-o)"/>
+            <line x1="540" y1="554" x2="620" y2="610" stroke="#fb923c" stroke-width="1.5" marker-end="url(#arr-o)"/>
+            <line x1="590" y1="554" x2="830" y2="610" stroke="#fb923c" stroke-width="1.5" marker-end="url(#arr-o)"/>
+
+            <!-- HashMap -->
+            <rect x="80" y="614" width="140" height="38" rx="7" fill="#0d1117" stroke="#fb923c" stroke-width="1.5"/>
+            <text x="150" y="638" text-anchor="middle" fill="#fb923c" font-size="13" font-weight="600">HashMap</text>
+
+            <line x1="150" y1="652" x2="150" y2="690" stroke="#fb923c" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#arr-o)"/>
+            <rect x="70" y="694" width="160" height="34" rx="7" fill="#0d1117" stroke="#fb923c" stroke-width="1"/>
+            <text x="150" y="716" text-anchor="middle" fill="#fb923c" font-size="12">LinkedHashMap</text>
+
+            <!-- Hashtable -->
+            <rect x="330" y="614" width="140" height="38" rx="7" fill="#0d1117" stroke="#fb923c" stroke-width="1.5"/>
+            <text x="400" y="638" text-anchor="middle" fill="#fb923c" font-size="13" font-weight="600">Hashtable</text>
+            <text x="400" y="660" text-anchor="middle" fill="#f87171" font-size="9">Legacy / Synchronized</text>
+
+            <!-- SortedMap → TreeMap -->
+            <rect x="550" y="614" width="145" height="38" rx="7" fill="#1e293b" stroke="#fb923c" stroke-width="1.5"/>
+            <text x="622" y="638" text-anchor="middle" fill="#fb923c" font-size="13" font-weight="600">SortedMap</text>
+
+            <line x1="622" y1="652" x2="622" y2="690" stroke="#fb923c" stroke-width="1.2" marker-end="url(#arr-o)"/>
+            <rect x="565" y="694" width="115" height="34" rx="7" fill="#0d1117" stroke="#fb923c" stroke-width="1.2"/>
+            <text x="622" y="716" text-anchor="middle" fill="#fb923c" font-size="12" font-weight="600">TreeMap</text>
+
+            <!-- ConcurrentHashMap -->
+            <rect x="750" y="614" width="180" height="38" rx="7" fill="#0d1117" stroke="#fb923c" stroke-width="1.5"/>
+            <text x="840" y="638" text-anchor="middle" fill="#fb923c" font-size="12" font-weight="600">ConcurrentHashMap</text>
+            <text x="840" y="660" text-anchor="middle" fill="#34d399" font-size="9">Thread-safe (modern)</text>
+
+            <!-- EnumMap -->
+            <rect x="770" y="694" width="110" height="34" rx="7" fill="#0d1117" stroke="#fb923c" stroke-width="1"/>
+            <text x="825" y="716" text-anchor="middle" fill="#fb923c" font-size="11">EnumMap</text>
+
+            <!-- Legend -->
+            <rect x="780" y="760" width="14" height="14" rx="3" fill="#1e293b" stroke="#94a3b8" stroke-width="1.2"/>
+            <text x="800" y="773" fill="#94a3b8" font-size="11">= Interface</text>
+            <rect x="880" y="760" width="14" height="14" rx="3" fill="#0d1117" stroke="#94a3b8" stroke-width="1.2"/>
+            <text x="900" y="773" fill="#94a3b8" font-size="11">= Class</text>
+        </svg>
+    </div>
+</section>
+
+<!-- ==================== 3. LIST FAMILY ==================== -->
+<section id="list">
+    <h2>3 &nbsp; List — Ordered &amp; Indexed</h2>
+    <p>Elements have a <strong>position (index)</strong>. Duplicates allowed. Maintains <strong>insertion order</strong>.</p>
+
+    <div class="cards">
+        <div class="card" style="border-color: #38bdf8;">
+            <div class="icon">⚡</div>
+            <h4>ArrayList</h4>
+            <div class="subtitle">Backed by: dynamic array</div>
+            <p><span class="tag tag-green">✅ Use when</span> you need fast <strong>random access</strong> by index and most operations are reads.</p>
+            <ul>
+                <li>get(i) → <strong>O(1)</strong></li>
+                <li>add (end) → <strong>O(1)</strong> amortized</li>
+                <li>add/remove (middle) → <strong>O(n)</strong></li>
+                <li>Not synchronized</li>
+            </ul>
+            <p style="margin-top:8px"><span class="tag tag-blue">Most used List</span></p>
+        </div>
+        <div class="card" style="border-color: #38bdf8;">
+            <div class="icon">🔗</div>
+            <h4>LinkedList</h4>
+            <div class="subtitle">Backed by: doubly-linked list</div>
+            <p><span class="tag tag-green">✅ Use when</span> you do frequent <strong>insertions/deletions</strong> at the beginning or middle.</p>
+            <ul>
+                <li>get(i) → <strong>O(n)</strong></li>
+                <li>add/remove (head/tail) → <strong>O(1)</strong></li>
+                <li>Also implements <code>Deque</code></li>
+                <li>Higher memory (node pointers)</li>
+            </ul>
+        </div>
+        <div class="card" style="border-color: #38bdf8;">
+            <div class="icon">🔒</div>
+            <h4>Vector / Stack</h4>
+            <div class="subtitle">Legacy — synchronized</div>
+            <p><span class="tag tag-red">❌ Avoid</span> in new code. Use <code>ArrayList</code> + <code>Collections.synchronizedList()</code> or <code>CopyOnWriteArrayList</code>.</p>
+            <ul>
+                <li>Vector = synchronized ArrayList</li>
+                <li>Stack extends Vector (LIFO)</li>
+                <li>Use <code>ArrayDeque</code> instead of Stack</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="highlight-box">
+        <h4>💡 ArrayList vs LinkedList — Quick Rule</h4>
+        <p>
+            <strong>95% of the time, use ArrayList.</strong> LinkedList is only better when you're constantly
+            adding/removing from the head and never doing random access. In practice, ArrayList's cache locality
+            makes it faster for almost everything.
+        </p>
+    </div>
+</section>
+
+<!-- ==================== 4. SET FAMILY ==================== -->
+<section id="set">
+    <h2>4 &nbsp; Set — No Duplicates</h2>
+    <p>Each element appears <strong>only once</strong>. Uses <code>equals()</code> and <code>hashCode()</code> to determine uniqueness.</p>
+
+    <div class="cards">
+        <div class="card" style="border-color: #34d399;">
+            <div class="icon">🏷️</div>
+            <h4>HashSet</h4>
+            <div class="subtitle">Backed by: HashMap</div>
+            <p><span class="tag tag-green">✅ Use when</span> you need fast <strong>lookup / uniqueness</strong> and don't care about order.</p>
+            <ul>
+                <li>add, remove, contains → <strong>O(1)</strong></li>
+                <li><strong>No order</strong> guaranteed</li>
+                <li>Allows one <code>null</code></li>
+            </ul>
+            <p style="margin-top:8px"><span class="tag tag-blue">Most used Set</span></p>
+        </div>
+        <div class="card" style="border-color: #34d399;">
+            <div class="icon">📎</div>
+            <h4>LinkedHashSet</h4>
+            <div class="subtitle">Backed by: LinkedHashMap</div>
+            <p><span class="tag tag-green">✅ Use when</span> you need uniqueness <strong>+ insertion order preserved</strong>.</p>
+            <ul>
+                <li>Slightly slower than HashSet</li>
+                <li>Maintains <strong>insertion order</strong></li>
+                <li>Iteration = insertion order</li>
+            </ul>
+        </div>
+        <div class="card" style="border-color: #34d399;">
+            <div class="icon">🌲</div>
+            <h4>TreeSet</h4>
+            <div class="subtitle">Backed by: TreeMap (Red-Black tree)</div>
+            <p><span class="tag tag-green">✅ Use when</span> you need elements <strong>sorted</strong> automatically.</p>
+            <ul>
+                <li>add, remove, contains → <strong>O(log n)</strong></li>
+                <li>Sorted by natural order or Comparator</li>
+                <li>No <code>null</code> (throws NPE)</li>
+            </ul>
+        </div>
+    </div>
+
+    <h3>Set Decision Flowchart</h3>
+    <pre><code>Need unique elements?
+  │
+  ├── Don't care about order?  ──────────►  <span class="fn">HashSet</span>       <span class="cmt">(fastest)</span>
+  │
+  ├── Need insertion order?    ──────────►  <span class="fn">LinkedHashSet</span> <span class="cmt">(ordered)</span>
+  │
+  └── Need sorted order?       ──────────►  <span class="fn">TreeSet</span>       <span class="cmt">(sorted, slower)</span>
+</code></pre>
+</section>
+
+<!-- ==================== 5. QUEUE / DEQUE FAMILY ==================== -->
+<section id="queue">
+    <h2>5 &nbsp; Queue &amp; Deque — FIFO / LIFO</h2>
+    <p><strong>Queue</strong> = First-In-First-Out. <strong>Deque</strong> = Double-Ended Queue (can act as both Queue and Stack).</p>
+
+    <div class="cards">
+        <div class="card" style="border-color: #a78bfa;">
+            <div class="icon">📊</div>
+            <h4>PriorityQueue</h4>
+            <div class="subtitle">Backed by: binary heap</div>
+            <p><span class="tag tag-green">✅ Use when</span> you need elements processed by <strong>priority</strong> (min or max).</p>
+            <ul>
+                <li>offer/poll → <strong>O(log n)</strong></li>
+                <li>peek → <strong>O(1)</strong></li>
+                <li>Default = min-heap (natural order)</li>
+                <li>NOT thread-safe</li>
+            </ul>
+        </div>
+        <div class="card" style="border-color: #a78bfa;">
+            <div class="icon">↔️</div>
+            <h4>ArrayDeque</h4>
+            <div class="subtitle">Backed by: resizable circular array</div>
+            <p><span class="tag tag-green">✅ Use as</span> both <strong>Stack</strong> (LIFO) and <strong>Queue</strong> (FIFO). Faster than LinkedList for both.</p>
+            <ul>
+                <li>push/pop/offer/poll → <strong>O(1)</strong></li>
+                <li>No capacity restrictions</li>
+                <li>No <code>null</code> elements</li>
+            </ul>
+            <p style="margin-top:8px"><span class="tag tag-purple">Replaces Stack &amp; LinkedList-as-Queue</span></p>
+        </div>
+        <div class="card" style="border-color: #a78bfa;">
+            <div class="icon">🔗</div>
+            <h4>LinkedList (as Queue)</h4>
+            <div class="subtitle">Also implements Deque</div>
+            <p><span class="tag tag-yellow">⚠️ Use only when</span> you need a <strong>Deque with null elements</strong> (ArrayDeque doesn't allow nulls).</p>
+            <ul>
+                <li>offer/poll → <strong>O(1)</strong></li>
+                <li>Slightly more memory overhead</li>
+                <li>Allows <code>null</code></li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== 6. MAP FAMILY ==================== -->
+<section id="map">
+    <h2>6 &nbsp; Map — Key-Value Pairs</h2>
+    <p>Stores data as <strong>key → value</strong> pairs. Keys are unique. <strong>Does NOT extend Collection.</strong></p>
+
+    <div class="cards">
+        <div class="card" style="border-color: #fb923c;">
+            <div class="icon">🗃️</div>
+            <h4>HashMap</h4>
+            <div class="subtitle">Backed by: array of buckets + linked list / tree</div>
+            <p><span class="tag tag-green">✅ Use when</span> you need fast <strong>key-based lookup</strong> and don't care about order.</p>
+            <ul>
+                <li>put, get, remove → <strong>O(1)</strong> average</li>
+                <li><strong>No order</strong> guaranteed</li>
+                <li>Allows one <code>null</code> key, multiple <code>null</code> values</li>
+                <li>Not synchronized</li>
+            </ul>
+            <p style="margin-top:8px"><span class="tag tag-blue">Most used Map</span></p>
+        </div>
+        <div class="card" style="border-color: #fb923c;">
+            <div class="icon">📎</div>
+            <h4>LinkedHashMap</h4>
+            <div class="subtitle">Backed by: HashMap + doubly-linked list</div>
+            <p><span class="tag tag-green">✅ Use when</span> you need key-value storage <strong>+ insertion order preserved</strong> (or access order for LRU cache).</p>
+            <ul>
+                <li>Same O(1) as HashMap</li>
+                <li>Iteration = insertion order</li>
+                <li>Can be configured for <strong>access-order</strong> (LRU)</li>
+            </ul>
+        </div>
+        <div class="card" style="border-color: #fb923c;">
+            <div class="icon">🌲</div>
+            <h4>TreeMap</h4>
+            <div class="subtitle">Backed by: Red-Black tree</div>
+            <p><span class="tag tag-green">✅ Use when</span> you need keys <strong>sorted</strong> automatically.</p>
+            <ul>
+                <li>put, get, remove → <strong>O(log n)</strong></li>
+                <li>Sorted by natural key order or Comparator</li>
+                <li>No <code>null</code> keys</li>
+                <li>Provides <code>firstKey()</code>, <code>lastKey()</code>, <code>subMap()</code></li>
+            </ul>
+        </div>
+        <div class="card" style="border-color: #fb923c;">
+            <div class="icon">🔒</div>
+            <h4>Hashtable</h4>
+            <div class="subtitle">Legacy — fully synchronized</div>
+            <p><span class="tag tag-red">❌ Avoid.</span> Use <code>ConcurrentHashMap</code> instead for thread safety.</p>
+            <ul>
+                <li>Synchronized on every method</li>
+                <li>No <code>null</code> keys or values</li>
+                <li>Extends Dictionary (obsolete)</li>
+            </ul>
+        </div>
+        <div class="card" style="border-color: #fb923c;">
+            <div class="icon">⚡</div>
+            <h4>ConcurrentHashMap</h4>
+            <div class="subtitle">Thread-safe, segment-level locking</div>
+            <p><span class="tag tag-green">✅ Use when</span> you need a <strong>thread-safe Map</strong> with high concurrency.</p>
+            <ul>
+                <li>Lock striping → much faster than Hashtable</li>
+                <li>No <code>null</code> keys or values</li>
+                <li>From <code>java.util.concurrent</code></li>
+            </ul>
+        </div>
+        <div class="card" style="border-color: #fb923c;">
+            <div class="icon">🏷️</div>
+            <h4>EnumMap</h4>
+            <div class="subtitle">Backed by: array indexed by enum ordinal</div>
+            <p><span class="tag tag-green">✅ Use when</span> keys are <strong>enum constants</strong>. Fastest possible Map for enums.</p>
+            <ul>
+                <li>All operations → <strong>O(1)</strong></li>
+                <li>Extremely compact</li>
+                <li>Keys must be a single enum type</li>
+            </ul>
+        </div>
+    </div>
+
+    <h3>Map Decision Flowchart</h3>
+    <pre><code>Need key-value pairs?
+  │
+  ├── Keys are enums?           ──────────►  <span class="fn">EnumMap</span>            <span class="cmt">(fastest for enums)</span>
+  │
+  ├── Need thread safety?       ──────────►  <span class="fn">ConcurrentHashMap</span>  <span class="cmt">(modern, concurrent)</span>
+  │
+  ├── Need sorted keys?         ──────────►  <span class="fn">TreeMap</span>            <span class="cmt">(O(log n), sorted)</span>
+  │
+  ├── Need insertion order?     ──────────►  <span class="fn">LinkedHashMap</span>      <span class="cmt">(ordered)</span>
+  │
+  └── Just fast lookup?         ──────────►  <span class="fn">HashMap</span>            <span class="cmt">(O(1), most common)</span>
+</code></pre>
+</section>
+
+<!-- ==================== 7. BIG-O COMPARISON ==================== -->
+<section id="bigo">
+    <h2>7 &nbsp; Big-O Complexity Cheat Sheet</h2>
+
+    <h3>7.1 &nbsp; List</h3>
+    <table>
+        <thead><tr><th>Operation</th><th>ArrayList</th><th>LinkedList</th></tr></thead>
+        <tbody>
+            <tr><td>get(index)</td><td><span class="tag tag-green">O(1)</span></td><td><span class="tag tag-red">O(n)</span></td></tr>
+            <tr><td>add(end)</td><td><span class="tag tag-green">O(1)*</span></td><td><span class="tag tag-green">O(1)</span></td></tr>
+            <tr><td>add(index)</td><td><span class="tag tag-red">O(n)</span></td><td><span class="tag tag-green">O(1)†</span></td></tr>
+            <tr><td>remove(index)</td><td><span class="tag tag-red">O(n)</span></td><td><span class="tag tag-green">O(1)†</span></td></tr>
+            <tr><td>contains</td><td><span class="tag tag-red">O(n)</span></td><td><span class="tag tag-red">O(n)</span></td></tr>
+        </tbody>
+    </table>
+    <p style="font-size:.85rem;color:var(--muted);">* amortized &nbsp;|&nbsp; † O(1) if you already have the node reference; O(n) to find it first</p>
+
+    <h3>7.2 &nbsp; Set</h3>
+    <table>
+        <thead><tr><th>Operation</th><th>HashSet</th><th>LinkedHashSet</th><th>TreeSet</th></tr></thead>
+        <tbody>
+            <tr><td>add</td><td><span class="tag tag-green">O(1)</span></td><td><span class="tag tag-green">O(1)</span></td><td><span class="tag tag-yellow">O(log n)</span></td></tr>
+            <tr><td>remove</td><td><span class="tag tag-green">O(1)</span></td><td><span class="tag tag-green">O(1)</span></td><td><span class="tag tag-yellow">O(log n)</span></td></tr>
+            <tr><td>contains</td><td><span class="tag tag-green">O(1)</span></td><td><span class="tag tag-green">O(1)</span></td><td><span class="tag tag-yellow">O(log n)</span></td></tr>
+            <tr><td>Ordered?</td><td>❌</td><td>Insertion</td><td>Sorted</td></tr>
+        </tbody>
+    </table>
+
+    <h3>7.3 &nbsp; Map</h3>
+    <table>
+        <thead><tr><th>Operation</th><th>HashMap</th><th>LinkedHashMap</th><th>TreeMap</th><th>ConcurrentHashMap</th></tr></thead>
+        <tbody>
+            <tr><td>put</td><td><span class="tag tag-green">O(1)</span></td><td><span class="tag tag-green">O(1)</span></td><td><span class="tag tag-yellow">O(log n)</span></td><td><span class="tag tag-green">O(1)</span></td></tr>
+            <tr><td>get</td><td><span class="tag tag-green">O(1)</span></td><td><span class="tag tag-green">O(1)</span></td><td><span class="tag tag-yellow">O(log n)</span></td><td><span class="tag tag-green">O(1)</span></td></tr>
+            <tr><td>remove</td><td><span class="tag tag-green">O(1)</span></td><td><span class="tag tag-green">O(1)</span></td><td><span class="tag tag-yellow">O(log n)</span></td><td><span class="tag tag-green">O(1)</span></td></tr>
+            <tr><td>Ordered?</td><td>❌</td><td>Insertion</td><td>Sorted</td><td>❌</td></tr>
+            <tr><td>Thread-safe?</td><td>❌</td><td>❌</td><td>❌</td><td>✅</td></tr>
+        </tbody>
+    </table>
+
+    <h3>7.4 &nbsp; Queue</h3>
+    <table>
+        <thead><tr><th>Operation</th><th>ArrayDeque</th><th>PriorityQueue</th><th>LinkedList</th></tr></thead>
+        <tbody>
+            <tr><td>offer (add)</td><td><span class="tag tag-green">O(1)</span></td><td><span class="tag tag-yellow">O(log n)</span></td><td><span class="tag tag-green">O(1)</span></td></tr>
+            <tr><td>poll (remove)</td><td><span class="tag tag-green">O(1)</span></td><td><span class="tag tag-yellow">O(log n)</span></td><td><span class="tag tag-green">O(1)</span></td></tr>
+            <tr><td>peek</td><td><span class="tag tag-green">O(1)</span></td><td><span class="tag tag-green">O(1)</span></td><td><span class="tag tag-green">O(1)</span></td></tr>
+        </tbody>
+    </table>
+</section>
+
+<!-- ==================== 8. WHEN TO USE WHAT ==================== -->
+<section id="when">
+    <h2>8 &nbsp; When to Use What — Master Decision Table</h2>
+
+    <table class="vs-table">
+        <thead><tr><th>Scenario</th><th>Best Choice</th><th>Why</th></tr></thead>
+        <tbody>
+            <tr><td>General purpose list</td><td><span class="tag tag-blue">ArrayList</span></td><td>Fast random access, cache friendly</td></tr>
+            <tr><td>Frequent add/remove at head</td><td><span class="tag tag-blue">LinkedList</span></td><td>O(1) at head, no shifting</td></tr>
+            <tr><td>Stack (LIFO)</td><td><span class="tag tag-purple">ArrayDeque</span></td><td>Faster than Stack class, push/pop O(1)</td></tr>
+            <tr><td>Queue (FIFO)</td><td><span class="tag tag-purple">ArrayDeque</span></td><td>Faster than LinkedList as queue</td></tr>
+            <tr><td>Priority processing</td><td><span class="tag tag-purple">PriorityQueue</span></td><td>Min/max heap, auto-ordering</td></tr>
+            <tr><td>Unique elements, fast lookup</td><td><span class="tag tag-green">HashSet</span></td><td>O(1) contains/add</td></tr>
+            <tr><td>Unique + preserve insertion order</td><td><span class="tag tag-green">LinkedHashSet</span></td><td>O(1) + ordered iteration</td></tr>
+            <tr><td>Unique + sorted</td><td><span class="tag tag-green">TreeSet</span></td><td>Red-black tree, O(log n)</td></tr>
+            <tr><td>Key-value, fast lookup</td><td><span class="tag tag-orange">HashMap</span></td><td>O(1) get/put</td></tr>
+            <tr><td>Key-value + insertion order</td><td><span class="tag tag-orange">LinkedHashMap</span></td><td>O(1) + ordered</td></tr>
+            <tr><td>Key-value + sorted keys</td><td><span class="tag tag-orange">TreeMap</span></td><td>O(log n), navigable</td></tr>
+            <tr><td>Thread-safe map</td><td><span class="tag tag-orange">ConcurrentHashMap</span></td><td>Segment locking, high throughput</td></tr>
+            <tr><td>LRU Cache</td><td><span class="tag tag-orange">LinkedHashMap</span></td><td>access-order mode + removeEldestEntry()</td></tr>
+            <tr><td>Enum keys</td><td><span class="tag tag-orange">EnumMap</span></td><td>Fastest, compact, O(1)</td></tr>
+            <tr><td>Immutable list</td><td><span class="tag tag-blue">List.of()</span></td><td>Java 9+, unmodifiable, no nulls</td></tr>
+            <tr><td>Immutable set</td><td><span class="tag tag-green">Set.of()</span></td><td>Java 9+, unmodifiable, no nulls</td></tr>
+            <tr><td>Immutable map</td><td><span class="tag tag-orange">Map.of()</span></td><td>Java 9+, unmodifiable, no nulls</td></tr>
+        </tbody>
+    </table>
+</section>
+
+<!-- ==================== 9. COMMON PITFALLS ==================== -->
+<section id="pitfalls">
+    <h2>9 &nbsp; Common Pitfalls</h2>
+    <div class="cards" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+        <div class="card" style="border-color: #f87171;">
+            <h4 style="color: #f87171;">❌ Using Stack class</h4>
+            <p>Stack extends Vector (synchronized, legacy). Use <code>ArrayDeque</code> as a stack instead.</p>
+        </div>
+        <div class="card" style="border-color: #f87171;">
+            <h4 style="color: #f87171;">❌ Forgetting hashCode() with HashSet/HashMap</h4>
+            <p>If you override <code>equals()</code>, you MUST override <code>hashCode()</code>. Otherwise duplicates sneak in.</p>
+        </div>
+        <div class="card" style="border-color: #f87171;">
+            <h4 style="color: #f87171;">❌ Modifying keys after insertion</h4>
+            <p>Changing a key's fields after putting it in a HashMap corrupts the bucket. The entry becomes unfindable.</p>
+        </div>
+        <div class="card" style="border-color: #f87171;">
+            <h4 style="color: #f87171;">❌ ConcurrentModificationException</h4>
+            <p>Don't add/remove from a collection while iterating with a for-each. Use <code>Iterator.remove()</code> or <code>CopyOnWriteArrayList</code>.</p>
+        </div>
+        <div class="card" style="border-color: #f87171;">
+            <h4 style="color: #f87171;">❌ Null in TreeSet / TreeMap</h4>
+            <p>TreeSet/TreeMap use <code>compareTo()</code>, which throws NPE on null. No nulls allowed.</p>
+        </div>
+        <div class="card" style="border-color: #f87171;">
+            <h4 style="color: #f87171;">❌ Hashtable for thread safety</h4>
+            <p>Hashtable locks the entire table. <code>ConcurrentHashMap</code> is far more performant with segment-level locks.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ==================== 10. THREAD SAFETY ==================== -->
+<section id="thread-safety">
+    <h2>10 &nbsp; Thread Safety Quick Reference</h2>
+    <table>
+        <thead><tr><th>Need</th><th>Solution</th></tr></thead>
+        <tbody>
+            <tr><td>Thread-safe List</td><td><code>Collections.synchronizedList(new ArrayList<>())</code> or <code>CopyOnWriteArrayList</code></td></tr>
+            <tr><td>Thread-safe Set</td><td><code>Collections.synchronizedSet(new HashSet<>())</code> or <code>CopyOnWriteArraySet</code></td></tr>
+            <tr><td>Thread-safe Map</td><td><code>ConcurrentHashMap</code> (preferred) or <code>Collections.synchronizedMap()</code></td></tr>
+            <tr><td>Thread-safe Queue</td><td><code>ConcurrentLinkedQueue</code>, <code>LinkedBlockingQueue</code>, <code>ArrayBlockingQueue</code></td></tr>
+            <tr><td>Thread-safe Deque</td><td><code>ConcurrentLinkedDeque</code>, <code>LinkedBlockingDeque</code></td></tr>
+        </tbody>
+    </table>
+</section>
+
+</div>
+
+<footer>
+    Java Collections Framework — Visual Guide &nbsp;|&nbsp; <a href="java-collections-implementation.html">📄 Implementation Examples →</a>
+</footer>
+
+</body>
+</html>
+

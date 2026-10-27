@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spring Framework Concepts — Visual Guide</title>
+<style>
+:root{--bg:#f4f7fb;--card:#fff;--ink:#182235;--muted:#596579;--blue:#2457c5;--blue2:#e8efff;--teal:#087f8c;--teal2:#e1f6f5;--orange:#a95508;--orange2:#fff0dd;--purple:#6d42a8;--purple2:#f1eaff;--line:#dbe2ee;--shadow:0 8px 26px rgba(29,48,82,.08)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+header{padding:48px 22px 38px;background:linear-gradient(125deg,#13264c,#2457c5 65%,#087f8c);color:white}
+.hero{max-width:1120px;margin:auto}header h1{font-size:clamp(2rem,4vw,3.3rem);line-height:1.1;margin:0 0 14px}header p{max-width:800px;margin:0;color:#e6edff;font-size:1.08rem}
+.wrap{max-width:1120px;margin:26px auto;padding:0 18px 60px;display:grid;grid-template-columns:245px minmax(0,1fr);gap:24px}
+nav{position:sticky;top:16px;align-self:start;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:var(--shadow);max-height:calc(100vh - 32px);overflow:auto}
+nav strong{display:block;margin:0 0 8px}nav a{display:block;text-decoration:none;color:var(--muted);padding:6px 9px;border-radius:8px;font-size:.92rem}nav a:hover{background:var(--blue2);color:var(--blue)}
+main{min-width:0}.intro,.topic{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:25px;margin-bottom:20px;box-shadow:var(--shadow)}
+h2{margin:0 0 10px;font-size:1.65rem;line-height:1.25}h3{margin:22px 0 8px;font-size:1.12rem}p{margin:8px 0 12px}.muted{color:var(--muted)}.tag{display:inline-block;font-size:.78rem;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:var(--blue);background:var(--blue2);border-radius:999px;padding:4px 9px;margin-bottom:9px}
+.callout{border-left:4px solid var(--teal);background:var(--teal2);padding:12px 15px;border-radius:0 10px 10px 0;margin:14px 0}.warning{border-left-color:var(--orange);background:var(--orange2)}.purple{border-left-color:var(--purple);background:var(--purple2)}
+code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;background:#eef1f6;padding:2px 5px;border-radius:5px;font-size:.92em}pre{background:#101a2c;color:#e8efff;padding:16px;border-radius:12px;overflow:auto;line-height:1.55;font-size:.9rem}pre code{background:none;color:inherit;padding:0}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.mini{border:1px solid var(--line);border-radius:12px;padding:14px;background:#fbfcff}.mini b{display:block;margin-bottom:4px}
+.flow{display:flex;align-items:stretch;justify-content:center;gap:8px;flex-wrap:wrap;margin:16px 0}.node{flex:1;min-width:120px;max-width:210px;text-align:center;border:1px solid #b9c9ef;background:var(--blue2);border-radius:12px;padding:12px;font-weight:650}.node.teal{background:var(--teal2);border-color:#9bd8d5}.node.orange{background:var(--orange2);border-color:#f0c18e}.node.purple{background:var(--purple2);border-color:#d3c0f4}.arrow{align-self:center;font-size:1.4rem;color:var(--muted);font-weight:800}
+.timeline{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;counter-reset:step}.step{counter-increment:step;border:1px solid var(--line);border-radius:11px;padding:12px;background:#fafcff}.step:before{content:counter(step);display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--blue);color:#fff;font-weight:700;margin-bottom:8px}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.94rem}th,td{text-align:left;vertical-align:top;padding:10px;border-bottom:1px solid var(--line)}th{background:#f1f5fc}ul,ol{padding-left:22px}li{margin:5px 0}.pillrow{display:flex;flex-wrap:wrap;gap:7px}.pill{background:#f0f3f8;border:1px solid var(--line);padding:5px 9px;border-radius:999px;font-size:.88rem}
+details{border:1px solid var(--line);border-radius:10px;padding:10px 13px;margin:9px 0}summary{cursor:pointer;font-weight:700}
+.controls{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}.controls button{border:1px solid #b7c8e9;background:#fff;color:var(--blue);padding:8px 12px;border-radius:9px;cursor:pointer;font:inherit;font-size:.9rem}.controls button.active,.controls button:hover{background:var(--blue);color:#fff}
+#beanStage{border:1px dashed #9eb2d8;background:#f8faff;border-radius:14px;padding:17px;min-height:155px}.stageTitle{font-weight:750;color:var(--blue)}.stageText{margin-top:5px}
+footer{color:var(--muted);font-size:.9rem;text-align:center;padding:20px}
+@media(max-width:850px){.wrap{grid-template-columns:1fr}nav{position:relative;top:auto;max-height:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px}nav strong{grid-column:1/-1}.timeline{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:520px){.intro,.topic{padding:18px}.grid2{grid-template-columns:1fr}.timeline{grid-template-columns:1fr}.arrow{transform:rotate(90deg)}nav{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><div class="hero">
+<h1>Spring Framework Concepts</h1>
+<p>A visual, practical guide to RAII-style resource management, dependency injection, portable abstractions, AOP, component scanning, bean lifecycle hooks, post-processors, configuration, and application events.</p>
+</div></header>
+<div class="wrap">
+<nav>
+<strong>Jump to a concept</strong>
+<a href="#map">Big picture</a><a href="#raii">RAII / resource cleanup</a><a href="#di">Dependency injection</a><a href="#portable">Portable abstractions</a><a href="#aop">AOP</a><a href="#framework">Spring Framework</a><a href="#scan">Component scanning</a><a href="#lifecycle">Bean lifecycle</a><a href="#processors">Bean post-processors</a><a href="#boot">Spring Boot</a><a href="#config">Configuration & Environment</a><a href="#events">Application events</a><a href="#recap">Recap & interview checks</a>
+</nav>
+<main>
+<section class="intro" id="map">
+<span class="tag">Start here</span><h2>How the pieces fit together</h2>
+<p>Spring is an <b>IoC container</b> plus a broad set of infrastructure features. You describe objects (beans) and their relationships; Spring creates and wires them, applies lifecycle callbacks and infrastructure, and lets the application react to configuration and events.</p>
+<div class="flow">
+<div class="node">Configuration<br><small>annotations, Java config, properties</small></div><div class="arrow">→</div>
+<div class="node teal">IoC container<br><small>discover + create beans</small></div><div class="arrow">→</div>
+<div class="node orange">Lifecycle hooks<br><small>initialize + process</small></div><div class="arrow">→</div>
+<div class="node purple">Ready application<br><small>proxies, events, services</small></div>
+</div>
+<div class="callout"><b>Keep the levels distinct:</b> Dependency Injection (DI) is a design technique; the Spring Framework is the library/platform; Spring Boot simplifies setup and auto-configuration; AOP is a programming approach; proxies are one mechanism Spring AOP commonly uses.</div>
+</section>
+
+<section class="topic" id="raii">
+<span class="tag">01 · resource management</span><h2>RAII — Resource Acquisition Is Initialization</h2>
+<p>RAII is a resource-management idiom most associated with C++. It ties a resource's lifetime to an object's lifetime: acquire the resource when the object is initialized, and release it when the object is destroyed. This helps prevent leaks when execution exits early or throws an exception.</p>
+<div class="grid2"><div class="mini"><b>Typical resources</b>Files, locks, sockets, memory, database handles.</div><div class="mini"><b>Core idea</b>Make ownership and cleanup predictable rather than relying on every caller to remember cleanup.</div></div>
+<h3>Visualization: resource lifetime</h3>
+<div class="flow"><div class="node">Create / enter scope</div><div class="arrow">→</div><div class="node teal">Acquire resource</div><div class="arrow">→</div><div class="node orange">Use resource</div><div class="arrow">→</div><div class="node purple">Release automatically / deterministically</div></div>
+<p><b>How this relates to Java and Spring:</b> Java does not have C++ destructors/RAII in exactly the same form. Use <code>try-with-resources</code> for objects implementing <code>AutoCloseable</code>. Spring beans can use lifecycle callbacks such as <code>@PreDestroy</code> or <code>DisposableBean</code> to clean up resources when the application context shuts down.</p>
+<pre><code>// Java: deterministic cleanup with try-with-resources
+try (var reader = Files.newBufferedReader(Path.of("input.txt"))) {
+    System.out.println(reader.readLine());
+} // reader.close() is called even if an exception occurs</code></pre>
+<div class="callout warning"><b>Important distinction:</b> A Spring bean's <code>@PreDestroy</code> is not a substitute for try-with-resources for short-lived local resources. It is generally for resources owned by a long-lived bean and cleaned up when that bean is destroyed.</div>
+</section>
+
+<section class="topic" id="di">
+<span class="tag">02 · object wiring</span><h2>DI — Dependency Injection</h2>
+<p>A class has a dependency when it needs another object to do its work. With DI, the class does not construct that dependency itself; an external assembler (often Spring's container) supplies it. This reduces coupling and makes code easier to test, replace, and configure.</p>
+<div class="flow"><div class="node orange">Before DI<br><small>Service creates its own repository</small></div><div class="arrow">→</div><div class="node teal">With DI<br><small>Container supplies repository</small></div></div>
+<pre><code>public interface PaymentRepository {
+    void save(String paymentId);
+}
+
+@Service
+public class PaymentService {
+    private final PaymentRepository repository;
+
+    // Constructor injection
+    public PaymentService(PaymentRepository repository) {
+        this.repository = repository;
+    }
+
+    public void pay(String id) {
+        repository.save(id);
+    }
+}</code></pre>
+<h3>Common injection styles</h3>
+<table><thead><tr><th>Style</th><th>Use</th><th>Notes</th></tr></thead><tbody>
+<tr><td>Constructor</td><td>Required dependencies</td><td>Usually preferred; supports immutability and easy unit tests.</td></tr>
+<tr><td>Setter</td><td>Optional or reconfigurable dependencies</td><td>Can leave an object partially configured if misused.</td></tr>
+<tr><td>Field</td><td>Short examples / legacy code</td><td>Convenient, but hides dependencies and makes plain unit testing harder.</td></tr>
+</tbody></table>
+<p><b>DI vs IoC:</b> Inversion of Control is the broader principle of handing control over object creation/wiring to a framework. DI is one way to achieve IoC.</p>
+</section>
+
+<section class="topic" id="portable">
+<span class="tag">03 · consistent APIs</span><h2>Portable service abstractions</h2>
+<p>A portable service abstraction gives your application a consistent Spring-facing API over infrastructure that may differ between environments or providers. The application can depend on a stable contract rather than embedding provider-specific code everywhere.</p>
+<div class="flow"><div class="node">Application code</div><div class="arrow">→</div><div class="node teal">Spring abstraction / interface</div><div class="arrow">→</div><div class="node purple">Provider / implementation</div></div>
+<table><thead><tr><th>Abstraction</th><th>What it helps with</th><th>Example</th></tr></thead><tbody>
+<tr><td>Resource loading</td><td>Read classpath, file-system, or URL resources through a common API.</td><td><code>ResourceLoader</code>, <code>Resource</code></td></tr>
+<tr><td>Transactions</td><td>Use a common transaction model over supported transaction managers.</td><td><code>@Transactional</code>, <code>PlatformTransactionManager</code></td></tr>
+<tr><td>Caching</td><td>Apply cache behavior without binding business code to one cache vendor.</td><td><code>@Cacheable</code>, <code>CacheManager</code></td></tr>
+<tr><td>Task execution / scheduling</td><td>Run asynchronous tasks or scheduled jobs through Spring-managed abstractions.</td><td><code>TaskExecutor</code>, <code>@Scheduled</code></td></tr>
+<tr><td>Validation</td><td>Use a consistent validation integration point.</td><td><code>Validator</code>, Bean Validation integration</td></tr>
+<tr><td>Mail / messaging</td><td>Send mail or work with messaging integrations through supported APIs.</td><td><code>JavaMailSender</code>, messaging templates</td></tr>
+</tbody></table>
+<div class="callout"><b>Why it matters:</b> business logic stays focused on the business task, while configuration chooses the concrete infrastructure. Portability is not magic: provider-specific features and configuration can still reduce portability.</div>
+</section>
+
+<section class="topic" id="aop">
+<span class="tag">04 · cross-cutting behavior</span><h2>AOP — Aspect-Oriented Programming</h2>
+<p>AOP separates concerns that cut across many classes—such as transactions, authorization, metrics, or logging—from the main business logic. In Spring AOP, advice is commonly applied through proxies around Spring-managed beans.</p>
+<div class="grid2"><div class="mini"><b>Aspect</b>A module that groups a cross-cutting concern.</div><div class="mini"><b>Advice</b>The action to run, e.g. before or after a method.</div><div class="mini"><b>Pointcut</b>A rule selecting join points/method executions.</div><div class="mini"><b>Proxy</b>The intercepting object that allows advice to run.</div></div>
+<pre><code>@Aspect
+@Component
+public class TimingAspect {
+    @Around("execution(* com.example.service..*(..))")
+    public Object time(ProceedingJoinPoint joinPoint) throws Throwable {
+        long start = System.nanoTime();
+        try {
+            return joinPoint.proceed(); // call the target method
+        } finally {
+            System.out.println("Elapsed ns: " +
+                (System.nanoTime() - start));
+        }
+    }
+}</code></pre>
+<div class="flow"><div class="node">Caller</div><div class="arrow">→</div><div class="node teal">Proxy / advice</div><div class="arrow">→</div><div class="node">Target method</div><div class="arrow">→</div><div class="node purple">Advice completes</div></div>
+<div class="callout warning"><b>Proxy caveat:</b> in default proxy-based Spring AOP, a method calling another method on the same object (self-invocation) bypasses the proxy. Also, only calls that pass through the proxy are intercepted. AspectJ weaving has different capabilities.</div>
+</section>
+
+<section class="topic" id="framework">
+<span class="tag">05 · platform</span><h2>Spring Framework</h2>
+<p>The Spring Framework is a modular Java framework. Its core container manages objects and their dependencies; other modules provide web MVC, data access integration, transactions, testing support, messaging, and AOP integration.</p>
+<div class="grid2">
+<div class="mini"><b>Core container</b>IoC, DI, bean definitions, lifecycle.</div><div class="mini"><b>AOP</b>Cross-cutting behavior such as transactions.</div>
+<div class="mini"><b>Data access</b>Transaction APIs and integrations with persistence technologies.</div><div class="mini"><b>Web</b>Spring MVC and related web infrastructure.</div>
+</div>
+<p>Think of Spring Framework as the underlying toolkit. It does not force every application to use every module.</p>
+</section>
+
+<section class="topic" id="scan">
+<span class="tag">06 · finding beans</span><h2>Component scanning</h2>
+<p>Component scanning searches configured packages for classes marked with stereotype annotations such as <code>@Component</code>, <code>@Service</code>, <code>@Repository</code>, and <code>@Controller</code>, then registers bean definitions for them.</p>
+<pre><code>@SpringBootApplication
+public class StoreApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(StoreApplication.class, args);
+    }
+}
+
+// @SpringBootApplication includes @ComponentScan
+@Service
+public class InventoryService { }</code></pre>
+<div class="flow"><div class="node">Choose base package</div><div class="arrow">→</div><div class="node teal">Scan classpath</div><div class="arrow">→</div><div class="node orange">Find stereotype annotations</div><div class="arrow">→</div><div class="node purple">Register bean definitions</div></div>
+<p><b>Default package:</b> <code>@SpringBootApplication</code> normally scans its package and subpackages. Put the application class near the root of your code packages, or configure <code>@ComponentScan</code> explicitly.</p>
+<div class="callout warning">Component scanning discovers candidates; it does not mean every class in the project becomes a bean. Ordinary classes without registration or a bean-definition mechanism are not automatically managed.</div>
+</section>
+
+<section class="topic" id="lifecycle">
+<span class="tag">07 · creation to shutdown</span><h2>Spring bean lifecycle</h2>
+<p>A bean is an object managed by the Spring container. The exact lifecycle varies with bean scope and configuration, but a singleton bean commonly follows the stages below.</p>
+<div class="controls" id="lifeButtons"><button class="active" data-stage="0">1. Instantiate</button><button data-stage="1">2. Populate</button><button data-stage="2">3. Aware callbacks</button><button data-stage="3">4. Before init</button><button data-stage="4">5. Initialize</button><button data-stage="5">6. After init</button><button data-stage="6">7. Use</button><button data-stage="7">8. Destroy</button></div>
+<div id="beanStage"><div class="stageTitle">1. Instantiate</div><div class="stageText">Spring creates the bean instance, commonly using a constructor or factory method. Dependency properties have not necessarily been injected yet.</div></div>
+<div class="callout"><b>Initialization order (simplified):</b> injection and aware callbacks → <code>BeanPostProcessor.postProcessBeforeInitialization</code> → <code>@PostConstruct</code> / <code>InitializingBean.afterPropertiesSet()</code> / custom init method → <code>BeanPostProcessor.postProcessAfterInitialization</code> → bean ready. The exact callback ordering has framework-defined details; custom processors may wrap or replace the bean.</div>
+<h3>Lifecycle callbacks at a glance</h3>
+<table><thead><tr><th>Hook</th><th>When / purpose</th></tr></thead><tbody>
+<tr><td><code>@PostConstruct</code></td><td>Run after dependency injection during initialization; useful for validation or preparing state.</td></tr>
+<tr><td><code>InitializingBean.afterPropertiesSet()</code></td><td>Spring-specific initialization callback after properties are set.</td></tr>
+<tr><td>Custom init method</td><td>Configured with <code>@Bean(initMethod = "...")</code> or bean-definition settings.</td></tr>
+<tr><td><code>@PreDestroy</code></td><td>Cleanup callback before a managed bean is destroyed.</td></tr>
+<tr><td><code>DisposableBean.destroy()</code></td><td>Spring-specific destruction callback.</td></tr>
+<tr><td>Custom destroy method</td><td>Configured with <code>@Bean(destroyMethod = "...")</code> or bean-definition settings.</td></tr>
+</tbody></table>
+<pre><code>@Component
+public class ReportCache {
+    @PostConstruct
+    void initialize() {
+        // Validate configuration / prepare cache
+    }
+
+    @PreDestroy
+    void cleanup() {
+        // Release bean-owned resources
+    }
+}</code></pre>
+<div class="callout warning">The container generally manages destruction callbacks for singleton beans when the context shuts down. Prototype-scoped beans are created by Spring, but Spring does not manage their full destruction lifecycle in the same way—callers are responsible for cleanup.</div>
+</section>
+
+<section class="topic" id="processors">
+<span class="tag">08 · container extension points</span><h2>BeanFactoryPostProcessor vs BeanPostProcessor</h2>
+<p>Both are extension points, but they operate at different levels and times.</p>
+<div class="grid2"><div class="mini"><b><code>BeanFactoryPostProcessor</code></b>Changes bean <i>definitions / metadata</i> before regular beans are instantiated. Example: altering property values or definitions.</div><div class="mini"><b><code>BeanPostProcessor</code></b>Works with actual <i>bean instances</i> around initialization. Can inspect, modify, or wrap a bean with a proxy.</div></div>
+<div class="flow"><div class="node">Load bean definitions</div><div class="arrow">→</div><div class="node orange">BeanFactoryPostProcessor<br><small>definition metadata</small></div><div class="arrow">→</div><div class="node teal">Create bean instances</div><div class="arrow">→</div><div class="node purple">BeanPostProcessor<br><small>bean objects</small></div></div>
+<pre><code>@Component
+public class ExamplePostProcessor implements BeanPostProcessor {
+    @Override
+    public Object postProcessAfterInitialization(
+            Object bean, String beanName) {
+        // Inspect or wrap the initialized bean.
+        return bean;
+    }
+}</code></pre>
+<p>Spring uses bean post-processors internally for features such as annotation processing and proxy-based behavior. For example, infrastructure processors help recognize lifecycle annotations and create AOP proxies.</p>
+<div class="callout warning"><b>Be careful:</b> beans created very early to configure the container may not receive every normal post-processing step. Keep post-processors lightweight and avoid depending on ordinary application beans unless you understand initialization ordering.</div>
+</section>
+
+<section class="topic" id="boot">
+<span class="tag">09 · opinionated setup</span><h2>Spring Boot and BeanPostProcessor</h2>
+<p>Spring Boot is built on the Spring Framework. It simplifies application setup with auto-configuration, starter dependencies, externalized configuration, and convenient application startup. <code>BeanPostProcessor</code> itself belongs to the Spring Framework—not a Boot-only feature.</p>
+<div class="flow"><div class="node">Spring Boot app</div><div class="arrow">→</div><div class="node teal">Auto-configuration + component scan</div><div class="arrow">→</div><div class="node orange">Spring ApplicationContext</div><div class="arrow">→</div><div class="node purple">Framework bean lifecycle + processors</div></div>
+<p>Boot can contribute configuration and infrastructure beans that rely on the Framework's bean lifecycle and post-processing machinery. You can also register your own processor when necessary.</p>
+<pre><code>@Configuration
+public class ProcessorConfiguration {
+    @Bean
+    static BeanFactoryPostProcessor definitionCustomizer() {
+        return beanFactory -> {
+            // Customize bean definitions here, if needed.
+        };
+    }
+}</code></pre>
+<div class="callout">A <code>BeanFactoryPostProcessor</code> factory method is commonly declared <code>static</code> so Spring can create it without prematurely instantiating the configuration class. Use this extension point only when regular configuration mechanisms are insufficient.</div>
+</section>
+
+<section class="topic" id="config">
+<span class="tag">10 · externalized settings</span><h2>Environment, PropertySource, @Value and @ConfigurationProperties</h2>
+<p>Spring's <code>Environment</code> provides access to active profiles and properties. Property values come from ordered <code>PropertySource</code> objects, such as configuration files, environment variables, system properties, and command-line arguments. The winning value depends on property-source precedence.</p>
+<div class="flow"><div class="node">Property sources<br><small>YAML, properties, env vars, CLI</small></div><div class="arrow">→</div><div class="node teal">Environment<br><small>profiles + ordered properties</small></div><div class="arrow">→</div><div class="node orange">Bind / resolve values</div><div class="arrow">→</div><div class="node purple">Application beans</div></div>
+<h3>Three common tools</h3>
+<table><thead><tr><th>Tool</th><th>Best for</th><th>Example</th></tr></thead><tbody>
+<tr><td><code>Environment</code></td><td>Programmatically read a property or check profiles.</td><td><code>env.getProperty("app.region")</code></td></tr>
+<tr><td><code>@Value</code></td><td>A small number of individual values or expressions.</td><td><code>@Value("${app.timeout:5s}")</code></td></tr>
+<tr><td><code>@ConfigurationProperties</code></td><td>Bind a related group of settings into a typed object.</td><td><code>app.client.timeout</code> → field <code>timeout</code></td></tr>
+</tbody></table>
+<pre><code>// application.yml
+app:
+  client:
+    base-url: https://api.example.com
+    timeout: 3s
+    max-retries: 4
+
+@ConfigurationProperties(prefix = "app.client")
+public class ClientProperties {
+    private URI baseUrl;
+    private Duration timeout = Duration.ofSeconds(3);
+    private int maxRetries = 3;
+    // getters and setters, or use a supported constructor-binding style
+}</code></pre>
+<p>Register the properties class with <code>@ConfigurationPropertiesScan</code> or <code>@EnableConfigurationProperties(ClientProperties.class)</code> when it is not otherwise registered.</p>
+<h3>What is EnvironmentPostProcessor?</h3>
+<p><code>EnvironmentPostProcessor</code> is a Spring Boot extension point that can customize the <code>Environment</code> before the application context is refreshed and beans are created. It is useful when a custom property source must be added early. It is not the same as <code>BeanFactoryPostProcessor</code>: one customizes the Environment; the other customizes bean definitions.</p>
+<div class="callout warning">Avoid putting secrets directly into source-controlled config files. Use an appropriate secret store or deployment-time secret injection, and confirm the active profiles and property precedence when a value looks unexpected.</div>
+</section>
+
+<section class="topic" id="events">
+<span class="tag">11 · communication between components</span><h2>Spring application events</h2>
+<p>Events let one component announce that something happened without directly calling every interested listener. A publisher publishes an event; one or more listeners react to it. This is useful for decoupling, but it does not automatically make work asynchronous or durable.</p>
+<div class="flow"><div class="node">Business service</div><div class="arrow">→</div><div class="node teal">Publish event</div><div class="arrow">→</div><div class="node orange">Application event multicaster</div><div class="arrow">→</div><div class="node purple">One or more listeners</div></div>
+<pre><code>public record OrderPlaced(String orderId) {}
+
+@Service
+public class OrderService {
+    private final ApplicationEventPublisher publisher;
+
+    public OrderService(ApplicationEventPublisher publisher) {
+        this.publisher = publisher;
+    }
+
+    public void place(String id) {
+        // Persist order first...
+        publisher.publishEvent(new OrderPlaced(id));
+    }
+}
+
+@Component
+public class OrderNotificationListener {
+    @EventListener
+    public void onOrderPlaced(OrderPlaced event) {
+        System.out.println("Notify for " + event.orderId());
+    }
+}</code></pre>
+<h3>Events worth knowing</h3>
+<table><thead><tr><th>Event / mechanism</th><th>Meaning</th></tr></thead><tbody>
+<tr><td><code>ContextRefreshedEvent</code></td><td>An application context was initialized or refreshed.</td></tr>
+<tr><td><code>ContextStartedEvent</code></td><td>A context received a start signal (less common in typical Boot apps).</td></tr>
+<tr><td><code>ContextStoppedEvent</code></td><td>A context received a stop signal.</td></tr>
+<tr><td><code>ContextClosedEvent</code></td><td>The context is closing.</td></tr>
+<tr><td><code>ApplicationStartedEvent</code></td><td>Spring Boot has started the application context; runners have not yet completed.</td></tr>
+<tr><td><code>ApplicationReadyEvent</code></td><td>Spring Boot indicates the application is ready to service requests.</td></tr>
+<tr><td><code>ApplicationFailedEvent</code></td><td>Spring Boot startup failed.</td></tr>
+<tr><td><code>@EventListener</code></td><td>Annotation-based listener for application events, including custom event types.</td></tr>
+</tbody></table>
+<p>Use <code>@TransactionalEventListener</code> when handling an event in relation to a transaction phase (commonly after commit). If a notification must never be lost, consider a durable messaging/outbox design rather than relying only on an in-memory application event.</p>
+<div class="callout">By default, Spring application event listeners commonly execute synchronously in the publishing thread. Async execution requires configuration such as <code>@Async</code> with async support enabled, and it introduces its own error-handling and ordering considerations.</div>
+</section>
+
+<section class="topic" id="recap">
+<span class="tag">Review</span><h2>Recap & interview checks</h2>
+<div class="pillrow"><span class="pill">RAII → resource lifetime</span><span class="pill">DI → supply dependencies</span><span class="pill">Portable abstraction → stable API</span><span class="pill">AOP → cross-cutting concern</span><span class="pill">Component scan → discover beans</span><span class="pill">Lifecycle → initialize / destroy</span><span class="pill">BFPP → bean definitions</span><span class="pill">BPP → bean instances</span><span class="pill">Environment → properties + profiles</span><span class="pill">Events → publish / listen</span></div>
+<details><summary>Why prefer constructor injection?</summary><p>It makes required dependencies explicit, allows fields to be final, and makes unit tests straightforward without needing the Spring container.</p></details>
+<details><summary>What is the key difference between BeanFactoryPostProcessor and BeanPostProcessor?</summary><p>The former works on bean-definition metadata before ordinary beans are instantiated; the latter works on bean instances around initialization.</p></details>
+<details><summary>Does @PostConstruct run before dependency injection?</summary><p>No. It runs after dependencies have been injected, during bean initialization.</p></details>
+<details><summary>Is Spring Boot's BeanPostProcessor different from Spring Framework's?</summary><p>No. BeanPostProcessor is a Spring Framework interface. Spring Boot builds on the Framework and may register processors or configuration that uses it.</p></details>
+<details><summary>Are Spring application events always asynchronous?</summary><p>No. By default, listeners commonly run synchronously unless async handling is configured.</p></details>
+<details><summary>Why might @Transactional not work on a self-invoked method?</summary><p>In proxy-based AOP, an internal call on this bypasses the proxy, so the transactional interceptor is not invoked for that call.</p></details>
+<p class="muted">Learning note: callback ordering and auto-configuration details can vary by Spring version and setup. Use the reference documentation for the exact version used in your project.</p>
+</section>
+<footer>Spring Framework Visual Guide · Self-contained HTML · Works offline in a modern browser</footer>
+</main>
+</div>
+<script>
+const stages = [
+["1. Instantiate","Spring creates the bean instance, commonly using a constructor or factory method. Dependency properties have not necessarily been injected yet."],
+["2. Populate properties","Spring resolves and injects dependencies, such as constructor, setter, or field dependencies. Required collaborators are assembled."],
+["3. Aware callbacks","Applicable *Aware callbacks can provide container-related objects, such as the bean name or application context."],
+["4. Before initialization","BeanPostProcessor.postProcessBeforeInitialization runs. Annotation-based lifecycle processing is commonly implemented through infrastructure processors here."],
+["5. Initialize","Initialization callbacks run, including @PostConstruct, InitializingBean.afterPropertiesSet(), and configured init methods in the framework-defined order."],
+["6. After initialization","BeanPostProcessor.postProcessAfterInitialization runs. A processor may return a wrapper/proxy instead of the original bean."],
+["7. In use","The fully initialized bean is available for injection/use. Calls may pass through an AOP proxy if applicable."],
+["8. Destroy","On managed shutdown, destruction callbacks such as @PreDestroy, DisposableBean.destroy(), and configured destroy methods can clean up bean-owned resources."]
+];
+const stageBox=document.getElementById("beanStage");
+document.querySelectorAll("#lifeButtons button").forEach(btn=>btn.addEventListener("click",()=>{
+ document.querySelectorAll("#lifeButtons button").forEach(b=>b.classList.remove("active"));
+ btn.classList.add("active");
+ const s=stages[Number(btn.dataset.stage)];
+ stageBox.innerHTML='<div class="stageTitle">'+s[0]+'</div><div class="stageText">'+s[1]+'</div>';
+}));
+</script>
+</body>
+</html>

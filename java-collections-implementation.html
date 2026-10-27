@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java Collections — Implementation Examples</title>
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --accent: #38bdf8;
+            --accent2: #a78bfa;
+            --accent3: #34d399;
+            --accent4: #fb923c;
+            --accent5: #f472b6;
+            --text: #e2e8f0;
+            --muted: #94a3b8;
+            --border: #334155;
+            --code-bg: #0d1117;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
+
+        header { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border-bottom: 1px solid var(--border); text-align: center; padding: 50px 20px 40px; }
+        header h1 { font-size: 2.4rem; background: linear-gradient(90deg, var(--accent4), var(--accent5)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 10px; }
+        header p { color: var(--muted); font-size: 1.1rem; }
+        a { color: var(--accent); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        .container { max-width: 1100px; margin: 0 auto; padding: 40px 20px; }
+        section { margin-bottom: 55px; }
+        section h2 { font-size: 1.65rem; margin-bottom: 18px; padding-bottom: 8px; border-bottom: 2px solid var(--accent); display: inline-block; }
+        section h3 { font-size: 1.2rem; color: var(--accent2); margin: 24px 0 8px; }
+        p, li { margin-bottom: 8px; }
+        ul { padding-left: 24px; }
+
+        pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: 10px; padding: 20px; overflow-x: auto; font-size: .86rem; line-height: 1.6; margin: 12px 0; }
+        code { font-family: 'Cascadia Code', 'Fira Code', Consolas, monospace; }
+        .kw { color: #c678dd; }
+        .ann { color: #e5c07b; }
+        .str { color: #98c379; }
+        .cmt { color: #5c6370; font-style: italic; }
+        .typ { color: #61afef; }
+        .fn { color: #61afef; }
+        .num { color: #d19a66; }
+
+        .output { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 14px 18px; margin: 8px 0 18px; font-size: .84rem; color: #8b949e; font-family: 'Cascadia Code', Consolas, monospace; }
+        .output strong { color: #58a6ff; font-weight: 600; }
+
+        .highlight-box { background: linear-gradient(135deg, rgba(167,139,250,.1), rgba(56,189,248,.1)); border-left: 4px solid var(--accent2); border-radius: 8px; padding: 18px 22px; margin: 16px 0; }
+        .highlight-box h4 { color: var(--accent2); margin-bottom: 6px; font-size: 1.05rem; }
+
+        .toc { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px 30px; margin-bottom: 40px; }
+        .toc h3 { margin-top: 0; color: var(--accent); }
+        .toc ul { list-style: none; padding: 0; columns: 2; }
+        .toc li { margin-bottom: 6px; }
+        .toc a { color: var(--text); font-size: .95rem; }
+        .toc a:hover { color: var(--accent); }
+        .toc .num { color: var(--accent4); font-weight: 700; margin-right: 6px; }
+
+        footer { text-align: center; padding: 30px; color: var(--muted); font-size: .85rem; border-top: 1px solid var(--border); }
+
+        @media (max-width: 640px) { header h1 { font-size: 1.7rem; } .toc ul { columns: 1; } }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>☕ Java Collections — Implementation Examples</h1>
+    <p>Copy-paste-ready code for every major collection type</p>
+    <p style="margin-top: 10px;"><a href="java-collections-guide.html" style="color: var(--accent3);">← Back to Visual Guide</a></p>
+</header>
+
+<div class="container">
+
+<!-- TABLE OF CONTENTS -->
+<div class="toc">
+    <h3>📑 Table of Contents</h3>
+    <ul>
+        <li><span class="num">1.</span> <a href="#arraylist">ArrayList</a></li>
+        <li><span class="num">2.</span> <a href="#linkedlist">LinkedList</a></li>
+        <li><span class="num">3.</span> <a href="#hashset">HashSet</a></li>
+        <li><span class="num">4.</span> <a href="#linkedhashset">LinkedHashSet</a></li>
+        <li><span class="num">5.</span> <a href="#treeset">TreeSet</a></li>
+        <li><span class="num">6.</span> <a href="#priorityqueue">PriorityQueue</a></li>
+        <li><span class="num">7.</span> <a href="#arraydeque">ArrayDeque (Stack &amp; Queue)</a></li>
+        <li><span class="num">8.</span> <a href="#hashmap">HashMap</a></li>
+        <li><span class="num">9.</span> <a href="#linkedhashmap">LinkedHashMap</a></li>
+        <li><span class="num">10.</span> <a href="#treemap">TreeMap</a></li>
+        <li><span class="num">11.</span> <a href="#concurrenthashmap">ConcurrentHashMap</a></li>
+        <li><span class="num">12.</span> <a href="#enummap">EnumMap &amp; EnumSet</a></li>
+        <li><span class="num">13.</span> <a href="#immutable">Immutable Collections (Java 9+)</a></li>
+        <li><span class="num">14.</span> <a href="#sorting">Sorting &amp; Comparators</a></li>
+        <li><span class="num">15.</span> <a href="#utility">Collections Utility Methods</a></li>
+        <li><span class="num">16.</span> <a href="#streams">Streams + Collections</a></li>
+    </ul>
+</div>
+
+
+<!-- ==================== 1. ARRAYLIST ==================== -->
+<section id="arraylist">
+    <h2>1 &nbsp; ArrayList</h2>
+    <pre><code><span class="kw">import</span> java.util.ArrayList;
+<span class="kw">import</span> java.util.List;
+
+<span class="kw">public class</span> <span class="typ">ArrayListDemo</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(String[] args) {
+
+        <span class="cmt">// --- Creation ---</span>
+        List&lt;String&gt; fruits = <span class="kw">new</span> ArrayList&lt;&gt;();
+
+        <span class="cmt">// --- Adding elements ---</span>
+        fruits.add(<span class="str">"Apple"</span>);            <span class="cmt">// [Apple]</span>
+        fruits.add(<span class="str">"Banana"</span>);           <span class="cmt">// [Apple, Banana]</span>
+        fruits.add(<span class="str">"Cherry"</span>);           <span class="cmt">// [Apple, Banana, Cherry]</span>
+        fruits.add(<span class="num">1</span>, <span class="str">"Blueberry"</span>);    <span class="cmt">// Insert at index 1 → [Apple, Blueberry, Banana, Cherry]</span>
+
+        <span class="cmt">// --- Accessing ---</span>
+        String first = fruits.get(<span class="num">0</span>);   <span class="cmt">// "Apple"  → O(1) random access</span>
+        <span class="kw">int</span> size = fruits.size();         <span class="cmt">// 4</span>
+
+        <span class="cmt">// --- Searching ---</span>
+        <span class="kw">boolean</span> has = fruits.contains(<span class="str">"Banana"</span>);  <span class="cmt">// true  → O(n)</span>
+        <span class="kw">int</span> idx = fruits.indexOf(<span class="str">"Cherry"</span>);       <span class="cmt">// 3</span>
+
+        <span class="cmt">// --- Updating ---</span>
+        fruits.set(<span class="num">0</span>, <span class="str">"Avocado"</span>);       <span class="cmt">// Replace index 0 → [Avocado, Blueberry, Banana, Cherry]</span>
+
+        <span class="cmt">// --- Removing ---</span>
+        fruits.remove(<span class="str">"Banana"</span>);         <span class="cmt">// By value → [Avocado, Blueberry, Cherry]</span>
+        fruits.remove(<span class="num">0</span>);                <span class="cmt">// By index → [Blueberry, Cherry]</span>
+
+        <span class="cmt">// --- Iterating ---</span>
+        <span class="kw">for</span> (String f : fruits) {
+            System.out.println(f);
+        }
+
+        <span class="cmt">// --- Sublist ---</span>
+        fruits.add(<span class="str">"Date"</span>);
+        fruits.add(<span class="str">"Elderberry"</span>);
+        List&lt;String&gt; sub = fruits.subList(<span class="num">1</span>, <span class="num">3</span>);  <span class="cmt">// [Cherry, Date]  (fromIndex inclusive, toIndex exclusive)</span>
+
+        <span class="cmt">// --- Convert array ↔ list ---</span>
+        String[] arr = fruits.toArray(<span class="kw">new</span> String[<span class="num">0</span>]);
+        List&lt;String&gt; fromArr = List.of(<span class="str">"X"</span>, <span class="str">"Y"</span>, <span class="str">"Z"</span>);  <span class="cmt">// Immutable</span>
+
+        <span class="cmt">// --- isEmpty / clear ---</span>
+        System.out.println(fruits.isEmpty());  <span class="cmt">// false</span>
+        fruits.clear();
+        System.out.println(fruits.isEmpty());  <span class="cmt">// true</span>
+    }
+}
+</code></pre>
+</section>
+
+
+<!-- ==================== 2. LINKEDLIST ==================== -->
+<section id="linkedlist">
+    <h2>2 &nbsp; LinkedList</h2>
+    <pre><code><span class="kw">import</span> java.util.LinkedList;
+<span class="kw">import</span> java.util.Deque;
+
+<span class="kw">public class</span> <span class="typ">LinkedListDemo</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(String[] args) {
+
+        LinkedList&lt;String&gt; list = <span class="kw">new</span> LinkedList&lt;&gt;();
+
+        <span class="cmt">// --- List operations ---</span>
+        list.add(<span class="str">"A"</span>);
+        list.add(<span class="str">"B"</span>);
+        list.add(<span class="str">"C"</span>);
+
+        <span class="cmt">// --- Head / Tail operations (O(1)) ---</span>
+        list.addFirst(<span class="str">"Z"</span>);     <span class="cmt">// [Z, A, B, C]</span>
+        list.addLast(<span class="str">"D"</span>);      <span class="cmt">// [Z, A, B, C, D]</span>
+
+        String head = list.getFirst();  <span class="cmt">// "Z"</span>
+        String tail = list.getLast();   <span class="cmt">// "D"</span>
+
+        list.removeFirst();     <span class="cmt">// [A, B, C, D]</span>
+        list.removeLast();      <span class="cmt">// [A, B, C]</span>
+
+        <span class="cmt">// --- As a Queue (FIFO) ---</span>
+        list.offer(<span class="str">"X"</span>);        <span class="cmt">// Add to tail → [A, B, C, X]</span>
+        String polled = list.poll();    <span class="cmt">// Remove from head → "A",  list = [B, C, X]</span>
+        String peeked = list.peek();    <span class="cmt">// Look at head → "B" (doesn't remove)</span>
+
+        <span class="cmt">// --- As a Stack (LIFO) ---</span>
+        list.push(<span class="str">"TOP"</span>);       <span class="cmt">// Push to head → [TOP, B, C, X]</span>
+        String popped = list.pop();     <span class="cmt">// Pop from head → "TOP"</span>
+
+        System.out.println(list);  <span class="cmt">// [B, C, X]</span>
+    }
+}
+</code></pre>
+</section>
+
+
+<!-- ==================== 3. HASHSET ==================== -->
+<section id="hashset">
+    <h2>3 &nbsp; HashSet</h2>
+    <pre><code><span class="kw">import</span> java.util.HashSet;
+<span class="kw">import</span> java.util.Set;
+
+<span class="kw">public class</span> <span class="typ">HashSetDemo</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(String[] args) {
+
+        Set&lt;String&gt; colors = <span class="kw">new</span> HashSet&lt;&gt;();
+
+        <span class="cmt">// --- Adding ---</span>
+        colors.add(<span class="str">"Red"</span>);
+        colors.add(<span class="str">"Green"</span>);
+        colors.add(<span class="str">"Blue"</span>);
+        colors.add(<span class="str">"Red"</span>);         <span class="cmt">// Duplicate ignored! returns false</span>
+
+        System.out.println(colors);        <span class="cmt">// [Red, Blue, Green]  (no guaranteed order)</span>
+        System.out.println(colors.size());  <span class="cmt">// 3  (not 4)</span>
+
+        <span class="cmt">// --- Checking ---</span>
+        <span class="kw">boolean</span> has = colors.contains(<span class="str">"Blue"</span>);  <span class="cmt">// true → O(1)</span>
+
+        <span class="cmt">// --- Removing ---</span>
+        colors.remove(<span class="str">"Green"</span>);  <span class="cmt">// → O(1)</span>
+
+        <span class="cmt">// --- Iterating (order not guaranteed) ---</span>
+        <span class="kw">for</span> (String c : colors) {
+            System.out.println(c);
+        }
+
+        <span class="cmt">// --- Set operations ---</span>
+        Set&lt;String&gt; set1 = <span class="kw">new</span> HashSet&lt;&gt;(Set.of(<span class="str">"A"</span>, <span class="str">"B"</span>, <span class="str">"C"</span>));
+        Set&lt;String&gt; set2 = <span class="kw">new</span> HashSet&lt;&gt;(Set.of(<span class="str">"B"</span>, <span class="str">"C"</span>, <span class="str">"D"</span>));
+
+        <span class="cmt">// Union</span>
+        Set&lt;String&gt; union = <span class="kw">new</span> HashSet&lt;&gt;(set1);
+        union.addAll(set2);             <span class="cmt">// [A, B, C, D]</span>
+
+        <span class="cmt">// Intersection</span>
+        Set&lt;String&gt; inter = <span class="kw">new</span> HashSet&lt;&gt;(set1);
+        inter.retainAll(set2);          <span class="cmt">// [B, C]</span>
+
+        <span class="cmt">// Difference</span>
+        Set&lt;String&gt; diff = <span class="kw">new</span> HashSet&lt;&gt;(set1);
+        diff.removeAll(set2);           <span class="cmt">// [A]</span>
+
+        System.out.println(<span class="str">"Union: "</span> + union);
+        System.out.println(<span class="str">"Intersection: "</span> + inter);
+        System.out.println(<span class="str">"Difference: "</span> + diff);
+    }
+}
+</code></pre>
+</section>
+
+
+<!-- ==================== 4. LINKEDHASHSET ==================== -->
+<section id="linkedhashset">
+    <h2>4 &nbsp; LinkedHashSet</h2>
+    <pre><code><span class="kw">import</span> java.util.LinkedHashSet;
+<span class="kw">import</span> java.util.Set;
+
+<span class="kw">public class</span> <span class="typ">LinkedHashSetDemo</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(String[] args) {
+
+        Set&lt;String&gt; set = <span class="kw">new</span> LinkedHashSet&lt;&gt;();
+
+        set.add(<span class="str">"Banana"</span>);
+        set.add(<span class="str">"Apple"</span>);
+        set.add(<span class="str">"Cherry"</span>);
+        set.add(<span class="str">"Apple"</span>);  <span class="cmt">// Duplicate → ignored</span>
+
+        <span class="cmt">// Iteration order = insertion order (guaranteed!)</span>
+        <span class="kw">for</span> (String s : set) {
+            System.out.println(s);
+        }
+        <span class="cmt">// Output:
+        // Banana
+        // Apple
+        // Cherry</span>
+    }
+}
+</code></pre>
+    <div class="highlight-box">
+        <h4>💡 HashSet vs LinkedHashSet</h4>
+        <p>
+            <strong>HashSet</strong> = fastest, no order. <strong>LinkedHashSet</strong> = slightly slower,
+            but guarantees <strong>insertion order</strong> during iteration.
+        </p>
+    </div>
+</section>
+
+
+<!-- ==================== 5. TREESET ==================== -->
+<section id="treeset">
+    <h2>5 &nbsp; TreeSet</h2>
+    <pre><code><span class="kw">import</span> java.util.TreeSet;
+<span class="kw">import</span> java.util.NavigableSet;
+
+<span class="kw">public class</span> <span class="typ">TreeSetDemo</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(String[] args) {
+
+        TreeSet&lt;Integer&gt; nums = <span class="kw">new</span> TreeSet&lt;&gt;();
+
+        nums.add(<span class="num">50</span>);
+        nums.add(<span class="num">20</span>);
+        nums.add(<span class="num">80</span>);
+        nums.add(<span class="num">10</span>);
+        nums.add(<span class="num">40</span>);
+
+        <span class="cmt">// Automatically sorted!</span>
+        System.out.println(nums);           <span class="cmt">// [10, 20, 40, 50, 80]</span>
+
+        <span class="cmt">// --- NavigableSet methods ---</span>
+        System.out.println(nums.first());   <span class="cmt">// 10  (smallest)</span>
+        System.out.println(nums.last());    <span class="cmt">// 80  (largest)</span>
+
+        System.out.println(nums.lower(<span class="num">40</span>));    <span class="cmt">// 20  (strictly less than 40)</span>
+        System.out.println(nums.higher(<span class="num">40</span>));   <span class="cmt">// 50  (strictly greater than 40)</span>
+        System.out.println(nums.floor(<span class="num">40</span>));    <span class="cmt">// 40  (less than or equal)</span>
+        System.out.println(nums.ceiling(<span class="num">45</span>));  <span class="cmt">// 50  (greater than or equal)</span>
+
+        <span class="cmt">// --- Range views ---</span>
+        System.out.println(nums.headSet(<span class="num">40</span>));            <span class="cmt">// [10, 20]  (less than 40)</span>
+        System.out.println(nums.tailSet(<span class="num">40</span>));            <span class="cmt">// [40, 50, 80]  (>= 40)</span>
+        System.out.println(nums.subSet(<span class="num">20</span>, <span class="num">80</span>));         <span class="cmt">// [20, 40, 50]  (20 inclusive, 80 exclusive)</span>
+
+        <span class="cmt">// --- Descending ---</span>
+        System.out.println(nums.descendingSet());       <span class="cmt">// [80, 50, 40, 20, 10]</span>
+
+        <span class="cmt">// --- Poll (remove + return) ---</span>
+        System.out.println(nums.pollFirst());  <span class="cmt">// 10  (removes smallest)</span>
+        System.out.println(nums.pollLast());   <span class="cmt">// 80  (removes largest)</span>
+        System.out.println(nums);              <span class="cmt">// [20, 40, 50]</span>
+
+        <span class="cmt">// --- Custom Comparator (reverse order) ---</span>
+        TreeSet&lt;String&gt; words = <span class="kw">new</span> TreeSet&lt;&gt;((a, b) -> b.compareTo(a));
+        words.add(<span class="str">"Banana"</span>);
+        words.add(<span class="str">"Apple"</span>);
+        words.add(<span class="str">"Cherry"</span>);
+        System.out.println(words);  <span class="cmt">// [Cherry, Banana, Apple]  (reverse alphabetical)</span>
+    }
+}
+</code></pre>
+</section>
+
+
+<!-- ==================== 6. PRIORITYQUEUE ==================== -->
+<section id="priorityqueue">
+    <h2>6 &nbsp; PriorityQueue</h2>
+    <pre><code><span class="kw">import</span> java.util.PriorityQueue;
+<span class="kw">import</span> java.util.Collections;
+
+<span class="kw">public class</span> <span class="typ">PriorityQueueDemo</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(String[] args) {
+
+        <span class="cmt">// --- Min-Heap (default) ---</span>
+        PriorityQueue&lt;Integer&gt; minHeap = <span class="kw">new</span> PriorityQueue&lt;&gt;();
+        minHeap.offer(<span class="num">30</span>);
+        minHeap.offer(<span class="num">10</span>);
+        minHeap.offer(<span class="num">20</span>);
+
+        System.out.println(minHeap.peek());   <span class="cmt">// 10  (smallest = highest priority)</span>
+        System.out.println(minHeap.poll());   <span class="cmt">// 10  (removes smallest)</span>
+        System.out.println(minHeap.poll());   <span class="cmt">// 20</span>
+        System.out.println(minHeap.poll());   <span class="cmt">// 30</span>
+
+        <span class="cmt">// --- Max-Heap ---</span>
+        PriorityQueue&lt;Integer&gt; maxHeap = <span class="kw">new</span> PriorityQueue&lt;&gt;(Collections.reverseOrder());
+        maxHeap.offer(<span class="num">30</span>);
+        maxHeap.offer(<span class="num">10</span>);
+        maxHeap.offer(<span class="num">20</span>);
+
+        System.out.println(maxHeap.poll());   <span class="cmt">// 30  (largest first)</span>
+        System.out.println(maxHeap.poll());   <span class="cmt">// 20</span>
+        System.out.println(maxHeap.poll());   <span class="cmt">// 10</span>
+
+        <span class="cmt">// --- Custom objects ---</span>
+        PriorityQueue&lt;String&gt; tasks = <span class="kw">new</span> PriorityQueue&lt;&gt;((a, b) -> a.length() - b.length());
+        tasks.offer(<span class="str">"Send email"</span>);
+        tasks.offer(<span class="str">"Code"</span>);
+        tasks.offer(<span class="str">"Deploy to production"</span>);
+
+        <span class="kw">while</span> (!tasks.isEmpty()) {
+            System.out.println(tasks.poll());  <span class="cmt">// Code → Send email → Deploy to production  (shortest first)</span>
+        }
+    }
+}
+</code></pre>
+</section>
+
+
+<!-- ==================== 7. ARRAYDEQUE ==================== -->
+<section id="arraydeque">
+    <h2>7 &nbsp; ArrayDeque — Stack &amp; Queue</h2>
+    <pre><code><span class="kw">import</span> java.util.ArrayDeque;
+<span class="kw">import</span> java.util.Deque;
+
+<span class="kw">public class</span> <span class="typ">ArrayDequeDemo</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(String[] args) {
+
+        <span class="cmt">// ========== AS A STACK (LIFO) ==========</span>
+        Deque&lt;String&gt; stack = <span class="kw">new</span> ArrayDeque&lt;&gt;();
+
+        stack.push(<span class="str">"First"</span>);     <span class="cmt">// bottom</span>
+        stack.push(<span class="str">"Second"</span>);
+        stack.push(<span class="str">"Third"</span>);     <span class="cmt">// top</span>
+
+        System.out.println(stack.peek());   <span class="cmt">// "Third"  (top, doesn't remove)</span>
+        System.out.println(stack.pop());    <span class="cmt">// "Third"  (removes top)</span>
+        System.out.println(stack.pop());    <span class="cmt">// "Second"</span>
+        System.out.println(stack.pop());    <span class="cmt">// "First"</span>
+
+
+        <span class="cmt">// ========== AS A QUEUE (FIFO) ==========</span>
+        Deque&lt;String&gt; queue = <span class="kw">new</span> ArrayDeque&lt;&gt;();
+
+        queue.offer(<span class="str">"First"</span>);    <span class="cmt">// front</span>
+        queue.offer(<span class="str">"Second"</span>);
+        queue.offer(<span class="str">"Third"</span>);    <span class="cmt">// back</span>
+
+        System.out.println(queue.peek());   <span class="cmt">// "First"  (front)</span>
+        System.out.println(queue.poll());   <span class="cmt">// "First"  (removes front)</span>
+        System.out.println(queue.poll());   <span class="cmt">// "Second"</span>
+        System.out.println(queue.poll());   <span class="cmt">// "Third"</span>
+
+
+        <span class="cmt">// ========== DOUBLE-ENDED ==========</span>
+        Deque&lt;String&gt; deque = <span class="kw">new</span> ArrayDeque&lt;&gt;();
+
+        deque.offerFirst(<span class="str">"B"</span>);    <span class="cmt">// [B]</span>
+        deque.offerFirst(<span class="str">"A"</span>);    <span class="cmt">// [A, B]</span>
+        deque.offerLast(<span class="str">"C"</span>);     <span class="cmt">// [A, B, C]</span>
+
+        System.out.println(deque.peekFirst());  <span class="cmt">// "A"</span>
+        System.out.println(deque.peekLast());   <span class="cmt">// "C"</span>
+        System.out.println(deque.pollFirst());  <span class="cmt">// "A"  → deque = [B, C]</span>
+        System.out.println(deque.pollLast());   <span class="cmt">// "C"  → deque = [B]</span>
+    }
+}
+</code></pre>
+    <div class="highlight-box">
+        <h4>💡 Always use ArrayDeque over Stack class</h4>
+        <p><code>java.util.Stack</code> extends Vector (synchronized, legacy, slow). <code>ArrayDeque</code> is the modern, faster replacement for both Stack and Queue use cases.</p>
+    </div>
+</section>
+
+
+<!-- ==================== 8. HASHMAP ==================== -->
+<section id="hashmap">
+    <h2>8 &nbsp; HashMap</h2>
+    <pre><code><span class="kw">import</span> java.util.HashMap;
+<span class="kw">import</span> java.util.Map;
+
+<span class="kw">public class</span> <span class="typ">HashMapDemo</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(String[] args) {
+
+        Map&lt;String, Integer&gt; scores = <span class="kw">new</span> HashMap&lt;&gt;();
+
+        <span class="cmt">// --- put ---</span>
+        scores.put(<span class="str">"Alice"</span>, <span class="num">95</span>);
+        scores.put(<span class="str">"Bob"</span>, <span class="num">87</span>);
+        scores.put(<span class="str">"Charlie"</span>, <span class="num">92</span>);
+        scores.put(<span class="str">"Alice"</span>, <span class="num">98</span>);   <span class="cmt">// Overwrites! Key "Alice" now → 98</span>
+
+        <span class="cmt">// --- get ---</span>
+        <span class="kw">int</span> aliceScore = scores.get(<span class="str">"Alice"</span>);           <span class="cmt">// 98</span>
+        Integer unknown = scores.get(<span class="str">"Zara"</span>);          <span class="cmt">// null (key doesn't exist)</span>
+        <span class="kw">int</span> safe = scores.getOrDefault(<span class="str">"Zara"</span>, <span class="num">0</span>);      <span class="cmt">// 0 (default if missing)</span>
+
+        <span class="cmt">// --- Check existence ---</span>
+        scores.containsKey(<span class="str">"Bob"</span>);       <span class="cmt">// true</span>
+        scores.containsValue(<span class="num">87</span>);       <span class="cmt">// true</span>
+
+        <span class="cmt">// --- Remove ---</span>
+        scores.remove(<span class="str">"Charlie"</span>);        <span class="cmt">// removes the entry</span>
+
+        <span class="cmt">// --- Iterate over entries ---</span>
+        <span class="kw">for</span> (Map.Entry&lt;String, Integer&gt; entry : scores.entrySet()) {
+            System.out.println(entry.getKey() + <span class="str">" = "</span> + entry.getValue());
+        }
+
+        <span class="cmt">// --- Iterate keys only ---</span>
+        <span class="kw">for</span> (String key : scores.keySet()) {
+            System.out.println(key);
+        }
+
+        <span class="cmt">// --- Iterate values only ---</span>
+        <span class="kw">for</span> (<span class="kw">int</span> val : scores.values()) {
+            System.out.println(val);
+        }
+
+        <span class="cmt">// --- putIfAbsent (only put if key doesn't exist) ---</span>
+        scores.putIfAbsent(<span class="str">"Alice"</span>, <span class="num">100</span>);   <span class="cmt">// Does nothing, Alice already exists</span>
+        scores.putIfAbsent(<span class="str">"Diana"</span>, <span class="num">88</span>);   <span class="cmt">// Added!</span>
+
+        <span class="cmt">// --- compute / merge (great for counting) ---</span>
+        Map&lt;String, Integer&gt; wordCount = <span class="kw">new</span> HashMap&lt;&gt;();
+        String[] words = {<span class="str">"hello"</span>, <span class="str">"world"</span>, <span class="str">"hello"</span>, <span class="str">"java"</span>, <span class="str">"hello"</span>};
+
+        <span class="kw">for</span> (String w : words) {
+            wordCount.merge(w, <span class="num">1</span>, Integer::sum);  <span class="cmt">// If exists, add 1; else put 1</span>
+        }
+        System.out.println(wordCount);  <span class="cmt">// {java=1, world=1, hello=3}</span>
+
+        <span class="cmt">// --- forEach (Java 8+) ---</span>
+        scores.forEach((k, v) -> System.out.println(k + <span class="str">": "</span> + v));
+    }
+}
+</code></pre>
+</section>
+
+
+<!-- ==================== 9. LINKEDHASHMAP ==================== -->
+<section id="linkedhashmap">
+    <h2>9 &nbsp; LinkedHashMap</h2>
+    <pre><code><span class="kw">import</span> java.util.LinkedHashMap;
+<span class="kw">import</span> java.util.Map;
+
+<span class="kw">public class</span> <span class="typ">LinkedHashMapDemo</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(String[] args) {
+
+        <span class="cmt">// --- Insertion-order (default) ---</span>
+        Map&lt;String, Integer&gt; map = <span class="kw">new</span> LinkedHashMap&lt;&gt;();
+        map.put(<span class="str">"Banana"</span>, <span class="num">2</span>);
+        map.put(<span class="str">"Apple"</span>, <span class="num">5</span>);
+        map.put(<span class="str">"Cherry"</span>, <span class="num">3</span>);
+
+        <span class="cmt">// Iteration order = insertion order (guaranteed!)</span>
+        map.forEach((k, v) -> System.out.println(k + <span class="str">" → "</span> + v));
+        <span class="cmt">// Banana → 2
+        // Apple → 5
+        // Cherry → 3</span>
+
+
+        <span class="cmt">// ========== LRU CACHE (access-order mode) ==========</span>
+        <span class="kw">int</span> capacity = <span class="num">3</span>;
+        LinkedHashMap&lt;String, String&gt; lruCache = <span class="kw">new</span> LinkedHashMap&lt;&gt;(<span class="num">16</span>, <span class="num">0.75f</span>, <span class="kw">true</span>) {
+            <span class="ann">@Override</span>
+            <span class="kw">protected boolean</span> <span class="fn">removeEldestEntry</span>(Map.Entry&lt;String, String&gt; eldest) {
+                <span class="kw">return</span> size() > capacity;  <span class="cmt">// Remove oldest when over capacity</span>
+            }
+        };
+
+        lruCache.put(<span class="str">"A"</span>, <span class="str">"1"</span>);
+        lruCache.put(<span class="str">"B"</span>, <span class="str">"2"</span>);
+        lruCache.put(<span class="str">"C"</span>, <span class="str">"3"</span>);
+        lruCache.get(<span class="str">"A"</span>);           <span class="cmt">// Access A → moves to end</span>
+        lruCache.put(<span class="str">"D"</span>, <span class="str">"4"</span>);     <span class="cmt">// Exceeds capacity → B removed (least recently used)</span>
+
+        System.out.println(lruCache);  <span class="cmt">// {C=3, A=1, D=4}</span>
+    }
+}
+</code></pre>
+</section>
+
+
+<!-- ==================== 10. TREEMAP ==================== -->
+<section id="treemap">
+    <h2>10 &nbsp; TreeMap</h2>
+    <pre><code><span class="kw">import</span> java.util.TreeMap;
+<span class="kw">import</span> java.util.NavigableMap;
+
+<span class="kw">public class</span> <span class="typ">TreeMapDemo</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(String[] args) {
+
+        TreeMap&lt;String, Integer&gt; map = <span class="kw">new</span> TreeMap&lt;&gt;();
+
+        map.put(<span class="str">"Charlie"</span>, <span class="num">3</span>);
+        map.put(<span class="str">"Alice"</span>, <span class="num">1</span>);
+        map.put(<span class="str">"Bob"</span>, <span class="num">2</span>);
+        map.put(<span class="str">"Diana"</span>, <span class="num">4</span>);
+
+        <span class="cmt">// Keys are automatically sorted!</span>
+        System.out.println(map);  <span class="cmt">// {Alice=1, Bob=2, Charlie=3, Diana=4}</span>
+
+        <span class="cmt">// --- Navigation ---</span>
+        System.out.println(map.firstKey());             <span class="cmt">// "Alice"</span>
+        System.out.println(map.lastKey());              <span class="cmt">// "Diana"</span>
+        System.out.println(map.lowerKey(<span class="str">"Charlie"</span>));    <span class="cmt">// "Bob"    (strictly less)</span>
+        System.out.println(map.higherKey(<span class="str">"Bob"</span>));       <span class="cmt">// "Charlie" (strictly greater)</span>
+
+        <span class="cmt">// --- Sub maps ---</span>
+        System.out.println(map.headMap(<span class="str">"Charlie"</span>));     <span class="cmt">// {Alice=1, Bob=2}</span>
+        System.out.println(map.tailMap(<span class="str">"Charlie"</span>));     <span class="cmt">// {Charlie=3, Diana=4}</span>
+        System.out.println(map.subMap(<span class="str">"Bob"</span>, <span class="str">"Diana"</span>)); <span class="cmt">// {Bob=2, Charlie=3}</span>
+
+        <span class="cmt">// --- Descending ---</span>
+        System.out.println(map.descendingMap());        <span class="cmt">// {Diana=4, Charlie=3, Bob=2, Alice=1}</span>
+
+        <span class="cmt">// --- Poll ---</span>
+        System.out.println(map.pollFirstEntry());  <span class="cmt">// Alice=1 (removed)</span>
+        System.out.println(map.pollLastEntry());   <span class="cmt">// Diana=4 (removed)</span>
+        System.out.println(map);                   <span class="cmt">// {Bob=2, Charlie=3}</span>
+
+        <span class="cmt">// --- Custom Comparator (case-insensitive) ---</span>
+        TreeMap&lt;String, Integer&gt; ciMap = <span class="kw">new</span> TreeMap&lt;&gt;(String.CASE_INSENSITIVE_ORDER);
+        ciMap.put(<span class="str">"apple"</span>, <span class="num">1</span>);
+        ciMap.put(<span class="str">"Apple"</span>, <span class="num">2</span>);  <span class="cmt">// Overwrites! (case-insensitive = same key)</span>
+        System.out.println(ciMap);  <span class="cmt">// {apple=2}</span>
+    }
+}
+</code></pre>
+</section>
+
+
+<!-- ==================== 11. CONCURRENTHASHMAP ==================== -->
+<section id="concurrenthashmap">
+    <h2>11 &nbsp; ConcurrentHashMap</h2>
+    <pre><code><span class="kw">import</span> java.util.concurrent.ConcurrentHashMap;
+<span class="kw">import</span> java.util.Map;
+
+<span class="kw">public class</span> <span class="typ">ConcurrentHashMapDemo</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(String[] args) {
+
+        Map&lt;String, Integer&gt; map = <span class="kw">new</span> ConcurrentHashMap&lt;&gt;();
+
+        <span class="cmt">// Same API as HashMap</span>
+        map.put(<span class="str">"Java"</span>, <span class="num">1</span>);
+        map.put(<span class="str">"Python"</span>, <span class="num">2</span>);
+        map.put(<span class="str">"Go"</span>, <span class="num">3</span>);
+
+        <span class="cmt">// ❌ null NOT allowed (unlike HashMap)</span>
+        <span class="cmt">// map.put(null, 4);       // throws NullPointerException</span>
+        <span class="cmt">// map.put("Rust", null);  // throws NullPointerException</span>
+
+        <span class="cmt">// --- Thread-safe atomic operations ---</span>
+        map.putIfAbsent(<span class="str">"Java"</span>, <span class="num">99</span>);   <span class="cmt">// No change (already exists)</span>
+
+        <span class="cmt">// Atomic compute</span>
+        map.compute(<span class="str">"Java"</span>, (key, val) -> val + <span class="num">10</span>);  <span class="cmt">// Java → 11</span>
+
+        <span class="cmt">// Atomic merge (great for counting)</span>
+        map.merge(<span class="str">"Python"</span>, <span class="num">1</span>, Integer::sum);  <span class="cmt">// Python → 3</span>
+
+        <span class="cmt">// --- Safe iteration (no ConcurrentModificationException) ---</span>
+        map.forEach((k, v) -> System.out.println(k + <span class="str">": "</span> + v));
+
+        <span class="cmt">// --- Multi-threaded usage example ---</span>
+        <span class="cmt">// Multiple threads can read/write simultaneously without external synchronization</span>
+        Runnable writer = () -> {
+            <span class="kw">for</span> (<span class="kw">int</span> i = <span class="num">0</span>; i < <span class="num">1000</span>; i++) {
+                map.merge(<span class="str">"counter"</span>, <span class="num">1</span>, Integer::sum);
+            }
+        };
+
+        Thread t1 = <span class="kw">new</span> Thread(writer);
+        Thread t2 = <span class="kw">new</span> Thread(writer);
+        t1.start();
+        t2.start();
+        <span class="kw">try</span> { t1.join(); t2.join(); } <span class="kw">catch</span> (InterruptedException e) {}
+
+        System.out.println(map.get(<span class="str">"counter"</span>));  <span class="cmt">// 2000 (always correct, thread-safe)</span>
+    }
+}
+</code></pre>
+</section>
+
+
+<!-- ==================== 12. ENUMMAP & ENUMSET ==================== -->
+<section id="enummap">
+    <h2>12 &nbsp; EnumMap &amp; EnumSet</h2>
+    <pre><code><span class="kw">import</span> java.util.EnumMap;
+<span class="kw">import</span> java.util.EnumSet;
+
+<span class="kw">public class</span> <span class="typ">EnumCollectionsDemo</span> {
+
+    <span class="kw">enum</span> <span class="typ">Day</span> { MON, TUE, WED, THU, FRI, SAT, SUN }
+
+    <span class="kw">public static void</span> <span class="fn">main</span>(String[] args) {
+
+        <span class="cmt">// ========== EnumMap ==========</span>
+        EnumMap&lt;Day, String&gt; schedule = <span class="kw">new</span> EnumMap&lt;&gt;(Day.<span class="kw">class</span>);
+
+        schedule.put(Day.MON, <span class="str">"Gym"</span>);
+        schedule.put(Day.WED, <span class="str">"Meeting"</span>);
+        schedule.put(Day.FRI, <span class="str">"Movie"</span>);
+        schedule.put(Day.SUN, <span class="str">"Rest"</span>);
+
+        <span class="cmt">// Iteration order = enum declaration order (always!)</span>
+        schedule.forEach((day, activity) ->
+            System.out.println(day + <span class="str">" → "</span> + activity)
+        );
+        <span class="cmt">// MON → Gym
+        // WED → Meeting
+        // FRI → Movie
+        // SUN → Rest</span>
+
+
+        <span class="cmt">// ========== EnumSet ==========</span>
+        EnumSet&lt;Day&gt; weekdays = EnumSet.range(Day.MON, Day.FRI);    <span class="cmt">// [MON..FRI]</span>
+        EnumSet&lt;Day&gt; weekend  = EnumSet.of(Day.SAT, Day.SUN);       <span class="cmt">// [SAT, SUN]</span>
+        EnumSet&lt;Day&gt; allDays  = EnumSet.allOf(Day.<span class="kw">class</span>);            <span class="cmt">// All 7</span>
+        EnumSet&lt;Day&gt; noDays   = EnumSet.noneOf(Day.<span class="kw">class</span>);           <span class="cmt">// Empty</span>
+        EnumSet&lt;Day&gt; notWeekend = EnumSet.complementOf(weekend);    <span class="cmt">// [MON..FRI]</span>
+
+        System.out.println(<span class="str">"Weekdays: "</span> + weekdays);
+        System.out.println(<span class="str">"Weekend: "</span> + weekend);
+
+        <span class="kw">if</span> (weekdays.contains(Day.MON)) {
+            System.out.println(<span class="str">"Monday is a weekday"</span>);  <span class="cmt">// O(1) — backed by a bit vector</span>
+        }
+    }
+}
+</code></pre>
+</section>
+
+
+<!-- ==================== 13. IMMUTABLE ==================== -->
+<section id="immutable">
+    <h2>13 &nbsp; Immutable / Unmodifiable Collections (Java 9+)</h2>
+    <pre><code><span class="kw">import</span> java.util.*;
+
+<span class="kw">public class</span> <span class="typ">ImmutableDemo</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(String[] args) {
+
+        <span class="cmt">// ========== Java 9+ Factory Methods ==========</span>
+
+        <span class="cmt">// Immutable List</span>
+        List&lt;String&gt; list = List.of(<span class="str">"A"</span>, <span class="str">"B"</span>, <span class="str">"C"</span>);
+        <span class="cmt">// list.add("D");  → UnsupportedOperationException!</span>
+
+        <span class="cmt">// Immutable Set</span>
+        Set&lt;String&gt; set = Set.of(<span class="str">"X"</span>, <span class="str">"Y"</span>, <span class="str">"Z"</span>);
+        <span class="cmt">// Set.of("A", "A");  → IllegalArgumentException! (duplicates not allowed)</span>
+
+        <span class="cmt">// Immutable Map</span>
+        Map&lt;String, Integer&gt; map = Map.of(
+            <span class="str">"Alice"</span>, <span class="num">1</span>,
+            <span class="str">"Bob"</span>, <span class="num">2</span>,
+            <span class="str">"Charlie"</span>, <span class="num">3</span>
+        );
+
+        <span class="cmt">// Immutable Map with more than 10 entries</span>
+        Map&lt;String, Integer&gt; bigMap = Map.ofEntries(
+            Map.entry(<span class="str">"A"</span>, <span class="num">1</span>),
+            Map.entry(<span class="str">"B"</span>, <span class="num">2</span>),
+            Map.entry(<span class="str">"C"</span>, <span class="num">3</span>)
+        );
+
+
+        <span class="cmt">// ========== Unmodifiable Wrappers ==========</span>
+
+        List&lt;String&gt; mutable = <span class="kw">new</span> ArrayList&lt;&gt;(List.of(<span class="str">"A"</span>, <span class="str">"B"</span>));
+        List&lt;String&gt; unmod = Collections.unmodifiableList(mutable);
+        <span class="cmt">// unmod.add("C");  → UnsupportedOperationException!</span>
+        <span class="cmt">// BUT: mutable.add("C") still works and affects unmod! (it's just a view)</span>
+
+
+        <span class="cmt">// ========== Java 10+ copyOf ==========</span>
+
+        List&lt;String&gt; copy = List.copyOf(mutable);  <span class="cmt">// True independent copy, immutable</span>
+        <span class="cmt">// Modifying 'mutable' does NOT affect 'copy'</span>
+    }
+}
+</code></pre>
+</section>
+
+
+<!-- ==================== 14. SORTING ==================== -->
+<section id="sorting">
+    <h2>14 &nbsp; Sorting &amp; Comparators</h2>
+    <pre><code><span class="kw">import</span> java.util.*;
+
+<span class="kw">public class</span> <span class="typ">SortingDemo</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(String[] args) {
+
+        <span class="cmt">// ========== Sort a List (natural order) ==========</span>
+        List&lt;Integer&gt; nums = <span class="kw">new</span> ArrayList&lt;&gt;(List.of(<span class="num">5</span>, <span class="num">2</span>, <span class="num">8</span>, <span class="num">1</span>, <span class="num">9</span>));
+        Collections.sort(nums);              <span class="cmt">// [1, 2, 5, 8, 9]</span>
+        nums.sort(Comparator.reverseOrder()); <span class="cmt">// [9, 8, 5, 2, 1]</span>
+
+
+        <span class="cmt">// ========== Sort Strings ==========</span>
+        List&lt;String&gt; names = <span class="kw">new</span> ArrayList&lt;&gt;(List.of(<span class="str">"Charlie"</span>, <span class="str">"Alice"</span>, <span class="str">"bob"</span>));
+        names.sort(Comparator.naturalOrder());                   <span class="cmt">// [Alice, Charlie, bob]  (uppercase first)</span>
+        names.sort(String.CASE_INSENSITIVE_ORDER);               <span class="cmt">// [Alice, bob, Charlie]</span>
+        names.sort(Comparator.comparing(String::length));        <span class="cmt">// [bob, Alice, Charlie]  (by length)</span>
+
+
+        <span class="cmt">// ========== Sort Custom Objects ==========</span>
+        List&lt;Student&gt; students = <span class="kw">new</span> ArrayList&lt;&gt;(List.of(
+            <span class="kw">new</span> Student(<span class="str">"Alice"</span>, <span class="num">90</span>),
+            <span class="kw">new</span> Student(<span class="str">"Bob"</span>, <span class="num">95</span>),
+            <span class="kw">new</span> Student(<span class="str">"Charlie"</span>, <span class="num">90</span>)
+        ));
+
+        <span class="cmt">// Sort by score descending, then name ascending</span>
+        students.sort(
+            Comparator.comparingInt(Student::score).reversed()
+                       .thenComparing(Student::name)
+        );
+
+        students.forEach(System.out::println);
+        <span class="cmt">// Student[name=Bob, score=95]
+        // Student[name=Alice, score=90]
+        // Student[name=Charlie, score=90]</span>
+
+
+        <span class="cmt">// ========== Comparable (natural ordering on the class itself) ==========</span>
+        <span class="cmt">// If Student implements Comparable&lt;Student&gt;, you can use:</span>
+        <span class="cmt">// Collections.sort(students);  → uses compareTo()</span>
+    }
+
+    <span class="cmt">// Java 16+ record (or a class with getters)</span>
+    <span class="kw">record</span> <span class="typ">Student</span>(String name, <span class="kw">int</span> score) {}
+}
+</code></pre>
+
+    <div class="highlight-box">
+        <h4>💡 Comparable vs Comparator</h4>
+        <p>
+            <strong>Comparable</strong> → class implements <code>compareTo()</code> → defines the <em>natural</em> ordering (one way to sort).<br>
+            <strong>Comparator</strong> → external object → defines <em>custom</em> ordering (can have many different sort strategies).
+        </p>
+    </div>
+</section>
+
+
+<!-- ==================== 15. UTILITY ==================== -->
+<section id="utility">
+    <h2>15 &nbsp; Collections Utility Methods</h2>
+    <pre><code><span class="kw">import</span> java.util.*;
+
+<span class="kw">public class</span> <span class="typ">UtilityDemo</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(String[] args) {
+
+        List&lt;Integer&gt; list = <span class="kw">new</span> ArrayList&lt;&gt;(List.of(<span class="num">3</span>, <span class="num">1</span>, <span class="num">4</span>, <span class="num">1</span>, <span class="num">5</span>, <span class="num">9</span>));
+
+        <span class="cmt">// --- Sort ---</span>
+        Collections.sort(list);                       <span class="cmt">// [1, 1, 3, 4, 5, 9]</span>
+
+        <span class="cmt">// --- Reverse ---</span>
+        Collections.reverse(list);                    <span class="cmt">// [9, 5, 4, 3, 1, 1]</span>
+
+        <span class="cmt">// --- Shuffle ---</span>
+        Collections.shuffle(list);                    <span class="cmt">// Random order</span>
+
+        <span class="cmt">// --- Min / Max ---</span>
+        <span class="kw">int</span> min = Collections.min(list);               <span class="cmt">// 1</span>
+        <span class="kw">int</span> max = Collections.max(list);               <span class="cmt">// 9</span>
+
+        <span class="cmt">// --- Frequency ---</span>
+        <span class="kw">int</span> count = Collections.frequency(list, <span class="num">1</span>);   <span class="cmt">// 2 (how many times 1 appears)</span>
+
+        <span class="cmt">// --- Fill ---</span>
+        Collections.fill(list, <span class="num">0</span>);                    <span class="cmt">// [0, 0, 0, 0, 0, 0]</span>
+
+        <span class="cmt">// --- nCopies ---</span>
+        List&lt;String&gt; fiveHellos = Collections.nCopies(<span class="num">5</span>, <span class="str">"Hello"</span>);  <span class="cmt">// [Hello, Hello, Hello, Hello, Hello]</span>
+
+        <span class="cmt">// --- Singleton (immutable single-element collection) ---</span>
+        List&lt;String&gt; single = Collections.singletonList(<span class="str">"only"</span>);
+        Set&lt;String&gt; singleSet = Collections.singleton(<span class="str">"only"</span>);
+        Map&lt;String, Integer&gt; singleMap = Collections.singletonMap(<span class="str">"key"</span>, <span class="num">1</span>);
+
+        <span class="cmt">// --- Synchronized wrappers ---</span>
+        List&lt;String&gt; syncList = Collections.synchronizedList(<span class="kw">new</span> ArrayList&lt;&gt;());
+        Map&lt;String, Integer&gt; syncMap = Collections.synchronizedMap(<span class="kw">new</span> HashMap&lt;&gt;());
+
+        <span class="cmt">// --- Unmodifiable wrappers ---</span>
+        List&lt;Integer&gt; readOnly = Collections.unmodifiableList(<span class="kw">new</span> ArrayList&lt;&gt;(List.of(<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>)));
+
+        <span class="cmt">// --- Swap ---</span>
+        List&lt;String&gt; swapList = <span class="kw">new</span> ArrayList&lt;&gt;(List.of(<span class="str">"A"</span>, <span class="str">"B"</span>, <span class="str">"C"</span>));
+        Collections.swap(swapList, <span class="num">0</span>, <span class="num">2</span>);           <span class="cmt">// [C, B, A]</span>
+
+        <span class="cmt">// --- Rotate ---</span>
+        List&lt;String&gt; rotList = <span class="kw">new</span> ArrayList&lt;&gt;(List.of(<span class="str">"A"</span>, <span class="str">"B"</span>, <span class="str">"C"</span>, <span class="str">"D"</span>));
+        Collections.rotate(rotList, <span class="num">2</span>);              <span class="cmt">// [C, D, A, B]</span>
+
+        <span class="cmt">// --- Binary Search (list must be sorted!) ---</span>
+        List&lt;Integer&gt; sorted = List.of(<span class="num">1</span>, <span class="num">3</span>, <span class="num">5</span>, <span class="num">7</span>, <span class="num">9</span>);
+        <span class="kw">int</span> index = Collections.binarySearch(sorted, <span class="num">5</span>);  <span class="cmt">// 2  (found at index 2)</span>
+
+        <span class="cmt">// --- Disjoint (no common elements?) ---</span>
+        <span class="kw">boolean</span> noOverlap = Collections.disjoint(
+            List.of(<span class="num">1</span>, <span class="num">2</span>), List.of(<span class="num">3</span>, <span class="num">4</span>));  <span class="cmt">// true</span>
+    }
+}
+</code></pre>
+</section>
+
+
+<!-- ==================== 16. STREAMS ==================== -->
+<section id="streams">
+    <h2>16 &nbsp; Streams + Collections</h2>
+    <pre><code><span class="kw">import</span> java.util.*;
+<span class="kw">import</span> java.util.stream.*;
+
+<span class="kw">public class</span> <span class="typ">StreamsDemo</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(String[] args) {
+
+        List&lt;String&gt; names = List.of(<span class="str">"Alice"</span>, <span class="str">"Bob"</span>, <span class="str">"Charlie"</span>, <span class="str">"Anna"</span>, <span class="str">"Brian"</span>);
+
+        <span class="cmt">// --- Filter ---</span>
+        List&lt;String&gt; aNames = names.stream()
+            .filter(n -> n.startsWith(<span class="str">"A"</span>))
+            .collect(Collectors.toList());              <span class="cmt">// [Alice, Anna]</span>
+
+        <span class="cmt">// --- Map (transform) ---</span>
+        List&lt;Integer&gt; lengths = names.stream()
+            .map(String::length)
+            .collect(Collectors.toList());              <span class="cmt">// [5, 3, 7, 4, 5]</span>
+
+        <span class="cmt">// --- Collect to Set ---</span>
+        Set&lt;String&gt; nameSet = names.stream()
+            .collect(Collectors.toSet());
+
+        <span class="cmt">// --- Collect to Map ---</span>
+        Map&lt;String, Integer&gt; nameToLength = names.stream()
+            .collect(Collectors.toMap(n -> n, String::length));
+        <span class="cmt">// {Alice=5, Bob=3, Charlie=7, Anna=4, Brian=5}</span>
+
+        <span class="cmt">// --- Grouping ---</span>
+        Map&lt;Integer, List&lt;String&gt;&gt; byLength = names.stream()
+            .collect(Collectors.groupingBy(String::length));
+        <span class="cmt">// {3=[Bob], 4=[Anna], 5=[Alice, Brian], 7=[Charlie]}</span>
+
+        <span class="cmt">// --- Sorting ---</span>
+        List&lt;String&gt; sorted = names.stream()
+            .sorted()
+            .collect(Collectors.toList());              <span class="cmt">// [Alice, Anna, Bob, Brian, Charlie]</span>
+
+        <span class="cmt">// --- Reduce ---</span>
+        <span class="kw">int</span> totalLen = names.stream()
+            .mapToInt(String::length)
+            .sum();                                     <span class="cmt">// 24</span>
+
+        <span class="cmt">// --- Joining ---</span>
+        String joined = names.stream()
+            .collect(Collectors.joining(<span class="str">", "</span>));         <span class="cmt">// "Alice, Bob, Charlie, Anna, Brian"</span>
+
+        <span class="cmt">// --- Distinct + Count ---</span>
+        List&lt;Integer&gt; nums = List.of(<span class="num">1</span>, <span class="num">2</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">3</span>, <span class="num">3</span>);
+        <span class="kw">long</span> unique = nums.stream().distinct().count();  <span class="cmt">// 3</span>
+
+        <span class="cmt">// --- toUnmodifiableList (Java 10+) ---</span>
+        List&lt;String&gt; immutable = names.stream()
+            .filter(n -> n.length() > <span class="num">3</span>)
+            .collect(Collectors.toUnmodifiableList());  <span class="cmt">// Immutable result</span>
+
+        <span class="cmt">// --- Partitioning ---</span>
+        Map&lt;Boolean, List&lt;String&gt;&gt; partitioned = names.stream()
+            .collect(Collectors.partitioningBy(n -> n.length() > <span class="num">4</span>));
+        <span class="cmt">// {false=[Bob, Anna], true=[Alice, Charlie, Brian]}</span>
+
+        System.out.println(partitioned);
+    }
+}
+</code></pre>
+</section>
+
+</div>
+
+<footer>
+    Java Collections — Implementation Examples &nbsp;|&nbsp; <a href="java-collections-guide.html">← Back to Visual Guide</a>
+</footer>
+
+</body>
+</html>
+
