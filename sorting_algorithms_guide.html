@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java Sorting Algorithms & Crux Logic</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Highlight.js for Syntax Highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/java.min.js"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 font-sans leading-relaxed min-h-screen">
+
+    <!-- Header -->
+    <header class="bg-slate-800 border-b border-slate-700 sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex flex-wrap justify-between items-center">
+            <h1 class="text-xl md:text-2xl font-bold text-indigo-400">Java Sorting Algorithms</h1>
+            <nav class="flex space-x-2 md:space-x-4 text-xs md:text-sm mt-2 sm:mt-0 overflow-x-auto py-1">
+                <a href="#bubble" class="px-3 py-1.5 rounded-lg bg-slate-700 hover:bg-indigo-600 transition">Bubble</a>
+                <a href="#selection" class="px-3 py-1.5 rounded-lg bg-slate-700 hover:bg-indigo-600 transition">Selection</a>
+                <a href="#insertion" class="px-3 py-1.5 rounded-lg bg-slate-700 hover:bg-indigo-600 transition">Insertion</a>
+                <a href="#quick" class="px-3 py-1.5 rounded-lg bg-slate-700 hover:bg-indigo-600 transition">Quick</a>
+                <a href="#merge" class="px-3 py-1.5 rounded-lg bg-slate-700 hover:bg-indigo-600 transition">Merge</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-6 py-8 space-y-12">
+
+        <!-- Introduction -->
+        <section class="bg-slate-800/60 rounded-xl p-6 border border-slate-700">
+            <h2 class="text-xl font-semibold text-slate-200 mb-2">Overview</h2>
+            <p class="text-slate-300">
+                A clean guide covering five fundamental sorting algorithms in Java. Each algorithm features its core <strong>crux logic</strong>, complete Java code implementation, and computational complexity breakdown.
+            </p>
+        </section>
+
+        <!-- Bubble Sort -->
+        <section id="bubble" class="bg-slate-800 rounded-xl p-6 border border-slate-700 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-700 pb-3">
+                <h2 class="text-2xl font-bold text-indigo-400">1. Bubble Sort</h2>
+                <span class="text-xs px-2.5 py-1 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">O(n²) Average</span>
+            </div>
+            
+            <div class="bg-indigo-950/40 border-l-4 border-indigo-500 p-4 rounded-r-lg">
+                <h3 class="font-semibold text-indigo-300 uppercase text-xs tracking-wider">Crux Logic</h3>
+                <p class="text-slate-300 mt-1">
+                    Imagine shaking a carbonated drink—the biggest bubbles rise to the top. Bubble sort repeatedly compares adjacent elements and swaps them if they are in the wrong order. After each complete pass through the array, the largest remaining element "bubbles up" to its correct position at the end.
+                </p>
+            </div>
+
+            <div>
+                <h3 class="font-semibold text-slate-300 text-sm mb-2">Java Implementation</h3>
+                <pre class="rounded-lg overflow-hidden border border-slate-700"><code class="language-java">public static void bubbleSort(int[] arr) {
+    int n = arr.length;
+    boolean swapped;
+    for (int i = 0; i < n - 1; i++) {
+        swapped = false;
+        for (int j = 0; j < n - i - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                // Swap arr[j] and arr[j+1]
+                int temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+                swapped = true;
+            }
+        }
+        // Optimization: If no swaps occurred, the array is already sorted
+        if (!swapped) break;
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <!-- Selection Sort -->
+        <section id="selection" class="bg-slate-800 rounded-xl p-6 border border-slate-700 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-700 pb-3">
+                <h2 class="text-2xl font-bold text-indigo-400">2. Selection Sort</h2>
+                <span class="text-xs px-2.5 py-1 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">O(n²) Average</span>
+            </div>
+
+            <div class="bg-indigo-950/40 border-l-4 border-indigo-500 p-4 rounded-r-lg">
+                <h3 class="font-semibold text-indigo-300 uppercase text-xs tracking-wider">Crux Logic</h3>
+                <p class="text-slate-300 mt-1">
+                    Think of sorting playing cards in your hand by scanning the whole deck to find the absolute smallest card, placing it first, then scanning the rest to find the next smallest, and so on. It divides the array into a <strong>sorted</strong> region (left) and an <strong>unsorted</strong> region (right), picking the minimum element from the unsorted part to grow the sorted part.
+                </p>
+            </div>
+
+            <div>
+                <h3 class="font-semibold text-slate-300 text-sm mb-2">Java Implementation</h3>
+                <pre class="rounded-lg overflow-hidden border border-slate-700"><code class="language-java">public static void selectionSort(int[] arr) {
+    int n = arr.length;
+    for (int i = 0; i < n - 1; i++) {
+        int minIndex = i;
+        for (int j = i + 1; j < n; j++) {
+            if (arr[j] < arr[minIndex]) {
+                minIndex = j;
+            }
+        }
+        // Swap the found minimum element with the first element of the unsorted part
+        int temp = arr[minIndex];
+        arr[minIndex] = arr[i];
+        arr[i] = temp;
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <!-- Insertion Sort -->
+        <section id="insertion" class="bg-slate-800 rounded-xl p-6 border border-slate-700 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-700 pb-3">
+                <h2 class="text-2xl font-bold text-indigo-400">3. Insertion Sort</h2>
+                <span class="text-xs px-2.5 py-1 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">O(n²) Average</span>
+            </div>
+
+            <div class="bg-indigo-950/40 border-l-4 border-indigo-500 p-4 rounded-r-lg">
+                <h3 class="font-semibold text-indigo-300 uppercase text-xs tracking-wider">Crux Logic</h3>
+                <p class="text-slate-300 mt-1">
+                    This mimics how most people sort a hand of cards in real life. You take one card at a time, look at the sorted cards you're already holding, shift them over if they are larger, and <strong>insert</strong> the new card into its correct spot.
+                </p>
+            </div>
+
+            <div>
+                <h3 class="font-semibold text-slate-300 text-sm mb-2">Java Implementation</h3>
+                <pre class="rounded-lg overflow-hidden border border-slate-700"><code class="language-java">public static void insertionSort(int[] arr) {
+    int n = arr.length;
+    for (int i = 1; i < n; i++) {
+        int key = arr[i];
+        int j = i - 1;
+        
+        // Shift elements of the sorted segment that are greater than key
+        // to one position ahead of their current position
+        while (j >= 0 && arr[j] > key) {
+            arr[j + 1] = arr[j];
+            j--;
+        }
+        arr[j + 1] = key;
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <!-- Quick Sort -->
+        <section id="quick" class="bg-slate-800 rounded-xl p-6 border border-slate-700 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-700 pb-3">
+                <h2 class="text-2xl font-bold text-indigo-400">4. Quick Sort</h2>
+                <span class="text-xs px-2.5 py-1 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">O(n log n) Average</span>
+            </div>
+
+            <div class="bg-indigo-950/40 border-l-4 border-indigo-500 p-4 rounded-r-lg">
+                <h3 class="font-semibold text-indigo-300 uppercase text-xs tracking-wider">Crux Logic</h3>
+                <p class="text-slate-300 mt-1">
+                    <strong>Divide and Conquer.</strong> Pick an element called a <strong>pivot</strong>. Rearrange (partition) the array so that all numbers smaller than the pivot sit to its left, and all numbers larger sit to its right. Then, recursively apply the same process to the left and right sub-arrays.
+                </p>
+            </div>
+
+            <div>
+                <h3 class="font-semibold text-slate-300 text-sm mb-2">Java Implementation</h3>
+                <pre class="rounded-lg overflow-hidden border border-slate-700"><code class="language-java">public static void quickSort(int[] arr, int low, int high) {
+    if (low < high) {
+        int pi = partition(arr, low, high);
+        quickSort(arr, low, pi - 1);  // Before pivot
+        quickSort(arr, pi + 1, high); // After pivot
+    }
+}
+
+private static int partition(int[] arr, int low, int high) {
+    int pivot = arr[high]; // Choosing the last element as pivot
+    int i = (low - 1);
+    
+    for (int j = low; j < high; j++) {
+        if (arr[j] < pivot) {
+            i++;
+            int temp = arr[i];
+            arr[i] = arr[j];
+            arr[j] = temp;
+        }
+    }
+    // Place pivot in its correct position
+    int temp = arr[i + 1];
+    arr[i + 1] = arr[high];
+    arr[high] = temp;
+    
+    return i + 1;
+}</code></pre>
+            </div>
+        </section>
+
+        <!-- Merge Sort -->
+        <section id="merge" class="bg-slate-800 rounded-xl p-6 border border-slate-700 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-700 pb-3">
+                <h2 class="text-2xl font-bold text-indigo-400">5. Merge Sort</h2>
+                <span class="text-xs px-2.5 py-1 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">O(n log n) Average</span>
+            </div>
+
+            <div class="bg-indigo-950/40 border-l-4 border-indigo-500 p-4 rounded-r-lg">
+                <h3 class="font-semibold text-indigo-300 uppercase text-xs tracking-wider">Crux Logic</h3>
+                <p class="text-slate-300 mt-1">
+                    <strong>Divide and Conquer via splitting and merging.</strong> Recursively split the array in half down to single-element arrays (which are inherently sorted), and then <strong>merge</strong> those small sorted halves back together in order to build up a fully sorted array.
+                </p>
+            </div>
+
+            <div>
+                <h3 class="font-semibold text-slate-300 text-sm mb-2">Java Implementation</h3>
+                <pre class="rounded-lg overflow-hidden border border-slate-700"><code class="language-java">public static void mergeSort(int[] arr, int left, int right) {
+    if (left < right) {
+        int mid = left + (right - left) / 2;
+        
+        // Sort first and second halves
+        mergeSort(arr, left, mid);
+        mergeSort(arr, mid + 1, right);
+        
+        // Merge the sorted halves
+        merge(arr, left, mid, right);
+    }
+}
+
+private static void merge(int[] arr, int left, int mid, int right) {
+    int n1 = mid - left + 1;
+    int n2 = right - mid;
+
+    int[] L = new int[n1];
+    int[] R = new int[n2];
+
+    for (int i = 0; i < n1; ++i) L[i] = arr[left + i];
+    for (int j = 0; j < n2; ++j) R[j] = arr[mid + 1 + j];
+
+    int i = 0, j = 0, k = left;
+    while (i < n1 && j < n2) {
+        if (L[i] <= R[j]) {
+            arr[k++] = L[i++];
+        } else {
+            arr[k++] = R[j++];
+        }
+    }
+
+    while (i < n1) arr[k++] = L[i++];
+    while (j < n2) arr[k++] = R[j++];
+}</code></pre>
+            </div>
+        </section>
+
+        <!-- Complexity Summary Table -->
+        <section class="bg-slate-800 rounded-xl p-6 border border-slate-700 space-y-4">
+            <h2 class="text-2xl font-bold text-indigo-400 border-b border-slate-700 pb-3">Complexity Summary</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm text-slate-300">
+                    <thead class="text-xs uppercase bg-slate-700/60 text-slate-200">
+                        <tr>
+                            <th class="py-3 px-4 rounded-l-lg">Algorithm</th>
+                            <th class="py-3 px-4">Best Case</th>
+                            <th class="py-3 px-4">Average Case</th>
+                            <th class="py-3 px-4">Worst Case</th>
+                            <th class="py-3 px-4 rounded-r-lg">Space Complexity</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-700">
+                        <tr>
+                            <td class="py-3 px-4 font-semibold text-slate-100">Bubble Sort</td>
+                            <td class="py-3 px-4">$\mathcal{O}(n)$</td>
+                            <td class="py-3 px-4">$\mathcal{O}(n^2)$</td>
+                            <td class="py-3 px-4">$\mathcal{O}(n^2)$</td>
+                            <td class="py-3 px-4">$\mathcal{O}(1)$</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 font-semibold text-slate-100">Selection Sort</td>
+                            <td class="py-3 px-4">$\mathcal{O}(n^2)$</td>
+                            <td class="py-3 px-4">$\mathcal{O}(n^2)$</td>
+                            <td class="py-3 px-4">$\mathcal{O}(n^2)$</td>
+                            <td class="py-3 px-4">$\mathcal{O}(1)$</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 font-semibold text-slate-100">Insertion Sort</td>
+                            <td class="py-3 px-4">$\mathcal{O}(n)$</td>
+                            <td class="py-3 px-4">$\mathcal{O}(n^2)$</td>
+                            <td class="py-3 px-4">$\mathcal{O}(n^2)$</td>
+                            <td class="py-3 px-4">$\mathcal{O}(1)$</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 font-semibold text-slate-100">Quick Sort</td>
+                            <td class="py-3 px-4">$\mathcal{O}(n \log n)$</td>
+                            <td class="py-3 px-4">$\mathcal{O}(n \log n)$</td>
+                            <td class="py-3 px-4">$\mathcal{O}(n^2)$</td>
+                            <td class="py-3 px-4">$\mathcal{O}(\log n)$</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4 font-semibold text-slate-100">Merge Sort</td>
+                            <td class="py-3 px-4">$\mathcal{O}(n \log n)$</td>
+                            <td class="py-3 px-4">$\mathcal{O}(n \log n)$</td>
+                            <td class="py-3 px-4">$\mathcal{O}(n \log n)$</td>
+                            <td class="py-3 px-4">$\mathcal{O}(n)$</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- MathJax for rendering complexity formulas -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- Trigger Highlight.js -->
+    <script>hljs.highlightAll();</script>
+</body>
+</html>
