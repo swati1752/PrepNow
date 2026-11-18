@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Infosys Senior Associate Consultant | Java Backend Interview Guide</title>
+<style>
+:root{--bg:#f5f7fb;--card:#fff;--ink:#182230;--muted:#586579;--line:#dce3ed;--blue:#2457c5;--blue2:#eaf0ff;--green:#147d55;--amber:#9a5b00;--shadow:0 8px 24px rgba(28,45,75,.07)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 Inter,Segoe UI,Arial,sans-serif}
+header{background:linear-gradient(125deg,#142b55,#2457c5);color:white;padding:42px 22px}
+.hero{max-width:1120px;margin:auto}.eyebrow{text-transform:uppercase;letter-spacing:.12em;font-size:.78rem;opacity:.85;font-weight:700}
+h1{font-size:clamp(2rem,4vw,3.1rem);line-height:1.12;margin:10px 0 14px}.hero p{max-width:800px;color:#e5edff;margin:0}
+.wrap{max-width:1120px;margin:26px auto;padding:0 18px 60px;display:grid;grid-template-columns:255px minmax(0,1fr);gap:24px}
+nav{position:sticky;top:16px;align-self:start;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:var(--shadow);max-height:calc(100vh - 32px);overflow:auto}
+nav strong{display:block;margin-bottom:10px}nav a{display:block;color:#34445c;text-decoration:none;padding:6px 8px;border-radius:7px;font-size:.91rem}nav a:hover{background:var(--blue2);color:var(--blue)}
+main{min-width:0}.intro,.section,.question,.callout{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow)}
+.intro{padding:22px;margin-bottom:18px}.intro h2{margin-top:0}.section{padding:22px;margin:20px 0}.section h2{margin:0 0 8px;font-size:1.55rem}.section>p{color:var(--muted);margin-top:0}
+.question{margin:14px 0;overflow:hidden}.qhead{padding:17px 19px;border-bottom:1px solid var(--line);background:#fbfcff}.qhead h3{font-size:1.08rem;margin:0 0 5px}.tag{display:inline-block;font-size:.73rem;font-weight:700;color:var(--blue);background:var(--blue2);padding:2px 8px;border-radius:20px;margin-right:6px}
+.answer{padding:18px 20px}.answer h4{margin:17px 0 5px;color:#213c70}.answer h4:first-child{margin-top:0}.answer p{margin:6px 0 10px}.answer ul,.answer ol{padding-left:23px;margin:7px 0 12px}.answer li{margin:4px 0}
+.follow{margin-top:16px;padding:14px 16px;background:#f2f6ff;border-left:4px solid var(--blue);border-radius:8px}.follow strong{display:block;margin-bottom:6px;color:#193d85}.follow ol{margin:5px 0 0;padding-left:22px}
+.callout{padding:16px 18px;margin:15px 0;background:#fffaf0;border-color:#f0dfbd}.callout strong{color:var(--amber)}
+pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#101a2b;color:#e6efff;padding:15px;border-radius:9px;font: .88rem/1.55 Consolas,monospace;overflow-x:auto}
+code{font-family:Consolas,monospace;background:#f0f3f8;padding:1px 5px;border-radius:4px}
+table{border-collapse:collapse;width:100%;margin:10px 0;font-size:.94rem}th,td{border:1px solid var(--line);padding:9px 10px;text-align:left;vertical-align:top}th{background:#f2f5fa}
+.small{font-size:.9rem;color:var(--muted)}.checklist label{display:block;padding:7px 0}.checklist input{margin-right:9px}
+footer{color:var(--muted);font-size:.88rem;text-align:center;padding:24px}
+@media(max-width:850px){.wrap{grid-template-columns:1fr}nav{position:static;max-height:none}nav div{columns:2}}
+@media print{body{background:white}.wrap{display:block;max-width:none}nav{display:none}.question,.section,.intro{box-shadow:none;break-inside:avoid}header{background:#17366d!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}.follow{break-inside:avoid}}
+</style>
+</head>
+<body>
+<header><div class="hero">
+<div class="eyebrow">Interview preparation handbook</div>
+<h1>Infosys Senior Associate Consultant<br>Java · Spring Boot · Microservices</h1>
+<p>Detailed model answers, practical examples, likely follow-up questions and project-oriented talking points for an experienced Java backend candidate. Use the answers as frameworks—adapt them to what you have actually built.</p>
+</div></header>
+<div class="wrap">
+<nav><strong>Contents</strong><div>
+<a href="#how">How to use this guide</a>
+<a href="#project">1. Project and architecture</a>
+<a href="#request">2. Spring Boot request flow</a>
+<a href="#hashmap">3. HashMap internals</a>
+<a href="#gateway">4. API Gateway</a>
+<a href="#communication">5. Service communication</a>
+<a href="#failure">6. Service failure</a>
+<a href="#transaction">7. @Transactional</a>
+<a href="#production">8. Production 500 errors</a>
+<a href="#slowapi">9. Slow API optimization</a>
+<a href="#salary">10. Third-highest salary</a>
+<a href="#duplicates">11. Java Streams duplicates</a>
+<a href="#singleton">12. Singleton pattern</a>
+<a href="#load">13. 10,000 concurrent requests</a>
+<a href="#duplicate-tx">14. Duplicate transactions</a>
+<a href="#exceptions">15. Centralized exceptions</a>
+<a href="#jwt">16. JWT security</a>
+<a href="#startup">17. Spring Boot startup</a>
+<a href="#beans">18. Singleton beans and threads</a>
+<a href="#leak">19. Memory leak troubleshooting</a>
+<a href="#deployment">20. Zero-downtime deployment</a>
+<a href="#revision">Final revision checklist</a>
+</div></nav>
+<main>
+<section class="intro" id="how">
+<h2>How to use this guide</h2>
+<p><b>Answer structure:</b> define the concept → explain how it works → give a real implementation example → mention trade-offs → explain how you would troubleshoot it.</p>
+<p>For scenario questions, avoid claiming that one technology solves everything. State assumptions, identify bottlenecks, describe safeguards and explain how you would measure whether the solution worked.</p>
+<div class="callout"><strong>Important:</strong> A Senior Associate Consultant interview may test ownership and communication as much as syntax. Be ready to explain your exact contribution, design decisions, testing, deployment and production impact. Never claim tools, scale or results you did not personally work with.</div>
+</section>
+
+<section class="section" id="project"><h2>1. Explain your current project architecture</h2>
+<p><span class="tag">Project discussion</span><span class="tag">Must prepare</span></p>
+<div class="answer">
+<h4>Model answer</h4>
+<p>“I work on a Java backend application built using Spring Boot. The application exposes REST APIs and contains business logic in service components, data access in repository/DAO components, and persistence through relational databases such as SQL Server, PostgreSQL or Oracle, depending on the module and deployment.”</p>
+<p>“A typical request enters through the controller, where request data is bound and basic validation is performed. The controller delegates to a service, which applies business rules and coordinates repository calls or integrations with other modules. The repository interacts with the database. The response is returned as a DTO, and common exceptions are translated into consistent HTTP responses through centralized exception handling.”</p>
+<p>“For module-to-module integration, I have worked with REST-based communication using RestTemplate. I have also worked on validation, error handling, security remediation, bug fixing and production issue analysis. My explanation of the architecture would distinguish the parts I directly developed from the wider platform.”</p>
+<h4>Explain the layers</h4>
+<ul><li><b>Controller:</b> HTTP endpoint, request/response mapping, input validation and status codes. Avoid putting business rules here.</li>
+<li><b>Service:</b> business logic, transaction boundary, orchestration and calls to repositories or external services.</li>
+<li><b>Repository/DAO:</b> persistence operations and query execution.</li>
+<li><b>DTO:</b> API contract. It prevents exposing persistence entities directly and lets the API evolve independently.</li>
+<li><b>Cross-cutting components:</b> authentication, authorization, logging, exception mapping, metrics and tracing.</li></ul>
+<h4>Example request flow</h4>
+<pre>Client
+  → API / Controller
+  → Request validation
+  → Service (business rules)
+  → Repository → Database
+  → Service builds response DTO
+  → Controller returns HTTP response</pre>
+<div class="follow"><strong>Likely follow-up questions</strong><ol>
+<li><b>Why do you use DTOs instead of returning entities?</b> To control the API contract, avoid exposing internal schema, prevent accidental data leakage and avoid serialization problems such as lazy-loading cycles.</li>
+<li><b>Where should @Transactional be placed?</b> Usually at the service method/class that represents a business transaction, so multiple repository operations can participate in one transaction.</li>
+<li><b>How do you validate requests?</b> Use Bean Validation annotations such as @NotNull, @Size and @Pattern with @Valid, then map validation failures to a clear 400 response.</li>
+<li><b>How do you test each layer?</b> Controller tests for HTTP contract, service unit tests with mocked dependencies, repository integration tests against a representative database, and end-to-end tests for critical flows.</li>
+<li><b>What happens if the database is unavailable?</b> The repository call fails; the exception is logged with correlation context, mapped to an appropriate response, and the service may use bounded retries only when safe. Do not return fake success.</li>
+</ol></div>
+</div></section>
+
+<section class="section" id="request"><h2>2. How does a request flow in Spring Boot?</h2>
+<p><span class="tag">Spring MVC</span><span class="tag">Must prepare</span></p>
+<div class="answer">
+<h4>Model answer</h4>
+<p>In a typical Spring MVC application, an incoming HTTP request is received by the servlet container, such as Tomcat, and passed through the servlet filter chain. Spring Security filters may authenticate the request and apply authorization rules. The request then reaches the <code>DispatcherServlet</code>, which acts as the front controller.</p>
+<ol><li><b>Filters:</b> process cross-cutting concerns such as security, CORS, request logging and correlation IDs.</li><li><b>DispatcherServlet:</b> coordinates request processing.</li><li><b>HandlerMapping:</b> identifies the controller method matching the URL and HTTP method.</li><li><b>HandlerAdapter:</b> invokes the selected controller method.</li><li><b>Argument resolution:</b> binds path variables, query parameters, headers and request bodies. JSON is commonly converted using Jackson message converters.</li><li><b>Controller and service:</b> application code executes business logic and persistence/integration work.</li><li><b>Response conversion:</b> the return value is serialized, usually to JSON, and written to the HTTP response.</li></ol>
+<p>Exceptions can be resolved by Spring MVC exception resolvers, including methods annotated with <code>@ExceptionHandler</code> in a <code>@RestControllerAdvice</code>.</p>
+<h4>Example</h4>
+<pre>@RestController
+@RequestMapping("/api/orders")
+class OrderController {
+    private final OrderService service;
+
+    OrderController(OrderService service) {
+        this.service = service;
+    }
+
+    @PostMapping
+    ResponseEntity&lt;OrderResponse&gt; create(
+            @Valid @RequestBody CreateOrderRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(service.create(request));
+    }
+}</pre>
+<div class="follow"><strong>Likely follow-up questions</strong><ol>
+<li><b>What is DispatcherServlet?</b> Spring MVC's central servlet that dispatches requests to handlers and coordinates response processing.</li>
+<li><b>Filter vs HandlerInterceptor?</b> A filter belongs to the servlet layer and can wrap requests before they reach Spring MVC. An interceptor runs within Spring MVC around handler execution and has access to handler information.</li>
+<li><b>@RequestBody vs @RequestParam?</b> @RequestBody binds the request body, commonly JSON. @RequestParam binds query/form parameters.</li>
+<li><b>What is HttpMessageConverter?</b> It converts HTTP request/response bodies to Java objects and back, for example JSON through Jackson.</li>
+<li><b>Where does validation happen?</b> During argument binding when Bean Validation is triggered with @Valid or @Validated; validation exceptions should be mapped to useful client errors.</li>
+</ol></div>
+</div></section>
+
+<section class="section" id="hashmap"><h2>3. How does HashMap work internally?</h2>
+<p><span class="tag">Core Java</span><span class="tag">Must prepare</span></p>
+<div class="answer">
+<h4>Model answer</h4>
+<p><code>HashMap</code> stores key-value pairs in an array of buckets. It uses the key's <code>hashCode()</code> to calculate a bucket index. If multiple keys map to the same bucket, a collision occurs. Java handles collisions using a linked structure; in modern Java implementations, a heavily populated bucket can be converted into a balanced tree when implementation thresholds and capacity conditions are met.</p>
+<p>At a high level, the hash is spread and an index is calculated using the table capacity (conceptually <code>(n - 1) &amp; hash</code> when capacity is a power of two). The map then checks keys using hash and equality. A key must obey the contract: if two objects are equal according to <code>equals()</code>, they must return the same <code>hashCode()</code>.</p>
+<h4>Important points</h4>
+<ul><li>Average get/put performance is approximately O(1) with a good hash distribution; collisions can make operations slower.</li><li>Default load factor is 0.75 in the standard implementation. When size crosses the threshold, the table resizes.</li><li>HashMap allows one null key and multiple null values.</li><li>HashMap is not thread-safe. Concurrent updates require synchronization or a concurrent collection such as ConcurrentHashMap.</li><li>Do not mutate fields used in a key's hashCode/equals after inserting it; lookup may no longer find the entry.</li></ul>
+<h4>Example</h4>
+<pre>Map&lt;String, Integer&gt; counts = new HashMap&lt;&gt;();
+counts.put("java", 2);
+counts.put("spring", 1);
+int value = counts.getOrDefault("java", 0);</pre>
+<div class="follow"><strong>Likely follow-up questions</strong><ol>
+<li><b>What if two keys have the same hash code?</b> They land in the same bucket; HashMap compares keys using equals to distinguish them.</li>
+<li><b>Why override equals() and hashCode() together?</b> Hash-based collections first use the hash to locate a bucket and then equality to identify the key. Violating the contract can cause failed lookups or duplicate logical keys.</li>
+<li><b>HashMap vs ConcurrentHashMap?</b> HashMap is not thread-safe. ConcurrentHashMap supports concurrent access and disallows null keys/values, avoiding ambiguity in concurrent retrieval.</li>
+<li><b>What is load factor?</b> It controls the occupancy threshold that triggers resizing. A lower factor uses more memory but can reduce collisions; a higher factor saves space but may increase collisions.</li>
+<li><b>Can a mutable object be a key?</b> Technically yes, but it is dangerous if fields used by equals/hashCode change after insertion. Prefer immutable keys.</li>
+</ol></div>
+</div></section>
+
+<section class="section" id="gateway"><h2>4. How does an API Gateway work?</h2>
+<p><span class="tag">Microservices</span><span class="tag">Must prepare</span></p>
+<div class="answer">
+<h4>Model answer</h4>
+<p>An API Gateway is the single entry point for clients calling a group of backend services. Instead of a mobile or web client knowing every internal service address, it calls the gateway. The gateway routes the request to the appropriate service and can centralize cross-cutting concerns.</p>
+<p>Common responsibilities include routing, TLS termination, authentication/authorization integration, rate limiting, request-size limits, CORS, load balancing integration, request/response transformation and observability. Business rules should generally remain in the relevant domain service rather than becoming tightly coupled to the gateway.</p>
+<h4>Example</h4>
+<pre>Mobile/Web Client
+       |
+   API Gateway
+    /   |    \\
+ User Order Payment
+ Service Service Service</pre>
+<h4>Benefits and trade-offs</h4>
+<ul><li>Hides internal topology and simplifies client integration.</li><li>Provides a central place for edge security and traffic policies.</li><li>Can reduce client-side orchestration.</li><li>It becomes a critical component, so deploy it redundantly and monitor latency, errors and saturation.</li><li>A poorly designed gateway can become a bottleneck or accumulate business logic.</li></ul>
+<div class="follow"><strong>Likely follow-up questions</strong><ol>
+<li><b>API Gateway vs load balancer?</b> A load balancer distributes traffic among instances. A gateway commonly adds API-aware routing and policies such as authentication, throttling and transformations. Products may combine capabilities.</li>
+<li><b>What if the gateway goes down?</b> Run multiple instances across failure zones, use health checks and resilient infrastructure, and monitor the gateway itself.</li>
+<li><b>Where should JWT validation happen?</b> It can happen at the gateway for early rejection and again at services when services must independently enforce authorization. Trust boundaries and token propagation must be designed carefully.</li>
+<li><b>What is rate limiting?</b> Restricting request volume per client/key/IP/time window to protect services and ensure fair usage.</li>
+</ol></div>
+</div></section>
+
+<section class="section" id="communication"><h2>5. How do microservices communicate?</h2>
+<p><span class="tag">Microservices</span></p>
+<div class="answer">
+<h4>Model answer</h4>
+<p>Microservices commonly communicate synchronously or asynchronously. In synchronous communication, one service calls another and waits for a response, usually over HTTP/REST or gRPC. In asynchronous communication, a service publishes a message or event to a broker such as Kafka or RabbitMQ, and another service consumes it independently.</p>
+<table><tr><th>Approach</th><th>Good fit</th><th>Trade-off</th></tr>
+<tr><td>REST / HTTP</td><td>Simple request-response APIs and broad interoperability</td><td>Caller depends on callee availability and latency</td></tr>
+<tr><td>OpenFeign</td><td>Declarative HTTP clients in Spring Cloud ecosystems</td><td>Still synchronous HTTP; timeouts/retries remain essential</td></tr>
+<tr><td>WebClient</td><td>Reactive/non-blocking HTTP workflows</td><td>Requires understanding reactive composition and backpressure</td></tr>
+<tr><td>Messaging</td><td>Events, decoupling and background workflows</td><td>Eventual consistency, duplicate delivery and ordering concerns</td></tr></table>
+<p>Choose based on latency, coupling, delivery guarantees, throughput and business consistency requirements—not simply because a system is labelled microservices.</p>
+<h4>RestTemplate example</h4>
+<pre>HttpHeaders headers = new HttpHeaders();
+headers.setContentType(MediaType.APPLICATION_JSON);
+HttpEntity&lt;CreateRequest&gt; entity =
+        new HttpEntity&lt;&gt;(request, headers);
+
+ResponseEntity&lt;Result&gt; response =
+        restTemplate.exchange(url, HttpMethod.POST,
+                entity, Result.class);</pre>
+<p>Configure connection/read timeouts, handle non-2xx responses, avoid logging secrets and use bounded retries only for operations that are safe to retry.</p>
+<div class="follow"><strong>Likely follow-up questions</strong><ol>
+<li><b>RestTemplate vs WebClient?</b> RestTemplate is a synchronous blocking client. WebClient supports non-blocking reactive I/O and can also be used in ways that return a response synchronously, though blocking defeats its reactive benefits.</li>
+<li><b>What is OpenFeign?</b> A declarative HTTP client where an interface describes the remote API; framework integration creates the implementation.</li>
+<li><b>When would you use Kafka?</b> For event-driven workflows, high-throughput streams or decoupling producers from consumers—not for every simple request-response call.</li>
+<li><b>How do you version APIs?</b> Use a deliberate compatibility strategy such as additive changes, versioned paths/headers where needed, deprecation windows and contract tests.</li>
+<li><b>How do you avoid tight coupling?</b> Keep service contracts stable, share contracts rather than internal implementation, avoid direct database sharing and use events where asynchronous decoupling is valuable.</li>
+</ol></div>
+</div></section>
+
+<section class="section" id="failure"><h2>6. What happens if one microservice goes down?</h2>
+<p><span class="tag">Resilience</span><span class="tag">Must prepare</span></p>
+<div class="answer">
+<h4>Model answer</h4>
+<p>If Service A synchronously calls Service B and B is unavailable, A may experience connection failures, timeouts or thread/resource exhaustion if calls wait too long. I would prevent the failure from spreading by setting connection and response timeouts, using a circuit breaker, applying bounded retries with backoff and jitter where safe, limiting concurrent calls and defining a fallback only when the business can tolerate it.</p>
+<h4>Circuit breaker states</h4>
+<ul><li><b>Closed:</b> calls flow normally while failures are monitored.</li><li><b>Open:</b> calls fail fast after the configured failure threshold is reached.</li><li><b>Half-open:</b> a limited number of trial calls are allowed to check whether the dependency recovered.</li></ul>
+<p>For asynchronous messaging, the consumer can retry transient failures, move repeatedly failing messages to a dead-letter queue and support safe replay. Idempotency is important because a message may be delivered more than once.</p>
+<h4>Resilience4j-style illustration</h4>
+<pre>@CircuitBreaker(name = "inventory", fallbackMethod = "fallback")
+public Inventory getInventory(String sku) {
+    return inventoryClient.getInventory(sku);
+}
+
+public Inventory fallback(String sku, Throwable ex) {
+    // Return a business-approved degraded response,
+    // or propagate a controlled service-unavailable error.
+    throw new DependencyUnavailableException(
+        "Inventory service is temporarily unavailable", ex);
+}</pre>
+<p>The fallback method signature must be compatible with the original method and include the exception parameter. Exact configuration depends on the Resilience4j/Spring integration version.</p>
+<div class="follow"><strong>Likely follow-up questions</strong><ol>
+<li><b>Retry vs circuit breaker?</b> Retry repeats an operation for transient failure. Circuit breaker stops calls when a dependency is unhealthy. Unbounded retries can amplify an outage.</li>
+<li><b>What is a timeout?</b> A maximum wait for connection establishment or response. Separate connect and read/response timeouts may be configured.</li>
+<li><b>What is bulkhead?</b> Isolation of resources, such as separate thread pools or concurrency limits, so one slow dependency cannot consume all capacity.</li>
+<li><b>Should every failure trigger retry?</b> No. Retry transient failures such as selected network errors or 503 responses. Do not blindly retry validation errors or non-idempotent writes.</li>
+<li><b>What is a fallback?</b> A controlled degraded response or alternate path. It must not falsely report that a critical transaction succeeded.</li>
+</ol></div>
+</div></section>
+
+<section class="section" id="transaction"><h2>7. How does @Transactional work?</h2>
+<p><span class="tag">Spring</span><span class="tag">Must prepare</span></p>
+<div class="answer">
+<h4>Model answer</h4>
+<p><code>@Transactional</code> declares that a method should execute within a transaction managed by Spring. In the common proxy-based model, a call through the Spring proxy starts or joins a transaction, invokes the method, and then commits or rolls back according to the configured rules.</p>
+<p>By default, Spring rolls back on unchecked exceptions (RuntimeException and Error), but not generally on checked exceptions. You can customize this using <code>rollbackFor</code>. The annotation is most useful at a service-layer method that groups related database operations into one business unit.</p>
+<h4>Example</h4>
+<pre>@Service
+class TransferService {
+    @Transactional
+    public void transfer(Long from, Long to, BigDecimal amount) {
+        accountRepository.debit(from, amount);
+        accountRepository.credit(to, amount);
+    }
+}</pre>
+<p>If the credit operation fails with a rollback-triggering exception, the debit should also be rolled back—assuming both operations participate in the same transaction manager and transactional resource.</p>
+<h4>Important caveats</h4>
+<ul><li>Self-invocation (one method calling another method on the same object) typically bypasses the proxy, so the inner method's transactional annotation may not take effect.</li><li>Private methods are not normally intercepted by standard proxy-based transaction management.</li><li>Do not keep database transactions open while making slow external HTTP calls unless there is a carefully justified design.</li><li>Transactions across multiple independent microservices are not made atomic merely by annotating one method.</li></ul>
+<div class="follow"><strong>Likely follow-up questions</strong><ol>
+<li><b>What is propagation?</b> It defines how a method participates in an existing transaction. REQUIRED joins or creates one; REQUIRES_NEW suspends the current transaction and starts a new one.</li>
+<li><b>What is isolation?</b> It controls visibility of concurrent transaction changes and helps manage anomalies such as dirty reads, non-repeatable reads and phantom reads.</li>
+<li><b>Checked exception rollback?</b> Configure <code>@Transactional(rollbackFor = Exception.class)</code> when that is the intended policy.</li>
+<li><b>Can @Transactional be used on a controller?</b> It can, but service-layer boundaries usually better represent business transactions and keep web concerns separate.</li>
+<li><b>How do you handle transactions across microservices?</b> Often with a Saga: a sequence of local transactions with compensating actions, or other workflow patterns. It is not the same as a single ACID transaction.</li>
+</ol></div>
+</div></section>
+
+<section class="section" id="production"><h2>8. How do you handle production 500 errors?</h2>
+<p><span class="tag">Troubleshooting</span><span class="tag">Must prepare</span></p>
+<div class="answer">
+<h4>Model answer</h4>
+<p>I first establish scope and impact: which endpoint, when it started, how many users/requests are affected, and whether the issue is isolated to one instance or common to all instances. I correlate the request ID or trace ID across application and dependency logs, inspect the stack trace and identify the first meaningful application frame rather than focusing only on the final wrapper exception.</p>
+<ol><li>Reproduce using the same request, environment and relevant data if safe.</li><li>Check recent deployments, configuration changes, dependency changes and infrastructure events.</li><li>Inspect application logs, metrics, traces, database connectivity, thread pools, memory and downstream service health.</li><li>Identify root cause and assess whether rollback, feature disablement or a targeted fix is safest.</li><li>Implement a fix, add regression tests, validate in a lower environment and deploy through the release process.</li><li>Monitor after deployment and document root cause, impact, corrective and preventive actions.</li></ol>
+<p>In my project experience, production debugging and issue resolution involved analyzing logs, tracing the affected module, checking request data and dependencies, and delivering fixes with regression coverage. Give one specific incident you personally handled, including what you checked and how you confirmed the fix.</p>
+<h4>Centralized exception handling example</h4>
+<pre>@RestControllerAdvice
+class GlobalExceptionHandler {
+    @ExceptionHandler(EntityNotFoundException.class)
+    ResponseEntity&lt;ApiError&gt; notFound(EntityNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ApiError("RESOURCE_NOT_FOUND", ex.getMessage()));
+    }
+
+    @ExceptionHandler(Exception.class)
+    ResponseEntity&lt;ApiError&gt; generic(Exception ex) {
+        // Log full exception with correlation ID internally.
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ApiError("INTERNAL_ERROR",
+                                   "An unexpected error occurred"));
+    }
+}</pre>
+<div class="follow"><strong>Likely follow-up questions</strong><ol>
+<li><b>What is the difference between 4xx and 5xx?</b> 4xx generally indicates a client/request problem; 5xx indicates the server failed to fulfil a valid request or a dependency/server problem occurred.</li>
+<li><b>Would you expose the stack trace to the client?</b> No. Return a safe error code/message and log diagnostic detail securely on the server.</li>
+<li><b>What if logs do not show the root cause?</b> Add correlation IDs, structured contextual logging, metrics and distributed tracing; reproduce with controlled diagnostics and inspect dependency/infrastructure telemetry.</li>
+<li><b>What is RCA?</b> Root Cause Analysis: establish the underlying cause, not merely the symptom, and define corrective and preventive actions.</li>
+<li><b>How do you avoid logging sensitive information?</b> Mask tokens, passwords, personal data and secrets; restrict log access and retention.</li>
+</ol></div>
+</div></section>
+
+<section class="section" id="slowapi"><h2>9. How would you optimize a slow API?</h2>
+<p><span class="tag">Performance</span><span class="tag">Must prepare</span></p>
+<div class="answer">
+<h4>Model answer</h4>
+<p>I would measure before changing code. First capture endpoint latency percentiles (especially p95/p99), throughput, error rate and resource utilization. Then break down the request time into application processing, database queries, external calls, serialization and network time using traces or targeted timings.</p>
+<ul><li><b>Database:</b> inspect slow query plans, indexes, joins, N+1 queries, locks and connection-pool saturation.</li><li><b>Application:</b> remove redundant work, reduce object creation where material, optimize algorithms and avoid unnecessary serialization.</li><li><b>External calls:</b> set timeouts, parallelize independent calls only when safe, and use caching where data freshness permits.</li><li><b>Capacity:</b> review thread pools, connection pools, CPU, heap and garbage collection.</li><li><b>Validation:</b> load test with realistic traffic and compare p50/p95/p99, throughput and error rate before and after.</li></ul>
+<p>For example, if an endpoint is slow because it runs an unindexed filter query, adding an appropriate index may help—but confirm with the execution plan and check the write overhead and index selectivity.</p>
+<h4>JMeter example talking point</h4>
+<p>If you have used Apache JMeter, explain the test plan, number of concurrent virtual users, ramp-up period, duration, data used, measured response times and how you identified the bottleneck. Be precise about whether the reported improvement was response time, throughput or both.</p>
+<div class="follow"><strong>Likely follow-up questions</strong><ol>
+<li><b>What is an N+1 query problem?</b> One query fetches a list, then an additional query is executed for each item. Fix with suitable fetch joins, entity graphs, batch fetching or a purpose-built query.</li>
+<li><b>What is caching?</b> Storing frequently accessed data for reuse. Consider TTL, invalidation, consistency, cache stampede and whether the data is safe to share.</li>
+<li><b>How do you identify a slow SQL query?</b> Use query logs/monitoring and the database execution plan; inspect scans, joins, cardinality estimates, indexes and lock waits.</li>
+<li><b>What is p95 latency?</b> 95% of measured requests completed at or below that duration; it reveals tail latency better than average alone.</li>
+<li><b>Does adding more threads always improve performance?</b> No. It can increase contention and overwhelm downstream resources. Tune based on CPU, blocking behavior and dependency capacity.</li>
+</ol></div>
+</div></section>
+
+<section class="section" id="salary"><h2>10. SQL: Find the third-highest salary per department</h2>
+<p><span class="tag">SQL</span><span class="tag">Coding</span></p>
+<div class="answer">
+<h4>Model answer using DENSE_RANK</h4>
+<p>Assume an Employee table with employee_id, name, department_id and salary. If “third-highest salary” means the third distinct salary in each department, use <code>DENSE_RANK()</code> partitioned by department.</p>
+<pre>WITH ranked AS (
+    SELECT
+        employee_id,
+        name,
+        department_id,
+        salary,
+        DENSE_RANK() OVER (
+            PARTITION BY department_id
+            ORDER BY salary DESC
+        ) AS salary_rank
+    FROM Employee
+)
+SELECT employee_id, name, department_id, salary
+FROM ranked
+WHERE salary_rank = 3;</pre>
+<p><b>Why DENSE_RANK?</b> Equal salaries receive the same rank, and the next distinct salary receives the next consecutive rank. For example, salaries 100, 100, 90, 80 have dense ranks 1, 1, 2, 3.</p>
+<table><tr><th>Function</th><th>For values 100, 100, 90, 80</th></tr><tr><td>ROW_NUMBER</td><td>1, 2, 3, 4 (unique sequence)</td></tr><tr><td>RANK</td><td>1, 1, 3, 4 (gaps after ties)</td></tr><tr><td>DENSE_RANK</td><td>1, 1, 2, 3 (no gaps)</td></tr></table>
+<div class="follow"><strong>Likely follow-up questions</strong><ol>
+<li><b>What if they ask for the third employee by salary, not the third distinct salary?</b> Use ROW_NUMBER with a deterministic tie-breaker such as employee_id.</li>
+<li><b>What if a department has fewer than three distinct salaries?</b> It returns no row for that department.</li>
+<li><b>How would you find the second-highest salary overall?</b> Use DENSE_RANK ordered by salary descending and filter rank = 2, or a distinct ordered subquery.</li>
+<li><b>Why use PARTITION BY?</b> It restarts the ranking independently for each department.</li>
+<li><b>Can this be done without window functions?</b> Yes, using correlated subqueries or nested DISTINCT/ORDER BY queries, but window functions are often clearer and more maintainable.</li>
+</ol></div>
+</div></section>
+
+<section class="section" id="duplicates"><h2>11. Find duplicate elements using Java Streams</h2>
+<p><span class="tag">Java 8</span><span class="tag">Coding</span></p>
+<div class="answer">
+<h4>Model answer</h4>
+<p>One readable approach is to maintain a Set of values already seen. A value is a duplicate when adding it to the set returns false.</p>
+<pre>List&lt;Integer&gt; numbers =
+        Arrays.asList(1, 2, 3, 2, 4, 1, 5);
+
+Set&lt;Integer&gt; seen = new HashSet&lt;&gt;();
+
+Set&lt;Integer&gt; duplicates = numbers.stream()
+        .filter(n -&gt; !seen.add(n))
+        .collect(Collectors.toSet());
+
+System.out.println(duplicates); // [1, 2] (order unspecified)</pre>
+<p>This is O(n) expected time and O(n) additional space. The set is mutated inside the stream, so this is suitable only for a sequential stream in this form; do not change it to <code>parallelStream()</code> without redesigning the operation.</p>
+<h4>Alternative: frequency map</h4>
+<pre>Map&lt;Integer, Long&gt; frequency = numbers.stream()
+        .collect(Collectors.groupingBy(
+            Function.identity(),
+            Collectors.counting()));
+
+List&lt;Integer&gt; duplicates2 = frequency.entrySet().stream()
+        .filter(e -&gt; e.getValue() &gt; 1)
+        .map(Map.Entry::getKey)
+        .collect(Collectors.toList());</pre>
+<div class="follow"><strong>Likely follow-up questions</strong><ol>
+<li><b>How do you preserve insertion order?</b> Collect into a LinkedHashSet, or use an ordered frequency approach and preserve the source's encounter order.</li>
+<li><b>How do you count each character in a string?</b> Convert to a character stream and collect with groupingBy plus counting, taking care with Unicode code points if full Unicode support is required.</li>
+<li><b>What is the difference between map and flatMap?</b> map transforms each element into one result; flatMap transforms each element into a stream/collection and flattens the results.</li>
+<li><b>What is a stream?</b> A pipeline for declarative processing of data through intermediate operations (often lazy) and a terminal operation.</li>
+<li><b>Why can stateful stream operations be risky?</b> Shared mutable state can cause race conditions and incorrect results, especially in parallel pipelines.</li>
+</ol></div>
+</div></section>
+
+<section class="section" id="singleton"><h2>12. Implement the Singleton design pattern</h2>
+<p><span class="tag">Design patterns</span><span class="tag">Coding</span></p>
+<div class="answer">
+<h4>Model answer: enum Singleton</h4>
+<pre>public enum AppConfig {
+    INSTANCE;
+
+    public void printStatus() {
+        System.out.println("Application is running");
+    }
+}
+
+// Usage:
+AppConfig.INSTANCE.printStatus();</pre>
+<p>An enum singleton is concise and protects against several serialization and reflection issues associated with ordinary singleton implementations. In application code, however, Spring's singleton bean scope is often the better choice for managed components.</p>
+<h4>Alternative: initialization-on-demand holder</h4>
+<pre>public final class Singleton {
+    private Singleton() {}
+
+    private static class Holder {
+        private static final Singleton INSTANCE = new Singleton();
+    }
+
+    public static Singleton getInstance() {
+        return Holder.INSTANCE;
+    }
+}</pre>
+<p>Class initialization is thread-safe under Java's initialization guarantees, and the instance is created when the holder is first referenced.</p>
+<div class="follow"><strong>Likely follow-up questions</strong><ol>
+<li><b>Why is a simple lazy singleton unsafe?</b> Two threads may both observe a null instance and create separate objects unless initialization is synchronized or otherwise safely published.</li>
+<li><b>What is double-checked locking?</b> A lazy initialization pattern using a volatile field and synchronization to avoid locking after initialization. It must be implemented correctly.</li>
+<li><b>Spring singleton vs Singleton design pattern?</b> Spring singleton means one bean instance per bean definition per application context, not necessarily one instance per JVM.</li>
+<li><b>Is a singleton bean thread-safe?</b> Not automatically. A shared singleton service should generally be stateless or protect mutable shared state.</li>
+</ol></div>
+</div></section>
+
+<section class="section" id="load"><h2>13. A microservice receives 10,000 requests simultaneously. How do you handle it?</h2>
+<p><span class="tag">System design</span><span class="tag">Scenario</span></p>
+<div class="answer">
+<h4>Model answer</h4>
+<p>First I would clarify whether 10,000 means requests per second, a sudden burst of 10,000 requests, or 10,000 concurrent open requests. Those are different workloads. I would then use measured capacity and load testing rather than guessing a server/thread count.</p>
+<ol><li><b>Scale horizontally:</b> run multiple stateless service instances behind a load balancer and scale based on CPU, latency, queue depth or request rate.</li><li><b>Protect the service:</b> apply rate limits, request-size limits, authentication controls and admission/concurrency limits.</li><li><b>Manage resources:</b> tune servlet worker threads, database connection pools, HTTP client pools and downstream limits together. More threads than the database can support may make the system slower.</li><li><b>Reduce work:</b> cache suitable read-heavy data, paginate large responses and optimize queries.</li><li><b>Offload asynchronous work:</b> queue long-running tasks and return an accepted/job identifier where the business flow permits.</li><li><b>Observe:</b> monitor p95/p99 latency, throughput, errors, CPU, heap, GC, thread pools, connection pools and downstream health.</li></ol>
+<p>For Spring Boot, the servlet container's request handling, database pool (often HikariCP) and outbound HTTP client pools all need coordinated configuration. If using reactive WebFlux, the concurrency model differs; do not mix blocking work onto event-loop threads.</p>
+<div class="follow"><strong>Likely follow-up questions</strong><ol>
+<li><b>What is horizontal vs vertical scaling?</b> Horizontal adds instances; vertical increases resources on an instance. Horizontal scaling improves distribution and resilience but requires statelessness or shared state management.</li>
+<li><b>How do you handle a sudden traffic spike?</b> Autoscaling where supported, rate limiting, queues, caching, graceful degradation and capacity headroom.</li>
+<li><b>What if the database is the bottleneck?</b> Optimize queries/indexes, reduce query count, use caching/read replicas where appropriate, and tune pool limits to the database's actual capacity.</li>
+<li><b>How do you avoid overloading downstream services?</b> Apply bulkheads, concurrency limits, timeouts, circuit breakers and controlled queueing.</li>
+</ol></div>
+</div></section>
+
+<section class="section" id="duplicate-tx"><h2>14. How do you prevent duplicate transactions?</h2>
+<p><span class="tag">Data consistency</span><span class="tag">Scenario</span></p>
+<div class="answer">
+<h4>Model answer</h4>
+<p>I would not rely only on disabling a submit button in the UI because requests can be retried, duplicated by networks or sent concurrently. I would enforce idempotency at the backend.</p>
+<ol><li>Client sends a unique idempotency key for a logical operation.</li><li>Server stores the key with operation status and, where useful, a request hash.</li><li>A database unique constraint prevents two concurrent requests from claiming the same key.</li><li>If the same key is received again, return the previously stored result or current status instead of executing the operation again.</li><li>Perform the idempotency record and business write transactionally where possible.</li></ol>
+<p>For message consumers, store processed event IDs or use an inbox/deduplication table. Design for at-least-once delivery and make handlers idempotent. For financial or inventory operations, also use appropriate database constraints and atomic updates.</p>
+<h4>Conceptual table</h4>
+<pre>Idempotency_Record
+-----------------
+idempotency_key  UNIQUE
+request_hash
+status
+response_payload
+created_at</pre>
+<div class="follow"><strong>Likely follow-up questions</strong><ol>
+<li><b>What is idempotency?</b> Repeating the same logical operation produces the same intended effect as performing it once.</li>
+<li><b>Is HTTP POST idempotent?</b> Not by default. An application can make a POST operation idempotent through an idempotency-key design.</li>
+<li><b>Why is a unique constraint needed if the code checks first?</b> Two concurrent requests can both pass a read-before-write check. The database constraint provides the atomic guarantee.</li>
+<li><b>What if the server crashes after committing but before responding?</b> A retry with the same key finds the committed result and returns it rather than creating another transaction.</li>
+<li><b>What is optimistic locking?</b> A version field or similar check detects concurrent updates and prevents silently overwriting another transaction's change.</li>
+</ol></div>
+</div></section>
+
+<section class="section" id="exceptions"><h2>15. How do you implement centralized exception handling?</h2>
+<p><span class="tag">Spring Boot</span></p>
+<div class="answer">
+<h4>Model answer</h4>
+<p>In Spring Boot REST APIs, I use <code>@RestControllerAdvice</code> with <code>@ExceptionHandler</code> methods to map known exceptions to consistent HTTP status codes and error response bodies. This avoids repeating try/catch blocks in every controller.</p>
+<pre>public record ApiError(String code, String message) {}
+
+@RestControllerAdvice
+class ApiExceptionHandler {
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    ResponseEntity&lt;ApiError&gt; validation(
+            MethodArgumentNotValidException ex) {
+        return ResponseEntity.badRequest().body(
+            new ApiError("VALIDATION_ERROR",
+                         "One or more fields are invalid"));
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    ResponseEntity&lt;ApiError&gt; notFound(EntityNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+            new ApiError("NOT_FOUND", ex.getMessage()));
+    }
+}</pre>
+<p>For unexpected exceptions, log the stack trace internally with a correlation ID and return a generic 500 response. Do not leak SQL, stack traces, internal hostnames or sensitive data.</p>
+<div class="follow"><strong>Likely follow-up questions</strong><ol>
+<li><b>@ControllerAdvice vs @RestControllerAdvice?</b> RestControllerAdvice combines ControllerAdvice with response-body semantics, making it convenient for REST error responses.</li>
+<li><b>How do you handle validation errors?</b> Handle MethodArgumentNotValidException and return field-level validation details that are safe and useful.</li>
+<li><b>Should every exception return 500?</b> No. Map known cases to appropriate statuses: 400, 401, 403, 404, 409, 422 where appropriate, 503 for temporary unavailability, and 500 for unexpected server errors.</li>
+<li><b>How do you correlate logs?</b> Generate or propagate a request/trace ID and include it in structured logs and error responses when safe.</li>
+</ol></div>
+</div></section>
+
+<section class="section" id="jwt"><h2>16. How do you secure REST APIs using JWT?</h2>
+<p><span class="tag">Security</span></p>
+<div class="answer">
+<h4>Model answer</h4>
+<p>JWT-based authentication commonly uses a login or identity provider to authenticate a user and issue a signed token. The client sends the token in the <code>Authorization: Bearer</code> header. The resource server verifies the signature and validates claims such as issuer, audience, expiry and not-before time, then uses the authenticated identity and authorities for authorization.</p>
+<ol><li>Authenticate the user securely.</li><li>Issue a short-lived access token, and use a carefully protected refresh-token flow if required.</li><li>Client sends the access token with each protected request.</li><li>Server validates signature and claims using a trusted key/issuer configuration.</li><li>Authorization rules check roles/scopes and resource ownership.</li></ol>
+<p>JWT is signed, not necessarily encrypted. Do not put passwords, secrets or sensitive personal information in claims. Use HTTPS, protect signing keys, choose secure algorithms, validate issuer/audience/expiry, and plan key rotation and revocation strategy.</p>
+<div class="follow"><strong>Likely follow-up questions</strong><ol>
+<li><b>Authentication vs authorization?</b> Authentication establishes who the caller is; authorization decides what that identity may do.</li>
+<li><b>Access token vs refresh token?</b> Access tokens are short-lived credentials for APIs. Refresh tokens obtain new access tokens and require stronger storage/rotation protections.</li>
+<li><b>What if a JWT is stolen?</b> A bearer token can be used by whoever possesses it until expiry or revocation controls take effect. Use short expiry, secure transport/storage, rotation and monitoring.</li>
+<li><b>Where should the token be stored?</b> Depends on client architecture. Avoid exposing tokens to XSS; cookie-based designs need CSRF protections. Mobile clients should use platform-secure storage.</li>
+<li><b>How does Spring Security process it?</b> A security filter extracts the bearer token, validates it, creates an Authentication object and places it in the SecurityContext for authorization decisions.</li>
+</ol></div>
+</div></section>
+
+<section class="section" id="startup"><h2>17. What happens internally when Spring Boot starts?</h2>
+<p><span class="tag">Spring Boot internals</span></p>
+<div class="answer">
+<h4>Model answer</h4>
+<p>The application usually starts through <code>SpringApplication.run(...)</code>. Spring Boot prepares the environment and application context, loads configuration and auto-configuration candidates, registers bean definitions, refreshes the context, creates and wires beans, and starts the embedded web server for a web application.</p>
+<ol><li>Determine application type and prepare bootstrap environment.</li><li>Load properties/YAML, profiles, environment variables and command-line properties.</li><li>Create the appropriate ApplicationContext.</li><li>Register component and configuration bean definitions.</li><li>Apply auto-configuration based on classpath, properties and existing beans.</li><li>Refresh the context: instantiate non-lazy singletons, resolve dependencies and run lifecycle callbacks.</li><li>Start embedded server and publish application-ready lifecycle events.</li></ol>
+<h4>Example entry point</h4>
+<pre>@SpringBootApplication
+public class Application {
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
+}</pre>
+<p><code>@SpringBootApplication</code> combines configuration, component scanning and auto-configuration enablement. Auto-configuration is conditional; it backs off when relevant user-defined beans or conditions are present.</p>
+<div class="follow"><strong>Likely follow-up questions</strong><ol>
+<li><b>What is auto-configuration?</b> Configuration selected using conditions such as classpath presence, properties and existing beans, reducing manual setup.</li>
+<li><b>What is @ConditionalOnClass?</b> A configuration or bean is considered only when a specified class is present on the classpath.</li>
+<li><b>What is @ConditionalOnProperty?</b> A bean/configuration is enabled or disabled based on an application property.</li>
+<li><b>What does component scanning do?</b> Finds eligible stereotype-annotated classes in configured packages and registers them as bean definitions.</li>
+<li><b>What is the difference between bean definition and bean instance?</b> A definition describes how to create/configure a bean; the instance is the actual object created by the container.</li>
+</ol></div>
+</div></section>
+
+<section class="section" id="beans"><h2>18. How does Spring manage singleton beans in a multithreaded environment?</h2>
+<p><span class="tag">Spring internals</span></p>
+<div class="answer">
+<h4>Model answer</h4>
+<p>Spring's default singleton scope creates one bean instance per bean definition per application context. Multiple request threads may invoke methods on that same object concurrently. Spring manages bean creation and lifecycle, but it does not automatically make mutable fields thread-safe.</p>
+<p>For service beans, prefer stateless design: keep request-specific values in local variables and pass them through method parameters. Avoid storing a user's request data in instance fields. If shared mutable state is truly required, use appropriate concurrency controls or a thread-safe data structure, while considering whether the state belongs in a database or distributed cache instead.</p>
+<h4>Unsafe example</h4>
+<pre>@Service
+class UnsafeService {
+    private String currentUser; // shared mutable field
+
+    public void process(String user) {
+        currentUser = user;
+        // Another request can overwrite this value.
+    }
+}</pre>
+<div class="follow"><strong>Likely follow-up questions</strong><ol>
+<li><b>Does singleton mean one instance per JVM?</b> No. It is one instance per bean definition per Spring application context. Multiple contexts or application instances have their own objects.</li>
+<li><b>Are local variables thread-safe?</b> Each invocation has its own stack frame, so local variables are not shared in the same way. Objects referenced by them can still be shared.</li>
+<li><b>Can prototype beans be injected into singleton beans?</b> A prototype injected directly is generally resolved at singleton creation time. Use a provider/object factory or scoped proxy when a fresh instance is needed per use.</li>
+<li><b>What is ThreadLocal?</b> A value associated with a thread. It needs careful cleanup in thread pools and should not be used to pass state across asynchronous thread changes.</li>
+</ol></div>
+</div></section>
+
+<section class="section" id="leak"><h2>19. How would you troubleshoot a memory leak?</h2>
+<p><span class="tag">JVM</span><span class="tag">Troubleshooting</span></p>
+<div class="answer">
+<h4>Model answer</h4>
+<p>I would first confirm that memory usage grows over time and does not return to a stable level after garbage collection. I would distinguish Java heap growth from native memory, direct buffers, metaspace, thread stacks or container-level memory. Then I would collect evidence rather than increasing heap immediately.</p>
+<ol><li>Review heap usage, GC logs, allocation rate, container memory and restart history.</li><li>Capture a heap dump when safe, preferably near the point of high usage.</li><li>Analyze the dominator tree and retained sizes in a tool such as Eclipse MAT or a supported profiler.</li><li>Look for unbounded collections, static references, caches without eviction, listeners not removed, ThreadLocal values not cleared and objects retained by long-lived references.</li><li>Fix the ownership/lifecycle issue, add limits or eviction, and reproduce under load to confirm memory stabilizes.</li></ol>
+<p>Useful tools include <code>jcmd</code>, Java Flight Recorder, GC logs and heap-dump analyzers. In production, account for the impact of generating a dump and protect the dump because it may contain sensitive data.</p>
+<div class="follow"><strong>Likely follow-up questions</strong><ol>
+<li><b>OutOfMemoryError vs memory leak?</b> OOM is a failure condition; a leak is one possible cause. OOM can also result from genuinely insufficient capacity, large allocations or native-memory exhaustion.</li>
+<li><b>What is a heap dump?</b> A snapshot of heap objects and references, useful for identifying retained objects and memory ownership paths.</li>
+<li><b>What is a memory leak in Java if GC exists?</b> Objects remain reachable through references even though the application no longer needs them, so GC cannot reclaim them.</li>
+<li><b>What is GC?</b> Garbage collection reclaims heap memory occupied by objects that are no longer reachable, subject to JVM implementation and reachability rules.</li>
+</ol></div>
+</div></section>
+
+<section class="section" id="deployment"><h2>20. How do you deploy a new microservice version without downtime?</h2>
+<p><span class="tag">Deployment</span><span class="tag">Scenario</span></p>
+<div class="answer">
+<h4>Model answer</h4>
+<p>I would use a deployment strategy that keeps healthy instances serving traffic while the new version is started and verified. A rolling deployment replaces instances gradually; blue-green deployment runs old and new environments side by side and switches traffic after validation. Canary deployment sends a small percentage of traffic to the new version before increasing it.</p>
+<ol><li>Build an immutable, versioned artifact and run automated unit, integration and security tests.</li><li>Deploy new instances without immediately sending production traffic.</li><li>Use readiness checks to ensure an instance is ready to serve requests; liveness checks should detect unrecoverable process failure.</li><li>Gradually route traffic to new instances and monitor error rate, latency, saturation and business metrics.</li><li>Drain old instances gracefully so in-flight requests can complete.</li><li>Keep rollback capability and ensure database changes are backward-compatible during the transition.</li></ol>
+<p>Database migrations are often the hardest part. Use an expand-and-contract approach: add compatible schema first, deploy code that supports both states, migrate data, then remove old schema only after old code is gone.</p>
+<div class="follow"><strong>Likely follow-up questions</strong><ol>
+<li><b>Rolling vs blue-green vs canary?</b> Rolling replaces instances gradually; blue-green switches between two environments; canary gradually exposes a subset of users/traffic to the new version.</li>
+<li><b>Liveness vs readiness probe?</b> Liveness asks whether the process should be restarted. Readiness asks whether it should receive traffic.</li>
+<li><b>How do you roll back a database change?</b> Prefer backward-compatible migrations and forward-fix/compensating migration plans. A destructive schema change may not be safely reversible.</li>
+<li><b>What is graceful shutdown?</b> Stop accepting new work, allow in-flight requests to finish within a configured period, then terminate cleanly.</li>
+<li><b>How do you know deployment is healthy?</b> Compare key service-level indicators and business metrics against baseline, watch logs/traces and validate critical user journeys.</li>
+</ol></div>
+</div></section>
+
+<section class="section" id="revision"><h2>Final revision checklist</h2>
+<p>Tick these off as you prepare. Aim to answer each topic aloud in 2–3 minutes, then handle the follow-ups without memorized wording.</p>
+<div class="checklist">
+<label><input type="checkbox">I can explain my project architecture and my individual contribution.</label>
+<label><input type="checkbox">I can trace an HTTP request through Spring MVC.</label>
+<label><input type="checkbox">I can explain HashMap, equals() and hashCode().</label>
+<label><input type="checkbox">I can explain API Gateway, discovery and load balancing.</label>
+<label><input type="checkbox">I can compare REST, OpenFeign, WebClient and messaging.</label>
+<label><input type="checkbox">I can explain timeout, retry, circuit breaker and bulkhead.</label>
+<label><input type="checkbox">I understand @Transactional, propagation, isolation and rollback rules.</label>
+<label><input type="checkbox">I can describe a real production issue and its RCA.</label>
+<label><input type="checkbox">I can discuss API performance using measurements and JMeter results.</label>
+<label><input type="checkbox">I can solve the SQL ranking and Java duplicate questions.</label>
+<label><input type="checkbox">I can explain JWT authentication and authorization.</label>
+<label><input type="checkbox">I can discuss concurrency, memory troubleshooting and deployment strategies.</label>
+</div>
+<div class="callout"><strong>Project story to prepare:</strong> Choose one production bug you personally fixed. Prepare five points: symptom and impact, investigation steps, root cause, exact code/configuration change, and how you tested and monitored the fix. This one story can support questions on debugging, exception handling, SQL, performance, ownership and communication.</div>
+<h3>Suggested answer strategy</h3>
+<ul><li><b>Definition questions:</b> answer directly, then give one example.</li><li><b>Comparison questions:</b> explain the key difference and when you would choose each option.</li><li><b>Scenario questions:</b> clarify assumptions, identify failure modes, propose controls and explain monitoring.</li><li><b>Project questions:</b> be specific about your contribution; distinguish what you implemented from what your team or platform provided.</li></ul>
+<p class="small">This is a preparation guide, not an official Infosys question bank. Interview focus varies by team, client, project and interviewer. Verify framework-specific behavior against the Spring/Java version used in your project.</p>
+</section>
+<footer>Infosys Java Backend Interview Guide · Prepared for focused technical revision</footer>
+</main></div>
+</body></html>

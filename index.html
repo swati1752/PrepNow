@@ -112,7 +112,7 @@
                 Ah, yes. The interview is tomorrow morning, and you’re just now looking up how 
                 <strong class="text-slate-200 font-mono">ConcurrentHashMap</strong> segment locking works or why your 
                 <strong class="text-slate-200 font-mono">@Transactional</strong> annotation silently failed. 
-                Don't panic! Pretend you've been reading official documentation for months while clicking through these 9 survival guides.
+                Don't panic! Pretend you've been reading official documentation for months while clicking through these 10 survival guides.
             </p>
 
             <!-- Sarcastic Action Badges -->
@@ -123,7 +123,7 @@
                 </div>
                 <div class="bg-slate-950/80 border border-slate-800 px-4 py-2 rounded-xl flex items-center gap-2 shadow-inner">
                     <i class="fa-solid fa-code-merge text-purple-400"></i>
-                    <span>9 Comprehensive Survival Guides</span>
+                    <span>10 Comprehensive Survival Guides</span>
                 </div>
             </div>
         </section>
@@ -149,13 +149,14 @@
 
             <!-- Filter Buttons -->
             <div class="flex flex-wrap gap-2 text-xs font-mono" id="filterContainer">
-                <button data-filter="all" class="filter-btn active px-4 py-1.5 rounded-lg bg-pink-500 text-white font-semibold transition-all">All (9)</button>
+                <button data-filter="all" class="filter-btn active px-4 py-1.5 rounded-lg bg-pink-500 text-white font-semibold transition-all">All (10)</button>
                 <button data-filter="core-java" class="filter-btn px-4 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700 transition-all">Core Java &amp; CS (5)</button>
                 <button data-filter="spring" class="filter-btn px-4 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700 transition-all">Spring Boot &amp; Framework (2)</button>
                 <button data-filter="architecture" class="filter-btn px-4 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700 transition-all">Microservices &amp; System Design (2)</button>
+                <button data-filter="interview" class="filter-btn px-4 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-slate-400 hover:text-slate-200 hover:border-slate-700 transition-all">Interview Prep (1)</button>
             </div>
 
-            <!-- 9 Cards Grid -->
+            <!-- 10 Cards Grid -->
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6" id="cardsGrid">
 
                 <!-- Topic 1: LRU -->
@@ -449,6 +450,38 @@
                     </div>
                     <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between text-xs font-mono text-slate-400">
                         <span class="text-sky-400">Core Java • Sorting</span>
+                        <span class="text-pink-400 font-semibold group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">Open Guide &rarr;</span>
+                    </div>
+                </a>
+
+                <!-- Topic 10: Infosys Interview Guide -->
+                <a href="infosys_senior_associate_java_interview_guide.html" target="_blank" data-category="interview" class="topic-card group glow-card bg-slate-900/70 border border-slate-800 rounded-2xl p-6 transition-all duration-300 hover:border-blue-500/50 hover:bg-slate-900 flex flex-col justify-between space-y-6">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center font-mono text-sm font-bold group-hover:scale-110 transition-transform">
+                                10
+                            </span>
+                            <span class="text-[11px] font-mono px-2.5 py-1 rounded-full bg-slate-800 text-slate-400 border border-slate-700/60 flex items-center gap-1.5">
+                                <i class="fa-regular fa-clock text-blue-400"></i> 35 min read
+                            </span>
+                        </div>
+                        <div class="space-y-2">
+                            <h4 class="text-lg font-bold text-white group-hover:text-pink-400 transition-colors flex items-center justify-between">
+                                Infosys Java Interview Prep
+                                <i class="fa-solid fa-arrow-up-right-from-square text-xs opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                            </h4>
+                            <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
+                                Senior Associate Consultant prep with model answers for Spring Boot, microservices, SQL, concurrency, security, and production scenarios.
+                            </p>
+                        </div>
+                        <div class="flex flex-wrap gap-1.5 pt-1">
+                            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-950 text-slate-300 border border-slate-800">Infosys</span>
+                            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-950 text-slate-300 border border-slate-800">Spring Boot</span>
+                            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-950 text-slate-300 border border-slate-800">System Design</span>
+                        </div>
+                    </div>
+                    <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between text-xs font-mono text-slate-400">
+                        <span class="text-blue-400">Interview • Java Backend</span>
                         <span class="text-pink-400 font-semibold group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">Open Guide &rarr;</span>
                     </div>
                 </a>
